@@ -184,6 +184,11 @@ body {
   pointer-events: none;
 }
 
+.full-screen-section {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
 .cta-bar {
   align-items: center;
   border-radius: 200px;

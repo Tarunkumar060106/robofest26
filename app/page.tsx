@@ -407,7 +407,7 @@ export default function Home() {
         <main className="w-full">
           <section
             ref={heroSectionRef}
-            className={`hero-section w-full h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 ${
+            className={`hero-section full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 ${
               isHeroRevealed ? "is-visible" : ""
             }`}
           >
@@ -425,7 +425,7 @@ export default function Home() {
 
           <section
             ref={sectionTwoRef}
-            className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100"
+            className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100"
           >
             <div className="text-center">
               <h2 className="text-5xl font-bold text-purple-900 mb-4">
@@ -444,7 +444,7 @@ export default function Home() {
 
           <section
             ref={sectionFourRef}
-            className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100"
+            className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100"
           >
             <div className="text-center">
               <h2 className="text-5xl font-bold text-green-900 mb-4">
@@ -454,7 +454,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
+          <section className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
             <div className="text-center">
               <h2 className="text-5xl font-bold text-orange-900 mb-4">
                 Section Five
