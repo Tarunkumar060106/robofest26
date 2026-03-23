@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { VT323 } from "next/font/google";
 
 export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
   const [days, setDays] = useState("00");
@@ -134,7 +133,7 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
         <span className="labelCell labelSeconds">Seconds</span>
       </div>
 
-      <button className="cta">Add to Calendar →</button>
+      <button className="calendarCta">Add to Calendar →</button>
 
       <style jsx>{`
         .countdown {
@@ -271,15 +270,50 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
           grid-column: 7;
         }
 
-        .cta {
+        .calendarCta {
           position: absolute;
           bottom: 1.5rem;
           z-index: 1;
-          padding: 0.6rem 1.2rem;
+          padding: 0.7rem 1.25rem;
+          min-height: 44px;
           border-radius: 999px;
-          border: 2px solid black;
-          background: white;
+          border: 2px solid #111;
+          background: #fff;
+          color: #111;
+          letter-spacing: 0.02em;
           font-weight: 600;
+          font-size: 0.92rem;
+          cursor: pointer;
+          transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background-color 0.2s ease,
+            color 0.2s ease;
+        }
+
+        .calendarCta:hover {
+          transform: translateY(-1px);
+          background: #111;
+          color: #fff;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .calendarCta:active {
+          transform: translateY(0);
+          box-shadow: none;
+        }
+
+        .calendarCta:focus-visible {
+          outline: 2px solid #fff;
+          outline-offset: 2px;
+        }
+
+        @media (max-width: 640px) {
+          .calendarCta {
+            bottom: 1rem;
+            padding: 0.62rem 1.05rem;
+            font-size: 0.86rem;
+          }
         }
       `}</style>
     </section>

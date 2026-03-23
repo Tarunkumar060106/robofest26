@@ -42,7 +42,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -168,6 +168,18 @@ body {
     clip-path 0.85s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.5s ease,
     transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #141414;
+  color: #e3e3e3;
+  overflow: hidden;
+  flex-direction: column;
+  position: fixed;
 }
 
 .hero-section.is-visible {
@@ -176,12 +188,94 @@ body {
   transform: translateY(0);
 }
 
-.hero-canvas {
+.hero-header {
   position: absolute;
-  bottom: 0;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  will-change: transform, opacity;
+}
+
+.hero-header h1 {
+  font-size: 7vw;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hero-header h3 {
+  font-size: 4vw;
+  font-weight: 500;
+}
+
+.animated-icons {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  will-change: transform;
+  z-index: 2;
+}
+
+.animated-icon {
+  flex: 1;
+  aspect-ratio: 1;
+  will-change: transform;
+}
+
+.animated-icons img {
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  object-fit: fill;
+}
+
+.animated-text {
+  position: relative;
+  max-width: 1000px;
+  text-align: center;
+  color: #141414;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.text-segment {
+  opacity: 0;
+}
+
+.hero-section[data-final-loaded="true"] {
+  position: relative;
+}
+
+.hero-section[data-final-loaded="true"] .animated-text {
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: #141414 !important;
+  position: relative;
+  z-index: 7;
+}
+
+.hero-section[data-final-loaded="true"] .text-segment {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline !important;
+  color: inherit !important;
+}
+
+.placeholder-icon {
+  margin-top: -10px;
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+  vertical-align: middle;
+  will-change: transform;
 }
 
 .full-screen-section {
@@ -208,6 +302,12 @@ body {
     transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 3;
   box-shadow: 0 16px 42px rgba(14, 16, 24, 0.2);
+}
+
+.cta-bar.is-hidden {
+  opacity: 0;
+  transform: translate(0, 24px) scale(0.92);
+  pointer-events: none;
 }
 
 .cta-bar .cta-bar-inner {

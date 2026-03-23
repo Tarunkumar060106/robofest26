@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import * as THREE from "three";
 import CountdownTimer from "@/components/CountdownTimer";
+import Navbar from "@/components/Navbar/Navbar";
 import Lenis from "lenis";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
@@ -29,16 +29,8 @@ function getDaysLeft() {
 }
 
 function getLoadingText(progress: number) {
-  if (progress < 30) {
-    return "Initializing arena systems";
-  }
-
-  if (progress < 65) {
-    return "Syncing robotics modules";
-  }
-
   if (progress < 100) {
-    return "Final safety checks";
+    return "Loading Robofest 2.0";
   }
 
   return "Launch ready";
@@ -49,17 +41,22 @@ export default function Home() {
   const [scrollThumbHeight, setScrollThumbHeight] = useState(80);
   const [scrollThumbTop, setScrollThumbTop] = useState(0);
   const [preloaderFrame, setPreloaderFrame] = useState(0);
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(1);
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
   const [isHeroRevealed, setIsHeroRevealed] = useState(false);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const ctaBarRef = useRef<HTMLDivElement | null>(null);
   const ctaInnerRef = useRef<HTMLDivElement | null>(null);
   const ctaAnimateRef = useRef<(compact: boolean) => void>(() => undefined);
+  const ctaSetHiddenRef = useRef<(hidden: boolean) => void>(() => undefined);
+  const menuOpenRef = useRef(false);
   const isCtaCompactRef = useRef(false);
+  const isCtaHiddenRef = useRef(false);
   const ctaExpandedWidthRef = useRef(0);
   const heroSectionRef = useRef<HTMLElement | null>(null);
   const sectionTwoRef = useRef<HTMLElement | null>(null);
   const sectionFourRef = useRef<HTMLElement | null>(null);
+  const footerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -67,6 +64,37 @@ export default function Home() {
     }, 60000);
 
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      smoothWheel: true,
+      syncTouch: true,
+      touchMultiplier: 1.1,
+    });
+
+    const handleLenisScroll = () => {
+      ScrollTrigger.update();
+    };
+
+    lenis.on("scroll", handleLenisScroll);
+
+    const handleRaf = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(handleRaf);
+    gsap.ticker.lagSmoothing(0);
+    ScrollTrigger.refresh();
+
+    return () => {
+      gsap.ticker.remove(handleRaf);
+      lenis.off("scroll", handleLenisScroll);
+      lenis.destroy();
+    };
   }, []);
 
   useEffect(() => {
@@ -196,8 +224,54 @@ export default function Home() {
   }, [isPreloaderDone]);
 
   useEffect(() => {
+    const isProbeInsideSection = (
+      sectionEl: HTMLElement | null,
+      probeY: number,
+    ) => {
+      if (!sectionEl) {
+        return false;
+      }
+
+      const sectionTop = sectionEl.offsetTop;
+      const sectionBottom = sectionTop + sectionEl.offsetHeight;
+
+      return probeY >= sectionTop && probeY < sectionBottom;
+    };
+
+    const handleMenuState = (event: Event) => {
+      const customEvent = event as CustomEvent<{ isOpen?: boolean }>;
+      const nextIsOpen = Boolean(customEvent.detail?.isOpen);
+      menuOpenRef.current = nextIsOpen;
+
+      const probeY = window.scrollY + window.innerHeight * 0.5;
+      const shouldCloseCta =
+        nextIsOpen ||
+        isProbeInsideSection(sectionTwoRef.current, probeY) ||
+        isProbeInsideSection(sectionFourRef.current, probeY);
+      ctaAnimateRef.current(shouldCloseCta);
+
+      const shouldHideCta = isProbeInsideSection(footerRef.current, probeY);
+      ctaSetHiddenRef.current(shouldHideCta);
+    };
+
+    window.addEventListener(
+      "navbar-menu-state",
+      handleMenuState as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "navbar-menu-state",
+        handleMenuState as EventListener,
+      );
+      menuOpenRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const ctaBarEl = ctaBarRef.current;
     const ctaInnerEl = ctaInnerRef.current;
-    if (!ctaInnerEl) {
+    if (!ctaBarEl || !ctaInnerEl) {
       return;
     }
 
@@ -209,6 +283,15 @@ export default function Home() {
 
     gsap.set(ctaInnerEl, { width: expandedWidth, overflow: "hidden" });
     gsap.set(ctaContentEls, { autoAlpha: 1, x: 0, y: 0 });
+
+    ctaSetHiddenRef.current = (hidden: boolean) => {
+      if (hidden === isCtaHiddenRef.current) {
+        return;
+      }
+
+      isCtaHiddenRef.current = hidden;
+      ctaBarEl.classList.toggle("is-hidden", hidden);
+    };
 
     ctaAnimateRef.current = (compact: boolean) => {
       if (compact === isCtaCompactRef.current) {
@@ -275,10 +358,18 @@ export default function Home() {
     const heroBottom =
       heroSectionRef.current?.offsetHeight ?? window.innerHeight;
     ctaAnimateRef.current(window.scrollY >= heroBottom);
+
+    const initialProbeY = window.scrollY + window.innerHeight * 0.5;
+    ctaSetHiddenRef.current(
+      initialProbeY >=
+        (footerRef.current?.offsetTop ?? Number.POSITIVE_INFINITY),
+    );
+
     window.addEventListener("resize", syncExpandedWidth);
 
     return () => {
       ctaAnimateRef.current = () => undefined;
+      ctaSetHiddenRef.current = () => undefined;
       window.removeEventListener("resize", syncExpandedWidth);
       gsap.killTweensOf(ctaInnerEl);
       gsap.killTweensOf(ctaContentEls);
@@ -305,9 +396,13 @@ export default function Home() {
 
       const probeY = scrollTop + window.innerHeight * 0.5;
       const shouldCloseCta =
+        menuOpenRef.current ||
         isProbeInsideSection(sectionTwoRef.current, probeY) ||
         isProbeInsideSection(sectionFourRef.current, probeY);
       ctaAnimateRef.current(shouldCloseCta);
+
+      const shouldHideCta = isProbeInsideSection(footerRef.current, probeY);
+      ctaSetHiddenRef.current(shouldHideCta);
 
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -336,7 +431,529 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isPreloaderDone) {
+      return;
+    }
+
+    const footerEl = footerRef.current;
+    if (!footerEl) {
+      return;
+    }
+
+    const headingParts = Array.from(
+      footerEl.querySelectorAll<HTMLElement>("[data-footer-heading-part]"),
+    );
+    const columns = Array.from(
+      footerEl.querySelectorAll<HTMLElement>("[data-footer-col]"),
+    );
+    const links = Array.from(
+      footerEl.querySelectorAll<HTMLElement>("[data-footer-link]"),
+    );
+    const bottomRowItems = Array.from(
+      footerEl.querySelectorAll<HTMLElement>("[data-footer-bottom]"),
+    );
+    const glowOrb = footerEl.querySelector<HTMLElement>("[data-footer-glow]");
+    const topButton = footerEl.querySelector<HTMLElement>("[data-footer-top]");
+
+    const ctx = gsap.context(() => {
+      gsap.set(headingParts, { autoAlpha: 0, y: 80, rotateX: 35 });
+      gsap.set(columns, { autoAlpha: 0, y: 50 });
+      gsap.set(links, { autoAlpha: 0, x: -18 });
+      gsap.set(bottomRowItems, { autoAlpha: 0, y: 24 });
+      gsap.set(topButton, {
+        autoAlpha: 0,
+        y: 24,
+        scale: 0.86,
+        transformOrigin: "50% 50%",
+      });
+
+      if (glowOrb) {
+        gsap.set(glowOrb, { autoAlpha: 0.45, scale: 0.9, xPercent: -5 });
+      }
+
+      const revealTl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        scrollTrigger: {
+          trigger: footerEl,
+          start: "top 80%",
+          end: "bottom bottom",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      revealTl
+        .to(headingParts, {
+          autoAlpha: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 0.9,
+          stagger: 0.12,
+        })
+        .to(
+          columns,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.72,
+            stagger: 0.12,
+          },
+          "-=0.65",
+        )
+        .to(
+          links,
+          {
+            autoAlpha: 1,
+            x: 0,
+            duration: 0.45,
+            stagger: 0.06,
+          },
+          "-=0.5",
+        )
+        .to(
+          bottomRowItems,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.08,
+          },
+          "-=0.35",
+        )
+        .to(
+          topButton,
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.62,
+            ease: "back.out(1.8)",
+          },
+          "-=0.4",
+        );
+
+      if (glowOrb) {
+        gsap.to(glowOrb, {
+          xPercent: 12,
+          yPercent: -10,
+          scale: 1.18,
+          ease: "none",
+          scrollTrigger: {
+            trigger: footerEl,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
+      }
+
+      if (topButton) {
+        const handleMouseEnter = () => {
+          gsap.to(topButton, {
+            y: -4,
+            scale: 1.06,
+            duration: 0.25,
+            ease: "power2.out",
+          });
+        };
+
+        const handleMouseLeave = () => {
+          gsap.to(topButton, {
+            y: 0,
+            scale: 1,
+            duration: 0.25,
+            ease: "power2.out",
+          });
+        };
+
+        topButton.addEventListener("mouseenter", handleMouseEnter);
+        topButton.addEventListener("mouseleave", handleMouseLeave);
+
+        return () => {
+          topButton.removeEventListener("mouseenter", handleMouseEnter);
+          topButton.removeEventListener("mouseleave", handleMouseLeave);
+        };
+      }
+
+      return undefined;
+    }, footerEl);
+
+    return () => {
+      ctx.revert();
+    };
+  }, [isPreloaderDone]);
+
   const loadingText = getLoadingText(loadingProgress);
+
+  useEffect(() => {
+    if (!isHeroRevealed) {
+      return;
+    }
+
+    const heroSectionEl = heroSectionRef.current;
+    if (!heroSectionEl) {
+      return;
+    }
+
+    const animatedIconsEl =
+      heroSectionEl.querySelector<HTMLElement>(".animated-icons");
+    const heroHeaderEl =
+      heroSectionEl.querySelector<HTMLElement>(".hero-header");
+    const animatedTextEl =
+      heroSectionEl.querySelector<HTMLElement>(".animated-text");
+    const iconElements = Array.from(
+      heroSectionEl.querySelectorAll<HTMLElement>(".animated-icon"),
+    );
+    const textSegments = Array.from(
+      heroSectionEl.querySelectorAll<HTMLElement>(".text-segment"),
+    );
+    const placeholders = Array.from(
+      heroSectionEl.querySelectorAll<HTMLElement>(".placeholder-icon"),
+    );
+
+    if (
+      !animatedIconsEl ||
+      !heroHeaderEl ||
+      !animatedTextEl ||
+      !iconElements.length
+    ) {
+      return;
+    }
+
+    const textAnimationOrder = textSegments.map((segment, originalIndex) => ({
+      segment,
+      originalIndex,
+    }));
+
+    for (let i = textAnimationOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [textAnimationOrder[i], textAnimationOrder[j]] = [
+        textAnimationOrder[j],
+        textAnimationOrder[i],
+      ];
+    }
+
+    const isMobile = window.innerWidth < 1000;
+    const headerIconSize = isMobile ? 30 : 60;
+    const currentIconSize = iconElements[0].getBoundingClientRect().width || 1;
+    const exactScale = headerIconSize / currentIconSize;
+    const duplicateIcons: HTMLElement[] = [];
+    let isFinalHandoffLocked = false;
+    let hasForwardUnpinned = false;
+    let hasCompletedFinalState = false;
+
+    const cleanupDuplicateIcons = () => {
+      duplicateIcons.forEach((el) => el.remove());
+      duplicateIcons.length = 0;
+    };
+
+    const PHASE_END = {
+      intro: 0.3,
+      scale: 0.6,
+      transfer: 0.75,
+    } as const;
+    const FINAL_LOCK_START = 0.995;
+
+    const resetTextSegments = () => {
+      textSegments.forEach((segment) => {
+        gsap.set(segment, { opacity: 0 });
+      });
+    };
+
+    const runIntroPhase = (progress: number) => {
+      const moveProgress = progress / PHASE_END.intro;
+      const containerMoveY = -window.innerHeight * 0.3 * moveProgress;
+
+      gsap.set(heroSectionEl, { opacity: 1, y: 0 });
+
+      if (progress <= 0.15) {
+        const headerProgress = progress / 0.15;
+        gsap.set(heroHeaderEl, {
+          y: -50 * headerProgress,
+          opacity: 1 - headerProgress,
+        });
+      } else {
+        gsap.set(heroHeaderEl, { opacity: 0 });
+      }
+
+      cleanupDuplicateIcons();
+
+      gsap.set(animatedIconsEl, {
+        x: 0,
+        y: containerMoveY,
+        scale: 1,
+        opacity: 1,
+      });
+
+      iconElements.forEach((icon, index) => {
+        const staggerDelay = index * 0.1;
+        const iconProgress = gsap.utils.clamp(
+          0,
+          1,
+          gsap.utils.mapRange(
+            staggerDelay,
+            staggerDelay + 0.5,
+            0,
+            1,
+            moveProgress,
+          ),
+        );
+
+        gsap.set(icon, {
+          y: -containerMoveY * (1 - iconProgress),
+        });
+      });
+    };
+
+    const runScalePhase = (progress: number) => {
+      const scaleProgress =
+        (progress - PHASE_END.intro) / (PHASE_END.scale - PHASE_END.intro);
+
+      gsap.set(heroSectionEl, { opacity: 1, y: 0 });
+
+      // When reversing upward from transfer/text phase, remove duplicates immediately.
+      cleanupDuplicateIcons();
+
+      heroSectionEl.style.backgroundColor =
+        scaleProgress >= 0.5 ? "#e3e3e3" : "#141414";
+
+      const containerRect =
+        animatedIconsEl.parentElement?.getBoundingClientRect();
+      if (!containerRect) {
+        return;
+      }
+
+      const deltaX =
+        (window.innerWidth / 2 -
+          (containerRect.left + containerRect.width / 2)) *
+        scaleProgress;
+      const deltaY =
+        (window.innerHeight / 2 -
+          (containerRect.top + containerRect.height / 2)) *
+        scaleProgress;
+
+      gsap.set(animatedIconsEl, {
+        x: deltaX,
+        y: -window.innerHeight * 0.3 + deltaY,
+        scale: 1 + (exactScale - 1) * scaleProgress,
+        opacity: 1,
+      });
+
+      iconElements.forEach((icon) => {
+        gsap.set(icon, { y: 0, opacity: 1 });
+      });
+    };
+
+    const runTransferPhase = (progress: number) => {
+      const moveProgress =
+        (progress - PHASE_END.scale) / (PHASE_END.transfer - PHASE_END.scale);
+
+      gsap.set(heroSectionEl, { opacity: 1, y: 0 });
+
+      heroSectionEl.style.backgroundColor = "#e3e3db";
+      gsap.set(animatedIconsEl, { opacity: 0 });
+
+      if (duplicateIcons.length === 0) {
+        iconElements.forEach((icon) => {
+          const duplicate = icon.cloneNode(true) as HTMLElement;
+          duplicate.style.position = "absolute";
+          duplicate.style.left = "0px";
+          duplicate.style.top = "0px";
+          duplicate.style.width = `${headerIconSize}px`;
+          duplicate.style.height = `${headerIconSize}px`;
+          duplicate.style.pointerEvents = "none";
+          duplicate.style.zIndex = "5";
+
+          heroSectionEl.appendChild(duplicate);
+          duplicateIcons.push(duplicate);
+        });
+      }
+
+      const heroRect = heroSectionEl.getBoundingClientRect();
+
+      duplicateIcons.forEach((duplicate, index) => {
+        if (index >= placeholders.length) {
+          return;
+        }
+
+        const start = iconElements[index].getBoundingClientRect();
+        const target = placeholders[index].getBoundingClientRect();
+
+        const startCenterX = start.left + start.width / 2;
+        const startCenterY = start.top + start.height / 2;
+        const targetCenterX = target.left + target.width / 2;
+        const targetCenterY = target.top + target.height / 2;
+
+        const currentCenterX =
+          startCenterX + (targetCenterX - startCenterX) * moveProgress;
+        const currentCenterY =
+          startCenterY + (targetCenterY - startCenterY) * moveProgress;
+
+        gsap.set(duplicate, {
+          x: 0,
+          y: 0,
+          left: currentCenterX - heroRect.left - headerIconSize / 2,
+          top: currentCenterY - heroRect.top - headerIconSize / 2,
+          opacity: 1,
+        });
+      });
+    };
+
+    const runTextRevealPhase = (progress: number) => {
+      heroSectionEl.style.backgroundColor = "#e3e3db";
+      gsap.set(animatedIconsEl, { opacity: 0 });
+      gsap.set(animatedTextEl, { opacity: 1, autoAlpha: 1, y: 0 });
+
+      const heroRect = heroSectionEl.getBoundingClientRect();
+
+      duplicateIcons.forEach((duplicate, index) => {
+        if (index >= placeholders.length) {
+          return;
+        }
+
+        const target = placeholders[index].getBoundingClientRect();
+        const targetCenterX = target.left + target.width / 2;
+        const targetCenterY = target.top + target.height / 2;
+
+        gsap.set(duplicate, {
+          x: 0,
+          y: 0,
+          left: targetCenterX - heroRect.left - headerIconSize / 2,
+          top: targetCenterY - heroRect.top - headerIconSize / 2,
+          opacity: 1,
+        });
+      });
+
+      textAnimationOrder.forEach((item, i) => {
+        const start = PHASE_END.transfer + i * 0.03;
+        const opacity = gsap.utils.clamp(0, 1, (progress - start) / 0.015);
+        gsap.set(item.segment, { opacity });
+      });
+
+      gsap.set(heroSectionEl, {
+        opacity: 1,
+        y: 0,
+      });
+    };
+
+    const forceFinalTextVisible = () => {
+      gsap.set(textSegments, {
+        opacity: 1,
+        autoAlpha: 1,
+        visibility: "visible",
+        display: "inline",
+      });
+      gsap.set(animatedTextEl, {
+        opacity: 1,
+        autoAlpha: 1,
+        visibility: "visible",
+        y: 0,
+      });
+    };
+
+    const applyFinalLoadedState = () => {
+      hasForwardUnpinned = true;
+      hasCompletedFinalState = true;
+      isFinalHandoffLocked = true;
+      heroSectionEl.setAttribute("data-final-loaded", "true");
+      runTextRevealPhase(1);
+      forceFinalTextVisible();
+      gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1, y: 0 });
+    };
+
+    const trigger = ScrollTrigger.create({
+      trigger: heroSectionEl,
+      start: "top top",
+      end: () => `+=${window.innerHeight * 8}px`,
+      pin: true,
+      pinSpacing: true,
+      anticipatePin: 1,
+      scrub: 1,
+      invalidateOnRefresh: true,
+      markers: false,
+      onLeave: () => {
+        applyFinalLoadedState();
+      },
+      onEnter: () => {
+        if (hasCompletedFinalState) {
+          applyFinalLoadedState();
+          return;
+        }
+
+        gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1 });
+      },
+      onEnterBack: () => {
+        // Reset to allow reverse animation when scrolling back
+        hasCompletedFinalState = false;
+        hasForwardUnpinned = false;
+        isFinalHandoffLocked = false;
+        heroSectionEl.removeAttribute("data-final-loaded");
+        resetTextSegments();
+        cleanupDuplicateIcons();
+        gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1 });
+      },
+      onUpdate: (self) => {
+        const progress = self.progress;
+        const transferUnlockThreshold = PHASE_END.transfer - 0.005;
+
+        if (hasCompletedFinalState) {
+          runTextRevealPhase(1);
+          forceFinalTextVisible();
+          gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1, y: 0 });
+          return;
+        }
+
+        if (hasForwardUnpinned) {
+          runTextRevealPhase(1);
+          forceFinalTextVisible();
+          gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1, y: 0 });
+          return;
+        }
+
+        if (progress >= FINAL_LOCK_START) {
+          isFinalHandoffLocked = true;
+        }
+
+        // Unlock as soon as user scrolls back above the final phase boundary.
+        if (progress < transferUnlockThreshold) {
+          isFinalHandoffLocked = false;
+        }
+
+        // Only reset segment opacity before the reveal phase starts.
+        if (progress <= PHASE_END.transfer) {
+          resetTextSegments();
+        }
+
+        if (isFinalHandoffLocked && progress >= FINAL_LOCK_START) {
+          runTextRevealPhase(1);
+          forceFinalTextVisible();
+          return;
+        }
+
+        if (progress <= PHASE_END.intro) {
+          runIntroPhase(progress);
+          return;
+        }
+
+        if (progress <= PHASE_END.scale) {
+          runScalePhase(progress);
+          return;
+        }
+
+        if (progress <= PHASE_END.transfer) {
+          runTransferPhase(progress);
+          return;
+        }
+
+        runTextRevealPhase(progress);
+      },
+    });
+
+    return () => {
+      trigger.kill();
+      cleanupDuplicateIcons();
+    };
+  }, [isHeroRevealed]);
 
   return (
     <>
@@ -365,9 +982,11 @@ export default function Home() {
         </div>
       </div>
 
+      <Navbar />
+
       <div className={`site-shell ${isPreloaderDone ? "is-ready" : ""}`}>
         {/* CTA Bar */}
-        <div className="cta-bar">
+        <div ref={ctaBarRef} className="cta-bar">
           <div ref={ctaInnerRef} className="cta-bar-inner">
             <svg
               width="36"
@@ -402,26 +1021,56 @@ export default function Home() {
           </div>
           {/* <div className="n_logo z-1"></div> */}
         </div>
-
         {/* Placeholder Sections */}
         <main className="w-full">
           <section
             ref={heroSectionRef}
-            className={`hero-section full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 ${
-              isHeroRevealed ? "is-visible" : ""
-            }`}
+            className={`hero-section ${isHeroRevealed ? "is-visible" : ""}`}
           >
-            <div className="text-center">
-              <h1 className="text-5xl font-bold text-blue-900 mb-4">
-                Hero Section
-              </h1>
-              <p className="text-xl text-blue-700">
-                Scroll to see the custom scrollbar
-              </p>
+            <div className="hero-header">
+              <h1>ROBOFEST 2.0</h1>
+              <h3>x SRM Directorate of Sports</h3>
             </div>
-          </section>
+            <div className="animated-icons">
+              <div className="animated-icon icon-1">
+                <img src="/images/hero-svgs/gear.svg" alt="Gear icon" />
+              </div>
+              <div className="animated-icon icon-2">
+                <img src="/images/hero-svgs/robo.svg" alt="Wrench icon" />
+              </div>
+              <div className="animated-icon icon-3">
+                <img src="/images/hero-svgs/microchip.svg" alt="Hammer icon" />
+              </div>
+              <div className="animated-icon icon-4">
+                <img
+                  src="/images/hero-svgs/rocket.svg"
+                  alt="Screwdriver icon"
+                />
+              </div>
+              <div className="animated-icon icon-5">
+                <img src="/images/hero-svgs/wrench.svg" alt="Pliers icon" />
+              </div>
+            </div>
 
-          <canvas className="hero-canvas"></canvas>
+            <h1 className="animated-text">
+              <div className="placeholder-icon"></div>
+              <span className="text-segment">Build the future</span>
+
+              <div className="placeholder-icon"></div>
+              <span className="text-segment">compete with precision.</span>
+
+              <span className="text-segment">Push your limits </span>
+
+              <div className="placeholder-icon"></div>
+              <span className="text-segment">in robotics</span>
+
+              <div className="placeholder-icon"></div>
+              <span className="text-segment">innovation and speed</span>
+
+              <div className="placeholder-icon"></div>
+              <span className="text-segment">at Robofest.</span>
+            </h1>
+          </section>
 
           <section
             ref={sectionTwoRef}
@@ -451,15 +1100,6 @@ export default function Home() {
                 Section Four
               </h2>
               <p className="text-xl text-green-700">Almost at the bottom</p>
-            </div>
-          </section>
-
-          <section className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
-            <div className="text-center">
-              <h2 className="text-5xl font-bold text-orange-900 mb-4">
-                Section Five
-              </h2>
-              <p className="text-xl text-orange-700">End of demo content</p>
             </div>
           </section>
         </main>
