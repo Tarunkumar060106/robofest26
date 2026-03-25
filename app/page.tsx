@@ -6,7 +6,9 @@ import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CountdownTimer from "@/components/CountdownTimer";
 import Navbar from "@/components/Navbar/Navbar";
+import BubbleBackground from "@/components/ui/bubble-background";
 import Lenis from "lenis";
+import Script from "next/script";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -585,378 +587,17 @@ export default function Home() {
 
   const loadingText = getLoadingText(loadingProgress);
 
-  useEffect(() => {
-    if (!isHeroRevealed) {
-      return;
-    }
-
-    const heroSectionEl = heroSectionRef.current;
-    if (!heroSectionEl) {
-      return;
-    }
-
-    const animatedIconsEl =
-      heroSectionEl.querySelector<HTMLElement>(".animated-icons");
-    const heroHeaderEl =
-      heroSectionEl.querySelector<HTMLElement>(".hero-header");
-    const animatedTextEl =
-      heroSectionEl.querySelector<HTMLElement>(".animated-text");
-    const iconElements = Array.from(
-      heroSectionEl.querySelectorAll<HTMLElement>(".animated-icon"),
-    );
-    const textSegments = Array.from(
-      heroSectionEl.querySelectorAll<HTMLElement>(".text-segment"),
-    );
-    const placeholders = Array.from(
-      heroSectionEl.querySelectorAll<HTMLElement>(".placeholder-icon"),
-    );
-
-    if (
-      !animatedIconsEl ||
-      !heroHeaderEl ||
-      !animatedTextEl ||
-      !iconElements.length
-    ) {
-      return;
-    }
-
-    const textAnimationOrder = textSegments.map((segment, originalIndex) => ({
-      segment,
-      originalIndex,
-    }));
-
-    for (let i = textAnimationOrder.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [textAnimationOrder[i], textAnimationOrder[j]] = [
-        textAnimationOrder[j],
-        textAnimationOrder[i],
-      ];
-    }
-
-    const isMobile = window.innerWidth < 1000;
-    const headerIconSize = isMobile ? 30 : 60;
-    const currentIconSize = iconElements[0].getBoundingClientRect().width || 1;
-    const exactScale = headerIconSize / currentIconSize;
-    const duplicateIcons: HTMLElement[] = [];
-    let isFinalHandoffLocked = false;
-    let hasForwardUnpinned = false;
-    let hasCompletedFinalState = false;
-
-    const cleanupDuplicateIcons = () => {
-      duplicateIcons.forEach((el) => el.remove());
-      duplicateIcons.length = 0;
-    };
-
-    const PHASE_END = {
-      intro: 0.3,
-      scale: 0.6,
-      transfer: 0.75,
-    } as const;
-    const FINAL_LOCK_START = 0.995;
-
-    const resetTextSegments = () => {
-      textSegments.forEach((segment) => {
-        gsap.set(segment, { opacity: 0 });
-      });
-    };
-
-    const runIntroPhase = (progress: number) => {
-      const moveProgress = progress / PHASE_END.intro;
-      const containerMoveY = -window.innerHeight * 0.3 * moveProgress;
-
-      gsap.set(heroSectionEl, { opacity: 1, y: 0 });
-
-      if (progress <= 0.15) {
-        const headerProgress = progress / 0.15;
-        gsap.set(heroHeaderEl, {
-          y: -50 * headerProgress,
-          opacity: 1 - headerProgress,
-        });
-      } else {
-        gsap.set(heroHeaderEl, { opacity: 0 });
-      }
-
-      cleanupDuplicateIcons();
-
-      gsap.set(animatedIconsEl, {
-        x: 0,
-        y: containerMoveY,
-        scale: 1,
-        opacity: 1,
-      });
-
-      iconElements.forEach((icon, index) => {
-        const staggerDelay = index * 0.1;
-        const iconProgress = gsap.utils.clamp(
-          0,
-          1,
-          gsap.utils.mapRange(
-            staggerDelay,
-            staggerDelay + 0.5,
-            0,
-            1,
-            moveProgress,
-          ),
-        );
-
-        gsap.set(icon, {
-          y: -containerMoveY * (1 - iconProgress),
-        });
-      });
-    };
-
-    const runScalePhase = (progress: number) => {
-      const scaleProgress =
-        (progress - PHASE_END.intro) / (PHASE_END.scale - PHASE_END.intro);
-
-      gsap.set(heroSectionEl, { opacity: 1, y: 0 });
-
-      // When reversing upward from transfer/text phase, remove duplicates immediately.
-      cleanupDuplicateIcons();
-
-      heroSectionEl.style.backgroundColor =
-        scaleProgress >= 0.5 ? "#e3e3e3" : "#141414";
-
-      const containerRect =
-        animatedIconsEl.parentElement?.getBoundingClientRect();
-      if (!containerRect) {
-        return;
-      }
-
-      const deltaX =
-        (window.innerWidth / 2 -
-          (containerRect.left + containerRect.width / 2)) *
-        scaleProgress;
-      const deltaY =
-        (window.innerHeight / 2 -
-          (containerRect.top + containerRect.height / 2)) *
-        scaleProgress;
-
-      gsap.set(animatedIconsEl, {
-        x: deltaX,
-        y: -window.innerHeight * 0.3 + deltaY,
-        scale: 1 + (exactScale - 1) * scaleProgress,
-        opacity: 1,
-      });
-
-      iconElements.forEach((icon) => {
-        gsap.set(icon, { y: 0, opacity: 1 });
-      });
-    };
-
-    const runTransferPhase = (progress: number) => {
-      const moveProgress =
-        (progress - PHASE_END.scale) / (PHASE_END.transfer - PHASE_END.scale);
-
-      gsap.set(heroSectionEl, { opacity: 1, y: 0 });
-
-      heroSectionEl.style.backgroundColor = "#e3e3db";
-      gsap.set(animatedIconsEl, { opacity: 0 });
-
-      if (duplicateIcons.length === 0) {
-        iconElements.forEach((icon) => {
-          const duplicate = icon.cloneNode(true) as HTMLElement;
-          duplicate.style.position = "absolute";
-          duplicate.style.left = "0px";
-          duplicate.style.top = "0px";
-          duplicate.style.width = `${headerIconSize}px`;
-          duplicate.style.height = `${headerIconSize}px`;
-          duplicate.style.pointerEvents = "none";
-          duplicate.style.zIndex = "5";
-
-          heroSectionEl.appendChild(duplicate);
-          duplicateIcons.push(duplicate);
-        });
-      }
-
-      const heroRect = heroSectionEl.getBoundingClientRect();
-
-      duplicateIcons.forEach((duplicate, index) => {
-        if (index >= placeholders.length) {
-          return;
-        }
-
-        const start = iconElements[index].getBoundingClientRect();
-        const target = placeholders[index].getBoundingClientRect();
-
-        const startCenterX = start.left + start.width / 2;
-        const startCenterY = start.top + start.height / 2;
-        const targetCenterX = target.left + target.width / 2;
-        const targetCenterY = target.top + target.height / 2;
-
-        const currentCenterX =
-          startCenterX + (targetCenterX - startCenterX) * moveProgress;
-        const currentCenterY =
-          startCenterY + (targetCenterY - startCenterY) * moveProgress;
-
-        gsap.set(duplicate, {
-          x: 0,
-          y: 0,
-          left: currentCenterX - heroRect.left - headerIconSize / 2,
-          top: currentCenterY - heroRect.top - headerIconSize / 2,
-          opacity: 1,
-        });
-      });
-    };
-
-    const runTextRevealPhase = (progress: number) => {
-      heroSectionEl.style.backgroundColor = "#e3e3db";
-      gsap.set(animatedIconsEl, { opacity: 0 });
-      gsap.set(animatedTextEl, { opacity: 1, autoAlpha: 1, y: 0 });
-
-      const heroRect = heroSectionEl.getBoundingClientRect();
-
-      duplicateIcons.forEach((duplicate, index) => {
-        if (index >= placeholders.length) {
-          return;
-        }
-
-        const target = placeholders[index].getBoundingClientRect();
-        const targetCenterX = target.left + target.width / 2;
-        const targetCenterY = target.top + target.height / 2;
-
-        gsap.set(duplicate, {
-          x: 0,
-          y: 0,
-          left: targetCenterX - heroRect.left - headerIconSize / 2,
-          top: targetCenterY - heroRect.top - headerIconSize / 2,
-          opacity: 1,
-        });
-      });
-
-      textAnimationOrder.forEach((item, i) => {
-        const start = PHASE_END.transfer + i * 0.03;
-        const opacity = gsap.utils.clamp(0, 1, (progress - start) / 0.015);
-        gsap.set(item.segment, { opacity });
-      });
-
-      gsap.set(heroSectionEl, {
-        opacity: 1,
-        y: 0,
-      });
-    };
-
-    const forceFinalTextVisible = () => {
-      gsap.set(textSegments, {
-        opacity: 1,
-        autoAlpha: 1,
-        visibility: "visible",
-        display: "inline",
-      });
-      gsap.set(animatedTextEl, {
-        opacity: 1,
-        autoAlpha: 1,
-        visibility: "visible",
-        y: 0,
-      });
-    };
-
-    const applyFinalLoadedState = () => {
-      hasForwardUnpinned = true;
-      hasCompletedFinalState = true;
-      isFinalHandoffLocked = true;
-      heroSectionEl.setAttribute("data-final-loaded", "true");
-      runTextRevealPhase(1);
-      forceFinalTextVisible();
-      gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1, y: 0 });
-    };
-
-    const trigger = ScrollTrigger.create({
-      trigger: heroSectionEl,
-      start: "top top",
-      end: () => `+=${window.innerHeight * 8}px`,
-      pin: true,
-      pinSpacing: true,
-      anticipatePin: 1,
-      scrub: 1,
-      invalidateOnRefresh: true,
-      markers: false,
-      onLeave: () => {
-        applyFinalLoadedState();
-      },
-      onEnter: () => {
-        if (hasCompletedFinalState) {
-          applyFinalLoadedState();
-          return;
-        }
-
-        gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1 });
-      },
-      onEnterBack: () => {
-        // Reset to allow reverse animation when scrolling back
-        hasCompletedFinalState = false;
-        hasForwardUnpinned = false;
-        isFinalHandoffLocked = false;
-        heroSectionEl.removeAttribute("data-final-loaded");
-        resetTextSegments();
-        cleanupDuplicateIcons();
-        gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1 });
-      },
-      onUpdate: (self) => {
-        const progress = self.progress;
-        const transferUnlockThreshold = PHASE_END.transfer - 0.005;
-
-        if (hasCompletedFinalState) {
-          runTextRevealPhase(1);
-          forceFinalTextVisible();
-          gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1, y: 0 });
-          return;
-        }
-
-        if (hasForwardUnpinned) {
-          runTextRevealPhase(1);
-          forceFinalTextVisible();
-          gsap.set(heroSectionEl, { opacity: 1, autoAlpha: 1, y: 0 });
-          return;
-        }
-
-        if (progress >= FINAL_LOCK_START) {
-          isFinalHandoffLocked = true;
-        }
-
-        // Unlock as soon as user scrolls back above the final phase boundary.
-        if (progress < transferUnlockThreshold) {
-          isFinalHandoffLocked = false;
-        }
-
-        // Only reset segment opacity before the reveal phase starts.
-        if (progress <= PHASE_END.transfer) {
-          resetTextSegments();
-        }
-
-        if (isFinalHandoffLocked && progress >= FINAL_LOCK_START) {
-          runTextRevealPhase(1);
-          forceFinalTextVisible();
-          return;
-        }
-
-        if (progress <= PHASE_END.intro) {
-          runIntroPhase(progress);
-          return;
-        }
-
-        if (progress <= PHASE_END.scale) {
-          runScalePhase(progress);
-          return;
-        }
-
-        if (progress <= PHASE_END.transfer) {
-          runTransferPhase(progress);
-          return;
-        }
-
-        runTextRevealPhase(progress);
-      },
-    });
-
-    return () => {
-      trigger.kill();
-      cleanupDuplicateIcons();
-    };
-  }, [isHeroRevealed]);
-
   return (
     <>
+      {isHeroRevealed ? (
+        <Script
+          id="hero-sample-animation"
+          src=" /scripts/hero.js"
+          strategy="afterInteractive"
+          type="module"
+        />
+      ) : null}
+
       <div
         className={`site-preloader ${isPreloaderDone ? "is-hidden" : ""}`}
         aria-hidden={isPreloaderDone}
@@ -1027,28 +668,28 @@ export default function Home() {
             ref={heroSectionRef}
             className={`hero-section ${isHeroRevealed ? "is-visible" : ""}`}
           >
+            <BubbleBackground className="hero-bubble-bg" quantity={20} />
             <div className="hero-header">
               <h1>ROBOFEST 2.0</h1>
-              <h3>x SRM Directorate of Sports</h3>
+              <p>In collaboration with</p>
+              <h3>SRM Directorate of Sports</h3>
             </div>
+
             <div className="animated-icons">
               <div className="animated-icon icon-1">
-                <img src="/images/hero-svgs/gear.svg" alt="Gear icon" />
+                <img src="/images/hero-svgs/gear.svg" alt="Robot 1" />
               </div>
               <div className="animated-icon icon-2">
-                <img src="/images/hero-svgs/robo.svg" alt="Wrench icon" />
+                <img src="/images/hero-svgs/robo.svg" alt="Robot 1" />
               </div>
               <div className="animated-icon icon-3">
-                <img src="/images/hero-svgs/microchip.svg" alt="Hammer icon" />
+                <img src="/images/hero-svgs/microchip.svg" alt="Robot 1" />
               </div>
               <div className="animated-icon icon-4">
-                <img
-                  src="/images/hero-svgs/rocket.svg"
-                  alt="Screwdriver icon"
-                />
+                <img src="/images/hero-svgs/rocket.svg" alt="Robot 1" />
               </div>
               <div className="animated-icon icon-5">
-                <img src="/images/hero-svgs/wrench.svg" alt="Pliers icon" />
+                <img src="/images/hero-svgs/wrench.svg" alt="Robot 1" />
               </div>
             </div>
 

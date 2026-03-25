@@ -1,7 +1,6 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
-import { text } from "node:stream/consumers";
+import gsap from "https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm";
+import { ScrollTrigger } from "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger/+esm";
+import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.1.14/+esm";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,12 +11,21 @@ gsap.ticker.add((time) => {
 });
 gsap.ticker.lagSmoothing(0);
 
-const animatedIcons = document.querySelectorAll(".animated-icons");
+const animatedIcons = document.querySelector(".animated-icons");
 const iconElements = document.querySelectorAll(".animated-icon");
 const textSegments = document.querySelectorAll(".text-segment");
 const placeholders = document.querySelectorAll(".placeholder-icon");
 const heroHeader = document.querySelector(".hero-header");
-const heroSection = document.querySelector(".hero-section");
+const heroSection = document.querySelector(".hero-section, .hero");
+
+if (
+  !animatedIcons ||
+  !heroHeader ||
+  !heroSection ||
+  iconElements.length === 0
+) {
+  throw new Error("Animation init failed: required DOM elements are missing.");
+}
 
 const textAnimationOrder = [];
 
@@ -37,9 +45,13 @@ const isMobile = window.innerWidth <= 1000;
 const headerIconSize = isMobile ? 30 : 60;
 const currentIconSize = iconElements[0].getBoundingClientRect().width;
 const exactScale = headerIconSize / currentIconSize;
+const initialContainerRect = animatedIcons.getBoundingClientRect();
+const centerStopY =
+  window.innerHeight / 2 -
+  (initialContainerRect.top + initialContainerRect.height / 2);
 
 ScrollTrigger.create({
-  trigger: ".hero-section",
+  trigger: heroSection,
   start: "top top",
   end: `+=${window.innerHeight * 8} top`,
   pin: true,
@@ -54,7 +66,7 @@ ScrollTrigger.create({
 
     if (progress <= 0.3) {
       const moveProgress = progress / 0.3;
-      const containerMoveY = -window.innerHeight * moveProgress;
+      const containerMoveY = centerStopY * moveProgress;
 
       if (progress <= 0.15) {
         const headerProgress = moveProgress / 0.15;
@@ -100,7 +112,7 @@ ScrollTrigger.create({
           1,
           moveProgress,
         );
-        const clampedProgress = Math.max(Math.min(iconProgress, 0), 1);
+        const clampedProgress = Math.min(Math.max(iconProgress, 0), 1);
 
         const startOffset = -containerMoveY;
         const individualY = startOffset * (1 - clampedProgress);
@@ -133,19 +145,11 @@ ScrollTrigger.create({
         window.duplicateIcons = null;
       }
 
-      const targetCenterY = window.innerHeight / 2;
-      const targetCenterX = window.innerWidth / 2;
-      const containerRect = animatedIcons.getBoundingClientRect();
-      const currentCenterX = containerRect.left + containerRect.width / 2;
-      const currentCenterY = containerRect.top + containerRect.height / 2;
-      const deltaX = (targetCenterX - currentCenterX) * scaleProgress;
-      const deltaY = (targetCenterY - currentCenterY) * scaleProgress;
-      const baseY = -window.innerHeight * 0.3;
       const currentScale = 1 + (exactScale - 1) * scaleProgress;
 
       gsap.set(animatedIcons, {
-        x: deltaX,
-        y: baseY + deltaY,
+        x: 0,
+        y: centerStopY,
         scale: currentScale,
         opacity: 1,
       });
@@ -166,18 +170,9 @@ ScrollTrigger.create({
 
       heroSection.style.backgroundColor = "#e3e3db";
 
-      const targetCenterY = window.innerHeight / 2;
-      const targetCenterX = window.innerWidth / 2;
-      const containerRect = animatedIcons.getBoundingClientRect();
-      const currentCenterX = containerRect.left + containerRect.width / 2;
-      const currentCenterY = containerRect.top + containerRect.height / 2;
-      const deltaX = (targetCenterX - currentCenterX) * (1 - moveProgress);
-      const deltaY = (targetCenterY - currentCenterY) * (1 - moveProgress);
-      const baseY = -window.innerHeight * 0.3;
-
       gsap.set(animatedIcons, {
-        x: deltaX,
-        y: baseY + deltaY,
+        x: 0,
+        y: centerStopY,
         scale: exactScale,
         opacity: 0,
       });
@@ -219,8 +214,8 @@ ScrollTrigger.create({
             const targetX = targetCenterX + window.pageXOffset;
             const targetY = targetCenterY + window.pageYOffset;
 
-            const moveX = targetPageX - startPageX;
-            const moveY = targetPageY - startPageY;
+            const moveX = targetX - startX;
+            const moveY = targetY - startY;
 
             let currentX = 0;
             let currentY = 0;
@@ -234,8 +229,8 @@ ScrollTrigger.create({
               currentX = moveX * horizontalProgress;
             }
 
-            const finalPageX = startPageX + currentX;
-            const finalPageY = startPageY + currentY;
+            const finalPageX = startX + currentX;
+            const finalPageY = startY + currentY;
 
             duplicate.style.left = finalPageX - headerIconSize / 2 + "px";
             duplicate.style.top = finalPageY - headerIconSize / 2 + "px";
