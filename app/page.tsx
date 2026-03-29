@@ -8,6 +8,8 @@ import CountdownTimer from "@/components/CountdownTimer";
 import Navbar from "@/components/Navbar/Navbar";
 import Lenis from "lenis";
 import Script from "next/script";
+import HScrollSection from "@/components/HScrollSection/HScrollSection";
+import ScrollSection from "@/components/HScrollSection/HScrollSection";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -55,8 +57,9 @@ export default function Home() {
   const isCtaHiddenRef = useRef(false);
   const ctaExpandedWidthRef = useRef(0);
   const heroSectionRef = useRef<HTMLElement | null>(null);
-  const sectionTwoRef = useRef<HTMLElement | null>(null);
+  const triggerRef = useRef<HTMLDivElement | null>(null);
   const sectionFourRef = useRef<HTMLElement | null>(null);
+  const scrollSectionRef = useRef<HTMLDivElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -77,23 +80,44 @@ export default function Home() {
       touchMultiplier: 1.1,
     });
 
-    const handleLenisScroll = () => {
-      ScrollTrigger.update();
-    };
-
-    lenis.on("scroll", handleLenisScroll);
-
-    const handleRaf = (time: number) => {
+    // 🔥 IMPORTANT: Sync Lenis with GSAP ticker
+    const raf = (time: number) => {
       lenis.raf(time * 1000);
     };
 
-    gsap.ticker.add(handleRaf);
+    gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
-    ScrollTrigger.refresh();
+
+    // 🔥 CRITICAL: Tell ScrollTrigger how to read scroll
+    ScrollTrigger.scrollerProxy(document.body, {
+      scrollTop(value) {
+        if (value !== undefined) {
+          lenis.scrollTo(value, { immediate: true });
+        } else {
+          return window.scrollY;
+        }
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
+    });
+
+    // keep ScrollTrigger in sync
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // 🔥 VERY IMPORTANT: refresh AFTER everything is ready
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
     return () => {
-      gsap.ticker.remove(handleRaf);
-      lenis.off("scroll", handleLenisScroll);
+      gsap.ticker.remove(raf);
+      lenis.off("scroll", ScrollTrigger.update);
       lenis.destroy();
     };
   }, []);
@@ -229,42 +253,31 @@ export default function Home() {
       sectionEl: HTMLElement | null,
       probeY: number,
     ) => {
-      if (!sectionEl) {
-        return false;
-      }
+      // Data for horizontal slides
+      const robofestSlides = [
+        {
+          title: "👣 Footfall",
+          stat: "Over 5,000+ attendees",
+          desc: "Robofest 2025 saw record-breaking participation and energy from students, mentors, and visitors.",
+          img: "/images/hero-svgs/footfall.svg",
+          imgAlt: "Footfall",
+        },
+        {
+          title: "🤖 Teams",
+          stat: "120+ teams from 30+ schools",
+          desc: "Young innovators from across the region competed in a variety of robotics challenges.",
+          img: "/images/hero-svgs/teams.svg",
+          imgAlt: "Teams",
+        },
+        {
+          title: "🏆 Awards",
+          stat: "15+ categories recognized",
+          desc: "Celebrating creativity, teamwork, and technical excellence in robotics and automation.",
+          img: "/images/hero-svgs/awards.svg",
+          imgAlt: "Awards",
+        },
+      ];
 
-      const sectionTop = sectionEl.offsetTop;
-      const sectionBottom = sectionTop + sectionEl.offsetHeight;
-
-      return probeY >= sectionTop && probeY < sectionBottom;
-    };
-
-    const handleMenuState = (event: Event) => {
-      const customEvent = event as CustomEvent<{ isOpen?: boolean }>;
-      const nextIsOpen = Boolean(customEvent.detail?.isOpen);
-      menuOpenRef.current = nextIsOpen;
-
-      const probeY = window.scrollY + window.innerHeight * 0.5;
-      const shouldCloseCta =
-        nextIsOpen ||
-        isProbeInsideSection(sectionTwoRef.current, probeY) ||
-        isProbeInsideSection(sectionFourRef.current, probeY);
-      ctaAnimateRef.current(shouldCloseCta);
-
-      const shouldHideCta = isProbeInsideSection(footerRef.current, probeY);
-      ctaSetHiddenRef.current(shouldHideCta);
-    };
-
-    window.addEventListener(
-      "navbar-menu-state",
-      handleMenuState as EventListener,
-    );
-
-    return () => {
-      window.removeEventListener(
-        "navbar-menu-state",
-        handleMenuState as EventListener,
-      );
       menuOpenRef.current = false;
     };
   }, []);
@@ -398,7 +411,7 @@ export default function Home() {
       const probeY = scrollTop + window.innerHeight * 0.5;
       const shouldCloseCta =
         menuOpenRef.current ||
-        isProbeInsideSection(sectionTwoRef.current, probeY) ||
+        isProbeInsideSection(triggerRef.current, probeY) ||
         isProbeInsideSection(sectionFourRef.current, probeY);
       ctaAnimateRef.current(shouldCloseCta);
 
@@ -586,12 +599,44 @@ export default function Home() {
 
   const loadingText = getLoadingText(loadingProgress);
 
+  useEffect(() => {
+    if (!scrollSectionRef.current || !triggerRef.current) return;
+    if (!isPreloaderDone) return; // 👈 add this guard
+
+    // Small delay to let layout paint after preloader exits
+    const timeout = setTimeout(() => {
+      const scrollDistance =
+        scrollSectionRef.current!.scrollWidth - window.innerWidth;
+
+      const anim = gsap.to(scrollSectionRef.current, {
+        x: -scrollDistance,
+        ease: "none",
+        scrollTrigger: {
+          trigger: triggerRef.current,
+          start: "top top",
+          end: () => `+=${scrollDistance}`,
+          scrub: 0.6,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      return () => {
+        anim.scrollTrigger?.kill();
+        anim.kill();
+      };
+    }, 200); // 👈 wait for paint
+
+    return () => clearTimeout(timeout);
+  }, [isPreloaderDone]);
+
   return (
     <>
       {isHeroRevealed ? (
         <Script
           id="hero-sample-animation"
-          src=" /scripts/hero.js"
+          src="/scripts/hero.js"
           strategy="afterInteractive"
           type="module"
         />
@@ -711,57 +756,20 @@ export default function Home() {
             </h1>
           </section>
 
-          <section
-            ref={sectionTwoRef}
-            className="marquee full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100"
-          >
-            <div className="marquee-wrapper">
-              <div className="marquee-images">
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img pin">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
-                <div className="marquee-img">
-                  <img src="/images/preloader/camo.png" alt="" />
-                </div>
+          <section ref={triggerRef} className="scroll-section-outer">
+            <div ref={scrollSectionRef} className="scroll-section-inner">
+              <div className="scroll-section">
+                <h3>Section 1</h3>
               </div>
-            </div>
-          </section>
-
-          <section className="horizontal-scroll">
-            <div className="horizontal-scroll-wrapper">
-              <div className="horizontal-slide horizontal-spacer"></div>
-              <div className="horizontal-slide"></div>
-              <div className="horizontal-slide"></div>
+              <div className="scroll-section">
+                <h3>Section 2</h3>
+              </div>
+              <div className="scroll-section">
+                <h3>Section 3</h3>
+              </div>
+              <div className="scroll-section">
+                <h3>Section 4</h3>
+              </div>
             </div>
           </section>
 
