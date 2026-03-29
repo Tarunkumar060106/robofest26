@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -162,11 +162,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle at 14% 18%, #303446 0%, rgba(48, 52, 70, 0) 45%),
-    radial-gradient(circle at 84% 22%, #3f4a67 0%, rgba(63, 74, 103, 0) 50%),
-    linear-gradient(155deg, #1f2537 0%, #28314b 45%, #1e2433 100%);
-  color: #edf0f7;
+  background-color: #141414;
+  color: #e3e3db;
   overflow: hidden;
   flex-direction: column;
 }

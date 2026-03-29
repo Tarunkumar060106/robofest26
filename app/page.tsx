@@ -6,7 +6,6 @@ import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CountdownTimer from "@/components/CountdownTimer";
 import Navbar from "@/components/Navbar/Navbar";
-import BubbleBackground from "@/components/ui/bubble-background";
 import Lenis from "lenis";
 import Script from "next/script";
 
@@ -410,7 +409,7 @@ export default function Home() {
         document.documentElement.scrollHeight - window.innerHeight;
       const trackHeight =
         trackRef.current?.clientHeight ?? window.innerHeight * 0.36;
-      const thumbHeight = Math.min(80, trackHeight * 0.55);
+      const thumbHeight = Math.min(56, trackHeight * 0.4);
 
       if (docHeight > 0) {
         const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
@@ -668,7 +667,6 @@ export default function Home() {
             ref={heroSectionRef}
             className={`hero-section ${isHeroRevealed ? "is-visible" : ""}`}
           >
-            <BubbleBackground className="hero-bubble-bg" quantity={20} />
             <div className="hero-header">
               <h1>ROBOFEST 2.0</h1>
               <p>In collaboration with</p>
@@ -715,15 +713,55 @@ export default function Home() {
 
           <section
             ref={sectionTwoRef}
-            className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100"
+            className="marquee full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100"
           >
-            <div className="text-center">
-              <h2 className="text-5xl font-bold text-purple-900 mb-4">
-                Section Two
-              </h2>
-              <p className="text-xl text-purple-700">
-                Watch the scrollbar update smoothly
-              </p>
+            <div className="marquee-wrapper">
+              <div className="marquee-images">
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img pin">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+                <div className="marquee-img">
+                  <img src="/images/preloader/camo.png" alt="" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="horizontal-scroll">
+            <div className="horizontal-scroll-wrapper">
+              <div className="horizontal-slide horizontal-spacer"></div>
+              <div className="horizontal-slide"></div>
+              <div className="horizontal-slide"></div>
             </div>
           </section>
 
