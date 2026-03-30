@@ -56,6 +56,7 @@ export default function Home() {
   const isCtaCompactRef = useRef(false);
   const isCtaHiddenRef = useRef(false);
   const ctaExpandedWidthRef = useRef(0);
+  const isScrollSectionPinnedRef = useRef(false);
   const heroSectionRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const sectionFourRef = useRef<HTMLElement | null>(null);
@@ -395,29 +396,28 @@ export default function Home() {
       sectionEl: HTMLElement | null,
       probeY: number,
     ) => {
-      if (!sectionEl) {
-        return false;
-      }
-
+      if (!sectionEl) return false;
       const sectionTop = sectionEl.offsetTop;
       const sectionBottom = sectionTop + sectionEl.offsetHeight;
-
       return probeY >= sectionTop && probeY < sectionBottom;
     };
 
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-
       const probeY = scrollTop + window.innerHeight * 0.5;
-      const shouldCloseCta =
-        menuOpenRef.current ||
-        isProbeInsideSection(triggerRef.current, probeY) ||
-        isProbeInsideSection(sectionFourRef.current, probeY);
-      ctaAnimateRef.current(shouldCloseCta);
 
-      const shouldHideCta = isProbeInsideSection(footerRef.current, probeY);
-      ctaSetHiddenRef.current(shouldHideCta);
+      // 👇 If scroll section is pinned, it controls the CTA — don't touch it
+      if (!isScrollSectionPinnedRef.current) {
+        const shouldCloseCta =
+          menuOpenRef.current ||
+          isProbeInsideSection(sectionFourRef.current, probeY);
+        ctaAnimateRef.current(shouldCloseCta);
 
+        const shouldHideCta = isProbeInsideSection(footerRef.current, probeY);
+        ctaSetHiddenRef.current(shouldHideCta);
+      }
+
+      // Scrollbar thumb — always update regardless
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
       const trackHeight =
@@ -428,7 +428,6 @@ export default function Home() {
         const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
         const progress = Math.min(Math.max(scrollTop / docHeight, 0), 1);
         const thumbTop = progress * maxThumbTop;
-
         setScrollThumbHeight(thumbHeight);
         setScrollThumbTop(thumbTop);
       } else {
@@ -440,9 +439,7 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -619,6 +616,22 @@ export default function Home() {
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onEnter: () => {
+            isScrollSectionPinnedRef.current = true;
+            ctaAnimateRef.current(true); // 👈 collapse to compact pill
+          },
+          onLeave: () => {
+            isScrollSectionPinnedRef.current = false;
+            ctaAnimateRef.current(false); // 👈 expand back
+          },
+          onEnterBack: () => {
+            isScrollSectionPinnedRef.current = true;
+            ctaAnimateRef.current(true); // 👈 collapse again
+          },
+          onLeaveBack: () => {
+            isScrollSectionPinnedRef.current = false;
+            ctaAnimateRef.current(false); // 👈 expand back
+          },
         },
       });
 
@@ -758,17 +771,134 @@ export default function Home() {
 
           <section ref={triggerRef} className="scroll-section-outer">
             <div ref={scrollSectionRef} className="scroll-section-inner">
-              <div className="scroll-section">
-                <h3>Section 1</h3>
+              {/* ── SECTION 1 — Hero lookback text ── */}
+              <div className="scroll-section lookback-slide">
+                <div className="lookback-content">
+                  <span className="lookback-eyebrow">Robofest 2025</span>
+                  <h2 className="lookback-heading">
+                    <em>A look back</em>
+                    <br />
+                    at Robofest
+                    <br />
+                    2025.
+                  </h2>
+                  <p className="lookback-sub">
+                    One campus. Hundreds of builders.
+                    <br />
+                    Unforgettable machines.
+                  </p>
+                </div>
+                <div className="lookback-deco">
+                  <div className="lookback-ring lookback-ring--1" />
+                  <div className="lookback-ring lookback-ring--2" />
+                  <div className="lookback-year">2025</div>
+                </div>
               </div>
-              <div className="scroll-section">
-                <h3>Section 2</h3>
+
+              {/* ── SECTION 2 — Bento stats grid ── */}
+              <div className="scroll-section bento-slide">
+                <div className="bento-grid">
+                  <div className="bento-card bento-dark bento-tall">
+                    <span className="bento-label">Footfall</span>
+                    <p className="bento-stat">
+                      5,000<span className="bento-plus">+</span>
+                    </p>
+                    <p className="bento-sub">attendees in 2025</p>
+                    <div className="bento-orb bento-orb--red" />
+                  </div>
+
+                  <div className="bento-card bento-accent-yellow">
+                    <span className="bento-label">Teams</span>
+                    <p className="bento-stat">
+                      120<span className="bento-plus">+</span>
+                    </p>
+                    <p className="bento-sub">from 30+ schools</p>
+                  </div>
+
+                  <div className="bento-card bento-dark">
+                    <span className="bento-label">Prize Pool</span>
+                    <p className="bento-stat bento-stat--sm">
+                      ₹2L<span className="bento-plus">+</span>
+                    </p>
+                    <p className="bento-sub">in cash & awards</p>
+                    <div className="bento-orb bento-orb--orange" />
+                  </div>
+
+                  <div className="bento-card bento-accent-red bento-tall-right">
+                    <span className="bento-label bento-label--light">Est.</span>
+                    <p
+                      className="bento-stat bento-stat--sm"
+                      style={{ color: "#fff" }}
+                    >
+                      2024
+                    </p>
+                    <p
+                      className="bento-sub"
+                      style={{ color: "rgba(255,255,255,0.7)" }}
+                    >
+                      SRMIST's flagship robotics event
+                    </p>
+                    <p className="bento-tagline">
+                      The biggest student robotics event in South India —
+                      <em> back and bigger.</em>
+                    </p>
+                    <div className="bento-tag">ROBOFEST 2.0</div>
+                  </div>
+
+                  <div className="bento-card bento-accent-cream bento-wide">
+                    <span className="bento-label">Awards</span>
+                    <p className="bento-stat bento-stat--sm">
+                      15<span className="bento-plus">+</span>
+                    </p>
+                    <p className="bento-sub">categories recognised</p>
+                  </div>
+                </div>
               </div>
-              <div className="scroll-section">
-                <h3>Section 3</h3>
+
+              {/* ── SECTION 3 — Photo gallery strip ── */}
+              <div className="scroll-section gallery-slide">
+                <div className="gallery-header">
+                  <span className="lookback-eyebrow">Moments</span>
+                  <h2 className="gallery-heading">
+                    Captured
+                    <br />
+                    <em>in frame.</em>
+                  </h2>
+                </div>
+                <div className="gallery-strip">
+                  {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <div key={n} className={`gallery-item gallery-item--${n}`}>
+                      <img
+                        src={`/images/gallery/photo-${n}.jpg`}
+                        alt={`Robofest 2025 moment ${n}`}
+                        className="gallery-img"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="scroll-section">
-                <h3>Section 4</h3>
+
+              {/* ── SECTION 4 — Showreel ── */}
+              <div className="scroll-section showreel-slide">
+                <div className="showreel-text">
+                  <span className="lookback-eyebrow">Showreel</span>
+                  <h2 className="showreel-heading">
+                    Watch the
+                    <br />
+                    <em>madness.</em>
+                  </h2>
+                </div>
+                <div className="showreel-frame">
+                  <video
+                    className="showreel-video"
+                    src="/video/rf-showreel.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                  <div className="showreel-vignette" />
+                </div>
               </div>
             </div>
           </section>

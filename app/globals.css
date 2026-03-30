@@ -553,6 +553,409 @@ body {
   text-transform: uppercase;
 }
 
+/* ══════════════════════════════════════════
+   SECTION 1 — Lookback
+══════════════════════════════════════════ */
+.lookback-slide {
+  background: #0e0e0e;
+  justify-content: space-between;
+  padding: 0 8vw;
+  gap: 4vw;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+}
+
+.lookback-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  z-index: 2;
+  max-width: 520px;
+}
+
+.lookback-eyebrow {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #dc493a;
+}
+
+.lookback-heading {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(52px, 7vw, 108px);
+  font-weight: 800;
+  line-height: 0.95;
+  color: #f1f2f4;
+  margin: 0;
+}
+
+.lookback-heading em {
+  font-family: "AwesomeSerifItalic", Georgia, serif;
+  font-style: italic;
+  color: #dc493a;
+  font-weight: 400;
+}
+
+.lookback-sub {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(14px, 1.2vw, 18px);
+  color: rgba(241, 242, 244, 0.5);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Decorative right side */
+.lookback-deco {
+  position: relative;
+  width: clamp(260px, 36vw, 520px);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lookback-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lookback-ring--1 {
+  inset: 0;
+  animation: spinSlow 18s linear infinite;
+  border-top-color: #dc493a;
+  border-right-color: rgba(255, 255, 255, 0.04);
+}
+
+.lookback-ring--2 {
+  inset: 14%;
+  animation: spinSlow 12s linear infinite reverse;
+  border-bottom-color: #ff9147;
+  border-left-color: rgba(255, 255, 255, 0.04);
+}
+
+.lookback-year {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(64px, 8vw, 120px);
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.06);
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ══════════════════════════════════════════
+   SECTION 2 — Bento Grid
+══════════════════════════════════════════ */
+.bento-slide {
+  background: #f5f0e8;
+  padding: 0 4vw;
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.4fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 14px;
+  width: min(92vw, 1200px);
+  height: min(82vh, 700px); /* slightly taller to fill better */
+}
+
+.bento-card {
+  border-radius: 22px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bento-card:hover {
+  transform: scale(1.018);
+}
+
+.bento-dark {
+  background: #141414;
+  color: #f1f2f4;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bento-accent-yellow {
+  background: #f5c400;
+  color: #0e0e0e;
+  grid-column: 2;
+  grid-row: 1; /* 👈 explicit placement */
+}
+
+.bento-accent-red {
+  background: #dc493a;
+  color: #fff;
+}
+.bento-accent-cream {
+  background: #e8e0d0;
+  color: #141414;
+  grid-column: 2;
+  grid-row: 2; /* 👈 explicit placement, fills the gap */
+}
+
+.bento-tall {
+  grid-column: 1;
+  grid-row: 1 / span 2; /* 👈 was just span 2, now explicit start */
+}
+.bento-tall-right {
+  grid-column: 3;
+  grid-row: 1 / span 2; /* 👈 same */
+}
+.bento-wide {
+  grid-column: 2;
+}
+
+.bento-label {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  position: absolute;
+  top: 26px;
+  left: 32px;
+}
+.bento-label--light {
+  color: #fff;
+  opacity: 0.65;
+  z-index: 2;
+}
+
+.bento-stat {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(52px, 5.5vw, 88px);
+  font-weight: 800;
+  line-height: 1;
+  margin: 0;
+}
+.bento-stat--sm {
+  font-size: clamp(40px, 4vw, 68px);
+}
+
+.bento-plus {
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 0.5em;
+  vertical-align: super;
+  opacity: 0.6;
+}
+
+.bento-sub {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(12px, 1vw, 15px);
+  opacity: 0.55;
+  margin: 6px 0 0;
+}
+
+.bento-tagline {
+  font-family: "AwesomeSerifItalic", Georgia, serif;
+  font-size: clamp(15px, 1.4vw, 20px);
+  line-height: 1.4;
+  margin: 12px 0 14px;
+  color: rgba(255, 255, 255, 0.88);
+}
+.bento-tagline em {
+  font-style: italic;
+  color: #fff;
+}
+
+.bento-tag {
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.18);
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.bento-orb {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.22;
+  top: -50px;
+  right: -50px;
+  pointer-events: none;
+}
+.bento-orb--red {
+  background: #dc493a;
+}
+.bento-orb--orange {
+  background: #ff9147;
+}
+
+/* ══════════════════════════════════════════
+   SECTION 3 — Photo Gallery
+══════════════════════════════════════════ */
+.gallery-slide {
+  background: #141414;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 0 0 8vw;
+  gap: 2.5rem;
+  overflow: hidden;
+}
+
+.gallery-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.gallery-heading {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(36px, 4.5vw, 68px);
+  font-weight: 800;
+  color: #f1f2f4;
+  margin: 0;
+  line-height: 1;
+}
+.gallery-heading em {
+  font-family: "AwesomeSerifItalic", Georgia, serif;
+  color: #dc493a;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.gallery-strip {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  /* lets it spill off-screen naturally for a runway feel */
+  padding-right: 8vw;
+}
+
+.gallery-item {
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #1e1e1e;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gallery-item:hover {
+  transform: scale(1.04) translateY(-6px);
+}
+
+/* Varied heights for editorial feel */
+.gallery-item--1 {
+  width: 260px;
+  height: 340px;
+}
+.gallery-item--2 {
+  width: 200px;
+  height: 280px;
+}
+.gallery-item--3 {
+  width: 300px;
+  height: 360px;
+}
+.gallery-item--4 {
+  width: 220px;
+  height: 300px;
+}
+.gallery-item--5 {
+  width: 260px;
+  height: 320px;
+}
+.gallery-item--6 {
+  width: 190px;
+  height: 260px;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(20%);
+  transition: filter 0.4s ease;
+}
+.gallery-item:hover .gallery-img {
+  filter: grayscale(0%);
+}
+
+/* ══════════════════════════════════════════
+   SECTION 4 — Showreel
+══════════════════════════════════════════ */
+.showreel-slide {
+  background: #0a0a0a;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6vw;
+  gap: 4vw;
+  overflow: hidden;
+}
+
+.showreel-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.showreel-heading {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(44px, 5.5vw, 88px);
+  font-weight: 800;
+  color: #f1f2f4;
+  line-height: 0.95;
+  margin: 0;
+}
+.showreel-heading em {
+  font-family: "AwesomeSerifItalic", Georgia, serif;
+  color: #dc493a;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.showreel-frame {
+  position: relative;
+  flex: 1;
+  height: min(72vh, 600px);
+  border-radius: 24px;
+  overflow: hidden;
+  max-width: 68vw;
+}
+
+.showreel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.showreel-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(10, 10, 10, 0.5) 0%,
+    transparent 30%
+  );
+  pointer-events: none;
+}
+
 @media (max-width: 900px) {
   .cta-bar {
     left: 12px;
