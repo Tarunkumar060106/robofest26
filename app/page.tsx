@@ -914,9 +914,109 @@ export default function Home() {
           >
             <div className="text-center">
               <h2 className="text-5xl font-bold text-green-900 mb-4">
-                Section Four
+                Patrons
               </h2>
-              <p className="text-xl text-green-700">Almost at the bottom</p>
+              <p className="text-xl text-green-700">
+                This is a dummy section for Patrons.
+              </p>
+            </div>
+          </section>
+          <section className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-yellow-50 to-yellow-100">
+            <div className="text-center">
+              <h2 className="text-5xl font-bold text-yellow-900 mb-4">
+                Sponsors
+              </h2>
+              <p className="text-xl text-yellow-700">
+                This is a dummy section for Sponsors.
+              </p>
+            </div>
+          </section>
+
+          {/* Events Section */}
+          <section className="full-screen-section w-full flex flex-col items-center justify-center bg-blue-50">
+            <h2 className="text-5xl font-bold mb-4 text-blue-900">Events</h2>
+            <p className="text-xl text-blue-700 mb-8">
+              All the exciting events at Robofest!
+            </p>
+            <ul className="list-disc pl-8 text-lg text-blue-800">
+              <li>Line Follower Challenge</li>
+              <li>Sumo Bot Battle</li>
+              <li>Maze Solver</li>
+              <li>Innovation Showcase</li>
+              <li>Workshops & Demos</li>
+            </ul>
+          </section>
+
+          {/* FAQ Section */}
+          <section className="full-screen-section w-full flex flex-col items-center justify-center bg-purple-50">
+            <h2 className="text-5xl font-bold mb-4 text-purple-900">FAQ</h2>
+            <div className="w-full max-w-2xl text-left">
+              <div className="mb-6">
+                <h3 className="text-2xl font-semibold text-purple-800">
+                  What is Robofest?
+                </h3>
+                <p className="text-purple-700">
+                  Robofest is an annual robotics competition and festival for
+                  students and enthusiasts.
+                </p>
+              </div>
+              <div className="mb-6">
+                <h3 className="text-2xl font-semibold text-purple-800">
+                  Who can participate?
+                </h3>
+                <p className="text-purple-700">
+                  Anyone interested in robotics, from school students to college
+                  teams and hobbyists.
+                </p>
+              </div>
+              <div className="mb-6">
+                <h3 className="text-2xl font-semibold text-purple-800">
+                  How do I register?
+                </h3>
+                <p className="text-purple-700">
+                  Registration details will be available on the official website
+                  soon.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Contact Section */}
+          <section className="full-screen-section w-full flex flex-col items-center justify-center bg-orange-50">
+            <h2 className="text-5xl font-bold mb-4 text-orange-900">
+              Contact Us
+            </h2>
+            <p className="text-xl text-orange-700 mb-8">
+              We'd love to hear from you! Reach out with any questions or
+              feedback.
+            </p>
+            <div className="w-full max-w-md bg-white rounded-lg shadow p-6">
+              <form className="flex flex-col gap-4">
+                <input
+                  className="border rounded px-3 py-2"
+                  type="text"
+                  placeholder="Your Name"
+                  required
+                />
+                <input
+                  className="border rounded px-3 py-2"
+                  type="email"
+                  placeholder="Your Email"
+                  required
+                />
+                <textarea
+                  className="border rounded px-3 py-2"
+                  placeholder="Your Message"
+                  rows={4}
+                  required
+                />
+                <button
+                  className="bg-orange-600 text-white py-2 rounded hover:bg-orange-700 transition"
+                  type="submit"
+                >
+                  Send
+                </button>
+              </form>
             </div>
           </section>
         </main>
