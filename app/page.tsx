@@ -1141,7 +1141,7 @@ export default function Home() {
                 </div>
                 <div className="gallery-strip">
                   <div className="gallery-marquee">
-                    {[1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6].map((n, i) => (
+                    {[1, 2, 3, 4, 7, 6, 1, 2, 3, 4, 7, 6].map((n, i) => (
                       <div
                         key={i}
                         className={`gallery-item gallery-item--${n}`}
