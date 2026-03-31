@@ -526,6 +526,7 @@ export default function Home() {
       startY = e.clientY;
       startScrollTop = window.scrollY;
       document.body.style.userSelect = "none";
+      document.body.classList.add("scrollbar-dragging");
       e.preventDefault();
     };
 
@@ -546,6 +547,7 @@ export default function Home() {
     const handleMouseUp = () => {
       isDragging = false;
       document.body.style.userSelect = "";
+      document.body.classList.remove("scrollbar-dragging");
     };
 
     const handleTrackClick = (e: MouseEvent) => {
