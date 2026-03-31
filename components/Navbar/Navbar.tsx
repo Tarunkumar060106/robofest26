@@ -211,21 +211,6 @@ export default function Navbar() {
       {/* Menu Overlay */}
       <div className="menu">
         <div className="col col-1">
-          <div className="menu-logo">
-            <a
-              href={logos[currentImage].href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src={logos[currentImage].src}
-                alt=""
-                width={150}
-                height={50}
-                className={logos[currentImage].className}
-              />
-            </a>
-          </div>
           <div className="links">
             <div className="link">
               <a href="#">Home</a>
@@ -251,27 +236,49 @@ export default function Navbar() {
         </div>
 
         <div className="col col-2">
-          <div className="socials">
-            <div className="sub-col">
-              <p>SRMIST,</p>
-              {/* <p>7/1, Leo Muthu Street,</p> */}
-              <p>Kattankulathur,</p>
-              <p>Chennai 603203</p>
-              <br />
-              <p>info@isdlabsrm.in</p>
-              {/* <p>contact@b&h.com</p> */}
+          {/* Top: event tag + tagline */}
+          <div className="menu-brand">
+            <div className="menu-event-tag">
+              <span className="menu-event-dot" />
+              <span>#RoboFest2.0</span>
             </div>
-            <div className="sub-col">
-              <a href="">Instagram</a>
-              <a href="">LinkedIn</a>
-              {/* <p>Facebook</p>
-              <p>Twitter</p> */}
+            <p className="menu-tagline">
+              Build. Compete.
               <br />
-              <p>01 62 31 82 42</p>
-            </div>
+              <em>Dominate.</em>
+            </p>
+            <p className="menu-sub">
+              SRMIST&apos;s flagship robotics event returns — bigger arenas,
+              bolder machines, zero mercy.
+            </p>
           </div>
-          <div className="header">
-            <h1>2.0</h1>
+
+          {/* Bottom: socials + address */}
+          <div className="menu-footer">
+            <div className="socials">
+              <div className="sub-col">
+                <p>SRMIST,</p>
+                <p>Kattankulathur,</p>
+                <p>Chennai 603203</p>
+                <br />
+                <p>info@isdlabsrm.in</p>
+              </div>
+              <div className="sub-col">
+                <a href="" target="_blank" rel="noopener noreferrer">
+                  Instagram
+                </a>
+                <a href="" target="_blank" rel="noopener noreferrer">
+                  LinkedIn
+                </a>
+                <br />
+                <p>01 62 31 82 42</p>
+              </div>
+            </div>
+
+            {/* Ghost "2.0" heading */}
+            <div className="header">
+              <h1>2.0</h1>
+            </div>
           </div>
         </div>
       </div>
