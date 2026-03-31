@@ -1,4 +1,5 @@
 "use client";
+import CardFlip from "../components/CardFlip";
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
@@ -8,8 +9,7 @@ import CountdownTimer from "@/components/CountdownTimer";
 import Navbar from "@/components/Navbar/Navbar";
 import Lenis from "lenis";
 import Script from "next/script";
-import HScrollSection from "@/components/HScrollSection/HScrollSection";
-import ScrollSection from "@/components/HScrollSection/HScrollSection";
+import EventsSection from "@/components/EventsSection/EventsSection";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -866,15 +866,20 @@ export default function Home() {
                   </h2>
                 </div>
                 <div className="gallery-strip">
-                  {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <div key={n} className={`gallery-item gallery-item--${n}`}>
-                      <img
-                        src={`/images/gallery/photo-${n}.jpg`}
-                        alt={`Robofest 2025 moment ${n}`}
-                        className="gallery-img"
-                      />
-                    </div>
-                  ))}
+                  <div className="gallery-marquee">
+                    {[1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6].map((n, i) => (
+                      <div
+                        key={i}
+                        className={`gallery-item gallery-item--${n}`}
+                      >
+                        <img
+                          src={`/images/gallery/photo-${n}.jpg`}
+                          alt={`Robofest 2025 moment ${n}`}
+                          className="gallery-img"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -908,6 +913,8 @@ export default function Home() {
             <CountdownTimer targetDate={EVENT_DATE} />
           </section>
 
+          <EventsSection />
+
           <section
             ref={sectionFourRef}
             className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100"
@@ -930,21 +937,6 @@ export default function Home() {
                 This is a dummy section for Sponsors.
               </p>
             </div>
-          </section>
-
-          {/* Events Section */}
-          <section className="full-screen-section w-full flex flex-col items-center justify-center bg-blue-50">
-            <h2 className="text-5xl font-bold mb-4 text-blue-900">Events</h2>
-            <p className="text-xl text-blue-700 mb-8">
-              All the exciting events at Robofest!
-            </p>
-            <ul className="list-disc pl-8 text-lg text-blue-800">
-              <li>Line Follower Challenge</li>
-              <li>Sumo Bot Battle</li>
-              <li>Maze Solver</li>
-              <li>Innovation Showcase</li>
-              <li>Workshops & Demos</li>
-            </ul>
           </section>
 
           {/* FAQ Section */}

@@ -1,4 +1,24 @@
-﻿@import "tailwindcss";
+﻿/* Gallery Marquee Animation */
+.gallery-marquee {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  white-space: nowrap;
+  animation: gallery-marquee-scroll 24s linear infinite;
+  will-change: transform;
+}
+.gallery-strip:hover .gallery-marquee {
+  animation-play-state: paused;
+}
+@keyframes gallery-marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -956,6 +976,294 @@ body {
   pointer-events: none;
 }
 
+/* ══════════════════════════════════════════
+   EVENTS SECTION — Horizontal Accordion
+══════════════════════════════════════════ */
+.events-section {
+  position: relative;
+  background: #f5f0e8;
+  padding: 8rem 0 6rem;
+  overflow: hidden;
+}
+
+.events-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.05;
+  background-image:
+    linear-gradient(rgba(26, 22, 18, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 22, 18, 0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.events-header {
+  position: relative;
+  z-index: 2;
+  padding: 0 6vw;
+  margin-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 640px;
+}
+
+.events-eyebrow {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #b83224;
+}
+
+.events-heading {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(48px, 6.5vw, 96px);
+  font-weight: 800;
+  line-height: 0.92;
+  color: #1a1612;
+  margin: 0;
+  overflow: hidden;
+}
+
+.events-heading em {
+  font-family: "AwesomeSerifItalic", Georgia, serif;
+  font-style: italic;
+  color: #b83224;
+  font-weight: 400;
+}
+
+.events-sub {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(13px, 1vw, 16px);
+  color: rgba(26, 22, 18, 0.4);
+  margin: 0;
+}
+
+/* ── Accordion track ── */
+.acc-track {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: row;
+  height: 560px;
+  padding: 0 6vw;
+  gap: 6px;
+}
+
+/* ── Panel ── */
+.acc-panel {
+  position: relative;
+  height: 100%;
+  border-radius: 10px;
+  background-color: var(--acc-color);
+  overflow: hidden;
+  cursor: pointer;
+
+  /* collapsed width */
+  flex: 0 0 112px;
+  transition: flex 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.acc-panel.is-active {
+  flex: 0 0 420px; /* expanded width */
+  cursor: default;
+}
+
+/* ── Collapsed label ── */
+.acc-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.acc-panel.is-active .acc-label {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.acc-num {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(245, 240, 232, 0.35);
+  letter-spacing: 0.08em;
+  writing-mode: vertical-rl;
+}
+
+.acc-title-vert {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #f5f0e8;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.acc-tag-vert {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.4);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* ── Expanded content ── */
+.acc-content {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease 0s;
+  overflow: hidden;
+}
+
+.acc-panel.is-active .acc-content {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.35s ease 0.3s; /* delay until panel is open */
+}
+
+.acc-content-inner {
+  position: absolute;
+  inset: 0;
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  width: 420px; /* matches expanded width */
+  box-sizing: border-box;
+}
+
+.acc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.acc-tag-expanded {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.5);
+}
+
+.acc-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 240, 232, 0.25);
+  background: transparent;
+  color: rgba(245, 240, 232, 0.7);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.acc-close:hover {
+  background: rgba(245, 240, 232, 0.15);
+  color: #f5f0e8;
+}
+
+.acc-title-big {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(32px, 2.8vw, 44px);
+  font-weight: 800;
+  color: #f5f0e8;
+  line-height: 1;
+  margin: 0 0 14px;
+}
+
+.acc-desc {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(245, 240, 232, 0.6);
+  margin: 0 0 24px;
+  flex-shrink: 0;
+}
+
+.acc-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: flex-end;
+  gap: 0;
+  margin-bottom: 20px;
+}
+
+.acc-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(245, 240, 232, 0.1);
+}
+
+.acc-detail-row:first-child {
+  border-top: 1px solid rgba(245, 240, 232, 0.1);
+}
+
+.acc-detail-key {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.35);
+}
+
+.acc-detail-val {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  color: #f5f0e8;
+}
+
+.acc-register-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  background: #f5f0e8;
+  color: #1a1612;
+  border-radius: 999px;
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition:
+    background 0.25s ease,
+    transform 0.2s ease;
+}
+
+.acc-register-btn:hover {
+  background: #ffffff;
+  transform: scale(1.02);
+}
+
 @media (max-width: 900px) {
   .cta-bar {
     left: 12px;
@@ -1012,6 +1320,7 @@ body {
   --cursor-default: url("/images/cursors/cursor.png") 16 16, auto;
   --cursor-pointer: url("/images/cursors/pointer.png") 16 16, pointer;
   --cursor-draggable: url("/images/cursors/draggable.png") 16 16, grab;
+  --cursor-grabbing: url("/images/cursors/draggable.png") 16 16, grabbing;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -1078,7 +1387,7 @@ body {
   .draggable:active,
   [draggable="true"]:active,
   [data-cursor="draggable"]:active {
-    cursor: var(--cursor-draggable);
+    cursor: var(--cursor-grabbing);
   }
 }
 .custom-scrollbar-thumb {
