@@ -7,10 +7,14 @@ import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CountdownTimer from "@/components/CountdownTimer";
 import Navbar from "@/components/Navbar/Navbar";
+
 import Lenis from "lenis";
 import Script from "next/script";
 import EventsSection from "@/components/EventsSection/EventsSection";
 import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
+import FAQSection from "@/components/FaqSection/FaqSection";
+import PatronsSection from "@/components/PatronsSection/PatronsSection";
+import ContactSection from "@/components/ContactSection/ContactSection";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -61,6 +65,8 @@ export default function Home() {
   const heroSectionRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const sectionFourRef = useRef<HTMLElement | null>(null);
+  const patronsSectionRef = useRef<HTMLElement | null>(null);
+  const contactSectionRef = useRef<HTMLElement | null>(null);
   const scrollSectionRef = useRef<HTMLDivElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
 
@@ -121,6 +127,59 @@ export default function Home() {
       gsap.ticker.remove(raf);
       lenis.off("scroll", ScrollTrigger.update);
       lenis.destroy();
+    };
+  }, []);
+
+  // Listen for menu open/close events from Navbar
+  useEffect(() => {
+    const handleMenuState = (e: Event) => {
+      const isOpen = (e as CustomEvent).detail?.isOpen;
+      menuOpenRef.current = !!isOpen;
+      // When menu opens, close CTA bar
+      if (isOpen) {
+        ctaAnimateRef.current(true);
+      } else {
+        // Optionally, re-expand CTA bar if not in a section that should keep it closed
+        // This logic matches scroll handler
+        const scrollTop = window.scrollY;
+        const heroBottom =
+          heroSectionRef.current?.offsetHeight ?? window.innerHeight;
+        const probeY = scrollTop + window.innerHeight * 0.5;
+        const shouldCloseCta =
+          menuOpenRef.current ||
+          !!(
+            sectionFourRef.current &&
+            probeY >= sectionFourRef.current.offsetTop &&
+            probeY <
+              sectionFourRef.current.offsetTop +
+                sectionFourRef.current.offsetHeight
+          ) ||
+          !!(
+            patronsSectionRef.current &&
+            probeY >= patronsSectionRef.current.offsetTop &&
+            probeY <
+              patronsSectionRef.current.offsetTop +
+                patronsSectionRef.current.offsetHeight
+          ) ||
+          !!(
+            contactSectionRef.current &&
+            probeY >= contactSectionRef.current.offsetTop &&
+            probeY <
+              contactSectionRef.current.offsetTop +
+                contactSectionRef.current.offsetHeight
+          );
+        ctaAnimateRef.current(shouldCloseCta);
+      }
+    };
+    window.addEventListener(
+      "navbar-menu-state",
+      handleMenuState as EventListener,
+    );
+    return () => {
+      window.removeEventListener(
+        "navbar-menu-state",
+        handleMenuState as EventListener,
+      );
     };
   }, []);
 
@@ -259,14 +318,14 @@ export default function Home() {
       const robofestSlides = [
         {
           title: "👣 Footfall",
-          stat: "Over 5,000+ attendees",
+          stat: "Over 350+ attendees",
           desc: "Robofest 2025 saw record-breaking participation and energy from students, mentors, and visitors.",
           img: "/images/hero-svgs/footfall.svg",
           imgAlt: "Footfall",
         },
         {
           title: "🤖 Teams",
-          stat: "120+ teams from 30+ schools",
+          stat: "170+ teams from 43+ colleges.",
           desc: "Young innovators from across the region competed in a variety of robotics challenges.",
           img: "/images/hero-svgs/teams.svg",
           imgAlt: "Teams",
@@ -373,7 +432,9 @@ export default function Home() {
 
     const heroBottom =
       heroSectionRef.current?.offsetHeight ?? window.innerHeight;
-    ctaAnimateRef.current(window.scrollY >= heroBottom);
+    const alreadyPastHero = window.scrollY >= heroBottom;
+    ctaBarRef.current?.classList.toggle("is-visible", alreadyPastHero);
+    ctaAnimateRef.current(alreadyPastHero ? false : true);
 
     const initialProbeY = window.scrollY + window.innerHeight * 0.5;
     ctaSetHiddenRef.current(
@@ -405,13 +466,19 @@ export default function Home() {
 
     const handleScroll = () => {
       const scrollTop = window.scrollY;
+      const heroBottom =
+        heroSectionRef.current?.offsetHeight ?? window.innerHeight;
+      const pastHero = scrollTop >= heroBottom * 0.85;
+      ctaBarRef.current?.classList.toggle("is-visible", pastHero);
       const probeY = scrollTop + window.innerHeight * 0.5;
 
       // 👇 If scroll section is pinned, it controls the CTA — don't touch it
       if (!isScrollSectionPinnedRef.current) {
         const shouldCloseCta =
           menuOpenRef.current ||
-          isProbeInsideSection(sectionFourRef.current, probeY);
+          isProbeInsideSection(sectionFourRef.current, probeY) ||
+          isProbeInsideSection(patronsSectionRef.current, probeY) ||
+          isProbeInsideSection(contactSectionRef.current, probeY);
         ctaAnimateRef.current(shouldCloseCta);
 
         const shouldHideCta = isProbeInsideSection(footerRef.current, probeY);
@@ -799,6 +866,13 @@ export default function Home() {
               {/* ── SECTION 2 — Bento stats grid ── */}
               <div className="scroll-section bento-slide">
                 <div className="bento-grid">
+                  <div className="bento-card bento-accent-blue">
+                    <span className="bento-label">States</span>
+                    <p className="bento-stat">
+                      12<span className="bento-plus">+</span>
+                    </p>
+                    <p className="bento-sub">in India</p>
+                  </div>
                   <div className="bento-card bento-dark bento-tall">
                     <span className="bento-label">Footfall</span>
                     <p className="bento-stat">
@@ -819,31 +893,33 @@ export default function Home() {
                   <div className="bento-card bento-dark">
                     <span className="bento-label">Prize Pool</span>
                     <p className="bento-stat bento-stat--sm">
-                      ₹2L<span className="bento-plus">+</span>
+                      ₹3L<span className="bento-plus">+</span>
                     </p>
                     <p className="bento-sub">in cash & awards</p>
                     <div className="bento-orb bento-orb--orange" />
                   </div>
 
                   <div className="bento-card bento-accent-red bento-tall-right">
-                    <span className="bento-label bento-label--light">Est.</span>
+                    <span className="bento-label bento-label--light">
+                      Vision
+                    </span>
                     <p
                       className="bento-stat bento-stat--sm"
                       style={{ color: "#fff" }}
                     >
-                      2024
+                      Future
                     </p>
                     <p
                       className="bento-sub"
                       style={{ color: "rgba(255,255,255,0.7)" }}
                     >
-                      SRMIST's flagship robotics event
+                      Inspiring the next generation of innovators and builders.
                     </p>
                     <p className="bento-tagline">
-                      The biggest student robotics event in South India —
-                      <em> back and bigger.</em>
+                      Join us as we shape the future of robotics and technology
+                      together.
                     </p>
-                    <div className="bento-tag">ROBOFEST 2.0</div>
+                    <div className="bento-tag">ROBOFEST</div>
                   </div>
 
                   <div className="bento-card bento-accent-cream bento-wide">
@@ -914,96 +990,17 @@ export default function Home() {
             <CountdownTimer targetDate={EVENT_DATE} />
           </section>
 
-          <EventsSection />
+          <EventsSection state="coming-soon" />
 
-          <section
-            ref={sectionFourRef}
-            className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100"
-          >
-            <div className="text-center">
-              <h2 className="text-5xl font-bold text-green-900 mb-4">
-                Patrons
-              </h2>
-              <p className="text-xl text-green-700">
-                This is a dummy section for Patrons.
-              </p>
-            </div>
-          </section>
+          <PatronsSection ref={patronsSectionRef} />
 
           <SponsorsSection state="coming-soon" />
 
           {/* FAQ Section */}
-          <section className="full-screen-section w-full flex flex-col items-center justify-center bg-purple-50">
-            <h2 className="text-5xl font-bold mb-4 text-purple-900">FAQ</h2>
-            <div className="w-full max-w-2xl text-left">
-              <div className="mb-6">
-                <h3 className="text-2xl font-semibold text-purple-800">
-                  What is Robofest?
-                </h3>
-                <p className="text-purple-700">
-                  Robofest is an annual robotics competition and festival for
-                  students and enthusiasts.
-                </p>
-              </div>
-              <div className="mb-6">
-                <h3 className="text-2xl font-semibold text-purple-800">
-                  Who can participate?
-                </h3>
-                <p className="text-purple-700">
-                  Anyone interested in robotics, from school students to college
-                  teams and hobbyists.
-                </p>
-              </div>
-              <div className="mb-6">
-                <h3 className="text-2xl font-semibold text-purple-800">
-                  How do I register?
-                </h3>
-                <p className="text-purple-700">
-                  Registration details will be available on the official website
-                  soon.
-                </p>
-              </div>
-            </div>
-          </section>
+          <FAQSection />
 
           {/* Contact Section */}
-          <section className="full-screen-section w-full flex flex-col items-center justify-center bg-orange-50">
-            <h2 className="text-5xl font-bold mb-4 text-orange-900">
-              Contact Us
-            </h2>
-            <p className="text-xl text-orange-700 mb-8">
-              We'd love to hear from you! Reach out with any questions or
-              feedback.
-            </p>
-            <div className="w-full max-w-md bg-white rounded-lg shadow p-6">
-              <form className="flex flex-col gap-4">
-                <input
-                  className="border rounded px-3 py-2"
-                  type="text"
-                  placeholder="Your Name"
-                  required
-                />
-                <input
-                  className="border rounded px-3 py-2"
-                  type="email"
-                  placeholder="Your Email"
-                  required
-                />
-                <textarea
-                  className="border rounded px-3 py-2"
-                  placeholder="Your Message"
-                  rows={4}
-                  required
-                />
-                <button
-                  className="bg-orange-600 text-white py-2 rounded hover:bg-orange-700 transition"
-                  type="submit"
-                >
-                  Send
-                </button>
-              </form>
-            </div>
-          </section>
+          <ContactSection ref={contactSectionRef} />
         </main>
 
         {/* Custom Scrollbar */}

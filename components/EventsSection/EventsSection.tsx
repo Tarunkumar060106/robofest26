@@ -5,6 +5,8 @@ import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import "./EventsSection.css";
+
 const EVENTS = [
   {
     number: "01",
@@ -17,7 +19,6 @@ const EVENTS = [
     venue: "Sports Hanger",
     team: "4 members",
     color: "#b83224",
-    textLight: true,
   },
   {
     number: "02",
@@ -30,7 +31,6 @@ const EVENTS = [
     venue: "Tech Arena",
     team: "3 members",
     color: "#1a1612",
-    textLight: true,
   },
   {
     number: "03",
@@ -43,7 +43,6 @@ const EVENTS = [
     venue: "Main Hall",
     team: "2 members",
     color: "#c4410c",
-    textLight: true,
   },
   {
     number: "04",
@@ -56,7 +55,6 @@ const EVENTS = [
     venue: "Lab 2",
     team: "3 members",
     color: "#2a2018",
-    textLight: true,
   },
   {
     number: "05",
@@ -69,7 +67,6 @@ const EVENTS = [
     venue: "Expo Hall",
     team: "5 members",
     color: "#b83224",
-    textLight: true,
   },
   {
     number: "06",
@@ -82,7 +79,6 @@ const EVENTS = [
     venue: "Race Track",
     team: "2 members",
     color: "#1a1612",
-    textLight: true,
   },
   {
     number: "07",
@@ -95,7 +91,6 @@ const EVENTS = [
     venue: "Lab 1",
     team: "2 members",
     color: "#c4410c",
-    textLight: true,
   },
   {
     number: "08",
@@ -108,16 +103,74 @@ const EVENTS = [
     venue: "Workshop Room",
     team: "Solo",
     color: "#2a2018",
-    textLight: true,
+  },
+  {
+    number: "09",
+    title: "Workshop",
+    tag: "Learn",
+    description:
+      "Hands-on sessions with industry experts. Build, break, learn. Walk out knowing more than you walked in with.",
+    prize: "Certificate",
+    fee: "₹200",
+    venue: "Workshop Room",
+    team: "Solo",
+    color: "#b83224",
   },
 ];
 
-export default function EventsSection() {
+type EventsSectionState = "live" | "coming-soon";
+
+interface EventsSectionProps {
+  state?: EventsSectionState;
+}
+
+// ── Coming soon ghost panels ──────────────────────────────
+function ComingSoonState() {
+  return (
+    <div className="ev-cs-wrap">
+      {/* Ghost accordion behind */}
+      <div className="ev-cs-track" aria-hidden>
+        {EVENTS.map((ev, i) => (
+          <div
+            key={i}
+            className="ev-cs-panel"
+            style={{ "--acc-color": ev.color } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      {/* Frosted overlay */}
+      <div className="ev-cs-overlay">
+        <div className="ev-cs-badge">
+          <span className="ev-cs-dot" />
+          Lineup dropping soon
+        </div>
+        <h3 className="ev-cs-heading">
+          Events <em>coming soon.</em>
+        </h3>
+        <p className="ev-cs-sub">
+          Nine arenas. One campus.
+          <br />
+          The full lineup will be announced closer to the event.
+        </p>
+        <a href="#" className="ev-cs-btn">
+          Get Notified <span>→</span>
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ── Main export ───────────────────────────────────────────
+export default function EventsSection({ state = "live" }: EventsSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const eyebrowRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const isLive = state === "live";
 
+  // ── GSAP entrance ──
   useEffect(() => {
     const section = sectionRef.current;
     const heading = headingRef.current;
@@ -148,26 +201,74 @@ export default function EventsSection() {
         scrollTrigger: { trigger: section, start: "top 72%" },
       });
 
-      const panels = section.querySelectorAll(".acc-panel");
+      const panels = section.querySelectorAll(".acc-panel, .ev-cs-panel");
       gsap.fromTo(
         panels,
-        { autoAlpha: 0, y: 40 },
+        { autoAlpha: 0, y: 28, scaleY: 0.96 },
         {
           autoAlpha: 1,
           y: 0,
-          duration: 0.6,
+          scaleY: 1,
+          duration: 0.55,
           ease: "power3.out",
-          stagger: 0.07,
-          scrollTrigger: { trigger: section, start: "top 60%" },
+          stagger: 0.055,
+          scrollTrigger: { trigger: section, start: "top 62%" },
         },
       );
+
+      if (!isLive) {
+        const overlay = section.querySelector(".ev-cs-overlay");
+        gsap.fromTo(
+          overlay,
+          { autoAlpha: 0, y: 20 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            delay: 0.4,
+            scrollTrigger: { trigger: section, start: "top 62%" },
+          },
+        );
+      }
     }, section);
 
     return () => ctx.revert();
-  }, []);
+  }, [isLive]);
 
-  const handleClick = (index: number) => {
-    setActiveIndex((prev) => (prev === index ? null : index));
+  // ── Panel hover micro-interaction via GSAP ──
+  const handlePanelEnter = (i: number, el: HTMLElement) => {
+    if (activeIndex === i) return;
+    setHoveredIndex(i);
+    gsap.to(el, { y: -4, duration: 0.3, ease: "power2.out" });
+    // subtle glow via box-shadow
+    el.style.boxShadow = "0 12px 32px rgba(0,0,0,0.28)";
+  };
+
+  const handlePanelLeave = (i: number, el: HTMLElement) => {
+    setHoveredIndex(null);
+    gsap.to(el, { y: 0, duration: 0.35, ease: "power2.out" });
+    el.style.boxShadow = "";
+  };
+
+  // ── Panel open — number count-up ──
+  const handlePanelClick = (i: number) => {
+    const next = activeIndex === i ? null : i;
+    setActiveIndex(next);
+
+    if (next !== null) {
+      // animate the expanded number ticking up
+      const numEl = document.querySelector(`.acc-num-expanded-${i}`);
+      if (numEl) {
+        const target = parseInt(EVENTS[i].number);
+        let current = 0;
+        const tick = setInterval(() => {
+          current++;
+          numEl.textContent = String(current).padStart(2, "0");
+          if (current >= target) clearInterval(tick);
+        }, 60);
+      }
+    }
   };
 
   return (
@@ -175,84 +276,118 @@ export default function EventsSection() {
       <div className="events-grain" aria-hidden />
 
       {/* Header */}
-      <div className="events-header">
-        <span ref={eyebrowRef} className="events-eyebrow">
-          Robofest 2.0 — Events
-        </span>
-        <h2 ref={headingRef} className="events-heading">
-          Pick your
-          <br />
-          <em>arena.</em>
-        </h2>
-        <p className="events-sub">Eight events. Click one to open it up.</p>
+      <div className="events-header-row">
+        <div className="events-header-left">
+          <span ref={eyebrowRef} className="events-eyebrow">
+            Robofest 2.0 — Events
+          </span>
+          <h2 ref={headingRef} className="events-heading">
+            Pick your
+            <br />
+            <em>arena.</em>
+          </h2>
+        </div>
+        <div className="events-header-right">
+          <p className="events-sub">
+            Nine arenas. One campus.
+            <br />
+            {isLive ? "Click any panel to explore." : "Lineup dropping soon."}
+          </p>
+          <div className="events-total-prize">
+            <span className="events-prize-label">Total Prize Pool</span>
+            <span className="events-prize-amount">
+              {isLive ? (
+                <>
+                  ₹3,25,000<span>+</span>
+                </>
+              ) : (
+                <span>Coming Soon</span>
+              )}
+            </span>
+          </div>
+        </div>
       </div>
 
-      {/* Accordion */}
-      <div className="acc-track">
-        {EVENTS.map((ev, i) => {
-          const isActive = activeIndex === i;
-          return (
-            <div
-              key={ev.number}
-              className={`acc-panel ${isActive ? "is-active" : ""}`}
-              style={{ "--acc-color": ev.color } as React.CSSProperties}
-              onClick={() => handleClick(i)}
-            >
-              {/* Collapsed label — always visible */}
-              <div className="acc-label">
-                <span className="acc-num">{ev.number}</span>
-                <span className="acc-title-vert">{ev.title}</span>
-                <span className="acc-tag-vert">{ev.tag}</span>
-              </div>
-
-              {/* Expanded content */}
-              <div className="acc-content">
-                <div className="acc-content-inner">
-                  <div className="acc-top">
-                    <span className="acc-tag-expanded">{ev.tag}</span>
-                    <button
-                      className="acc-close"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveIndex(null);
-                      }}
-                      aria-label="Close"
-                    >
-                      ✕
-                    </button>
-                  </div>
-
-                  <h3 className="acc-title-big">{ev.title}</h3>
-                  <p className="acc-desc">{ev.description}</p>
-
-                  <div className="acc-details">
-                    <div className="acc-detail-row">
-                      <span className="acc-detail-key">Prize Pool</span>
-                      <span className="acc-detail-val">{ev.prize}</span>
-                    </div>
-                    <div className="acc-detail-row">
-                      <span className="acc-detail-key">Entry Fee</span>
-                      <span className="acc-detail-val">{ev.fee}</span>
-                    </div>
-                    <div className="acc-detail-row">
-                      <span className="acc-detail-key">Venue</span>
-                      <span className="acc-detail-val">{ev.venue}</span>
-                    </div>
-                    <div className="acc-detail-row">
-                      <span className="acc-detail-key">Team Size</span>
-                      <span className="acc-detail-val">{ev.team}</span>
-                    </div>
-                  </div>
-
-                  <a href="#" className="acc-register-btn">
-                    Register Now →
-                  </a>
+      {/* Live accordion */}
+      {isLive && (
+        <div className="acc-track">
+          {EVENTS.map((ev, i) => {
+            const isActive = activeIndex === i;
+            return (
+              <div
+                key={ev.number}
+                className={`acc-panel ${isActive ? "is-active" : ""}`}
+                style={{ "--acc-color": ev.color } as React.CSSProperties}
+                onClick={() => handlePanelClick(i)}
+                onMouseEnter={(e) => handlePanelEnter(i, e.currentTarget)}
+                onMouseLeave={(e) => handlePanelLeave(i, e.currentTarget)}
+              >
+                {/* Collapsed label */}
+                <div className="acc-label">
+                  <span className="acc-num">{ev.number}</span>
+                  <span className="acc-title-vert">{ev.title}</span>
+                  <span className="acc-tag-vert">{ev.tag}</span>
                 </div>
+
+                {/* Expanded content */}
+                <div className="acc-content">
+                  <div className="acc-content-inner">
+                    <div className="acc-top">
+                      <div className="acc-top-left">
+                        <span
+                          className={`acc-num-expanded acc-num-expanded-${i}`}
+                        >
+                          {ev.number}
+                        </span>
+                        <span className="acc-tag-expanded acc-tag-pill">
+                          {ev.tag}
+                        </span>
+                      </div>
+                      <button
+                        className="acc-close"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveIndex(null);
+                        }}
+                        aria-label="Close"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <h3 className="acc-title-big">{ev.title}</h3>
+                    <p className="acc-desc">{ev.description}</p>
+
+                    <div className="acc-details">
+                      {[
+                        ["Prize Pool", ev.prize],
+                        ["Entry Fee", ev.fee],
+                        ["Venue", ev.venue],
+                        ["Team Size", ev.team],
+                      ].map(([k, v]) => (
+                        <div key={k} className="acc-detail-row">
+                          <span className="acc-detail-key">{k}</span>
+                          <span className="acc-detail-val">{v}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <a href="#" className="acc-register-btn">
+                      Register Now →
+                    </a>
+                  </div>
+                </div>
+
+                {/* Hover shimmer layer */}
+                <div className="acc-shimmer" aria-hidden />
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Coming soon */}
+      {!isLive && <ComingSoonState />}
     </section>
   );
 }
