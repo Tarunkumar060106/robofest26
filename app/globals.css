@@ -1125,6 +1125,12 @@ body {
   cursor: url("/images/cursors/draggable.png"), grabbing !important;
 }
 
+/* Scrollbar dragging state - applied to body */
+body.scrollbar-dragging,
+body.scrollbar-dragging * {
+  cursor: url("/images/cursors/draggable.png"), grabbing !important;
+}
+
 /* Hide default scrollbar */
 ::-webkit-scrollbar {
   display: none;
