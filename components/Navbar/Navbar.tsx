@@ -81,7 +81,7 @@ export default function Navbar() {
           duration: 1.5,
           onStart: () => {
             menu.style.pointerEvents = "all";
-            menu.style.zIndex = "1";
+            menu.style.zIndex = "50";
           },
           onComplete: () => {
             isAnimating = false;
