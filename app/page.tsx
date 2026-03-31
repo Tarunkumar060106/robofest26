@@ -625,7 +625,8 @@ export default function Home() {
 
       const deltaY = e.clientY - startY;
       const trackHeight = track.clientHeight;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const maxThumbTop = trackHeight - scrollThumbHeight;
 
       if (maxThumbTop > 0) {
@@ -646,7 +647,8 @@ export default function Home() {
       const trackRect = track.getBoundingClientRect();
       const clickY = e.clientY - trackRect.top;
       const trackHeight = track.clientHeight;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
 
       const progress = Math.min(Math.max(clickY / trackHeight, 0), 1);
       window.scrollTo(0, progress * docHeight);
@@ -1150,6 +1152,7 @@ export default function Home() {
                     loop
                     playsInline
                     controls={false}
+                    autoPlay
                     onTimeUpdate={handleShowreelTimeUpdate}
                     onLoadedMetadata={handleShowreelLoadedMetadata}
                   />
@@ -1195,15 +1198,18 @@ export default function Home() {
                     <input
                       type="range"
                       min={0}
-                      max={showreelDuration}
+                      max={showreelDuration || 0}
                       step={0.01}
-                      value={showreelCurrentTime}
+                      value={
+                        Number.isFinite(showreelCurrentTime)
+                          ? showreelCurrentTime
+                          : 0
+                      }
                       onChange={handleShowreelScrub}
                       className="showreel-scrubber"
                       aria-label="Seek video"
                     />
                   </div>
-                  <div className="showreel-vignette" />
                 </div>
               </div>
             </div>
@@ -1214,11 +1220,11 @@ export default function Home() {
             <CountdownTimer targetDate={EVENT_DATE} />
           </section>
 
-          <EventsSection state="live" />
+          <EventsSection state="coming-soon" />
 
           <PatronsSection ref={patronsSectionRef} />
 
-          <SponsorsSection state="live" />
+          <SponsorsSection state="coming-soon" />
 
           {/* FAQ Section */}
           <FAQSection />

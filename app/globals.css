@@ -1,4 +1,8 @@
 ﻿/* Showreel video controls */
+.showreel-frame {
+  position: relative;
+}
+
 .showreel-controls {
   display: flex;
   align-items: center;
@@ -12,6 +16,15 @@
   border-radius: 0.75rem;
   padding: 0.5rem 1rem;
   backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.showreel-frame:hover .showreel-controls,
+.showreel-frame:focus-within .showreel-controls {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .showreel-playpause {
@@ -1304,7 +1317,9 @@ body {
   width: 6px;
   background: linear-gradient(180deg, #ff6b5b 0%, #ffb04d 50%, #ffc9e3 100%);
   border-radius: 10px;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
   cursor: url("/images/cursors/draggable.png"), grab !important;
   pointer-events: auto;
 }
