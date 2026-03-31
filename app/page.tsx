@@ -53,6 +53,7 @@ export default function Home() {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
   const [isHeroRevealed, setIsHeroRevealed] = useState(false);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const thumbRef = useRef<HTMLDivElement | null>(null);
   const ctaBarRef = useRef<HTMLDivElement | null>(null);
   const ctaInnerRef = useRef<HTMLDivElement | null>(null);
   const ctaAnimateRef = useRef<(compact: boolean) => void>(() => undefined);
@@ -509,6 +510,68 @@ export default function Home() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Scrollbar drag functionality
+  useEffect(() => {
+    const thumb = thumbRef.current;
+    const track = trackRef.current;
+    if (!thumb || !track) return;
+
+    let isDragging = false;
+    let startY = 0;
+    let startScrollTop = 0;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDragging = true;
+      startY = e.clientY;
+      startScrollTop = window.scrollY;
+      document.body.style.userSelect = "none";
+      e.preventDefault();
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+
+      const deltaY = e.clientY - startY;
+      const trackHeight = track.clientHeight;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const maxThumbTop = trackHeight - scrollThumbHeight;
+
+      if (maxThumbTop > 0) {
+        const scrollDelta = (deltaY / maxThumbTop) * docHeight;
+        window.scrollTo(0, startScrollTop + scrollDelta);
+      }
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+      document.body.style.userSelect = "";
+    };
+
+    const handleTrackClick = (e: MouseEvent) => {
+      if (e.target === thumb) return;
+
+      const trackRect = track.getBoundingClientRect();
+      const clickY = e.clientY - trackRect.top;
+      const trackHeight = track.clientHeight;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress = Math.min(Math.max(clickY / trackHeight, 0), 1);
+      window.scrollTo(0, progress * docHeight);
+    };
+
+    thumb.addEventListener("mousedown", handleMouseDown);
+    track.addEventListener("click", handleTrackClick);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      thumb.removeEventListener("mousedown", handleMouseDown);
+      track.removeEventListener("click", handleTrackClick);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [scrollThumbHeight]);
 
   useEffect(() => {
     if (!isPreloaderDone) {
@@ -1006,6 +1069,7 @@ export default function Home() {
         {/* Custom Scrollbar */}
         <div ref={trackRef} className="custom-scrollbar-track">
           <div
+            ref={thumbRef}
             className="custom-scrollbar-thumb"
             style={{
               height: `${scrollThumbHeight}px`,

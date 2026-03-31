@@ -1024,7 +1024,8 @@ body {
   overflow: hidden;
   backdrop-filter: blur(2px);
   z-index: 10;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: url("/images/cursors/draggable.png"), grab !important;
 }
 
 /* Custom cursor setup: add PNGs under public/images/cursors/ */
@@ -1086,33 +1087,42 @@ body {
   select,
   summary,
   .cursor-pointer,
-  [data-cursor="pointer"] {
-    cursor: var(--cursor-pointer);
+  [data-cursor="pointer"],
+  [class*="cursor-pointer"] {
+    cursor: var(--cursor-pointer) !important;
   }
 
   .draggable,
   [draggable="true"],
   [data-cursor="draggable"] {
-    cursor: var(--cursor-draggable);
+    cursor: var(--cursor-draggable) !important;
   }
 
   .draggable:active,
   [draggable="true"]:active,
   [data-cursor="draggable"]:active {
-    cursor: var(--cursor-grabbing);
+    cursor: var(--cursor-grabbing) !important;
   }
 }
 .custom-scrollbar-thumb {
   position: absolute;
   right: 1px;
   width: 6px;
-  background: red;
+  background: linear-gradient(180deg, #ff6b5b 0%, #ffb04d 50%, #ffc9e3 100%);
   border-radius: 10px;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: url("/images/cursors/draggable.png"), grab !important;
+  pointer-events: auto;
 }
 
 .custom-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #ff6b5b 0%, #ffb04d 50%, #ffc9e3 100%);
+  transform: scaleX(1.3);
+  cursor: url("/images/cursors/draggable.png"), grab !important;
+}
+
+.custom-scrollbar-thumb:active {
+  cursor: url("/images/cursors/draggable.png"), grabbing !important;
 }
 
 /* Hide default scrollbar */
