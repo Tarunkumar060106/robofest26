@@ -283,7 +283,7 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
           letter-spacing: 0.02em;
           font-weight: 600;
           font-size: 0.92rem;
-          cursor: pointer;
+          cursor: var(--cursor-pointer);
           transition:
             transform 0.2s ease,
             box-shadow 0.2s ease,

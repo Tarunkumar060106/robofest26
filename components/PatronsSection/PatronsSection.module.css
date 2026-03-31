@@ -151,7 +151,7 @@
     border-color 0.3s ease,
     background 0.3s ease,
     transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  cursor: default;
+  cursor: var(--cursor-default);
   will-change: transform;
 }
 

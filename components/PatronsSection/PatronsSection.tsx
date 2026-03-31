@@ -331,7 +331,6 @@ const PatronsSection = forwardRef<HTMLElement>((props, ref) => {
               background: "none",
               border: "none",
               color: "#f1f2f4",
-              cursor: "pointer",
               outline: "none",
               borderBottom:
                 openAccordion === "advisory"
@@ -380,7 +379,6 @@ const PatronsSection = forwardRef<HTMLElement>((props, ref) => {
               background: "none",
               border: "none",
               color: "#f1f2f4",
-              cursor: "pointer",
               outline: "none",
               borderBottom:
                 openAccordion === "organisers"
