@@ -466,6 +466,7 @@ body {
     transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 3;
   box-shadow: 0 16px 42px rgba(14, 16, 24, 0.2);
+  cursor: var(--cursor-pointer, pointer);
 }
 
 .cta-bar .cta-bar-inner {

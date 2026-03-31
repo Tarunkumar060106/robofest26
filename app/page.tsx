@@ -124,6 +124,19 @@ export default function Home() {
   const contactSectionRef = useRef<HTMLElement | null>(null);
   const scrollSectionRef = useRef<HTMLDivElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
+  const isCtaManuallyExpandedRef = useRef(false);
+
+  const handleCtaClick = () => {
+    if (isCtaCompactRef.current) {
+      // Currently compact → expand
+      isCtaManuallyExpandedRef.current = true;
+      ctaAnimateRef.current(false);
+    } else {
+      // Currently expanded → compact
+      isCtaManuallyExpandedRef.current = false;
+      ctaAnimateRef.current(true);
+    }
+  };
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -576,6 +589,14 @@ export default function Home() {
         ctaSetHiddenRef.current(shouldHideCta);
       }
 
+      const shouldCloseCta =
+        !isCtaManuallyExpandedRef.current &&
+        (menuOpenRef.current ||
+          isProbeInsideSection(sectionFourRef.current, probeY) ||
+          isProbeInsideSection(patronsSectionRef.current, probeY) ||
+          isProbeInsideSection(contactSectionRef.current, probeY));
+      ctaAnimateRef.current(shouldCloseCta);
+
       // Scrollbar thumb — always update regardless
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -843,7 +864,8 @@ export default function Home() {
           invalidateOnRefresh: true,
           onEnter: () => {
             isScrollSectionPinnedRef.current = true;
-            ctaAnimateRef.current(true); // 👈 collapse to compact pill
+            isCtaManuallyExpandedRef.current = false;
+            ctaAnimateRef.current(true);
           },
           onLeave: () => {
             isScrollSectionPinnedRef.current = false;
@@ -851,7 +873,8 @@ export default function Home() {
           },
           onEnterBack: () => {
             isScrollSectionPinnedRef.current = true;
-            ctaAnimateRef.current(true); // 👈 collapse again
+            isCtaManuallyExpandedRef.current = false;
+            ctaAnimateRef.current(true);
           },
           onLeaveBack: () => {
             isScrollSectionPinnedRef.current = false;
@@ -909,7 +932,7 @@ export default function Home() {
 
       <div className={`site-shell ${isPreloaderDone ? "is-ready" : ""}`}>
         {/* CTA Bar */}
-        <div ref={ctaBarRef} className="cta-bar">
+        <div ref={ctaBarRef} className="cta-bar" onClick={handleCtaClick}>
           <div ref={ctaInnerRef} className="cta-bar-inner">
             <svg
               width="36"
@@ -919,6 +942,7 @@ export default function Home() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               className="n_logo"
+              style={{ flexShrink: 0 }}
             >
               <g transform="translate(4.2 4.2) scale(0.76)">
                 <path

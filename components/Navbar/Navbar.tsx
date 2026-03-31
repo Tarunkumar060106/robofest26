@@ -14,10 +14,12 @@ export default function Navbar() {
     {
       src: "/images/srm-logo-white.svg",
       className: "nav-logo-image nav-logo-image-srm",
+      href: "https://www.srmist.edu.in",
     },
     {
       src: "/images/srm-logo-sports.svg",
       className: "nav-logo-image nav-logo-image-sports",
+      href: "https://www.srmist.edu.in/sports/",
     },
   ] as const;
 
@@ -178,10 +180,14 @@ export default function Navbar() {
     <nav className="navbar">
       {/* Logo */}
       <div className="nav-logo">
-        <a href="#home">
+        <a
+          href={logos[currentImage].href}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Image
             src={logos[currentImage].src}
-            alt="Blush and Hush Logo"
+            alt=""
             width={150}
             height={50}
             className={logos[currentImage].className}
@@ -206,7 +212,11 @@ export default function Navbar() {
       <div className="menu">
         <div className="col col-1">
           <div className="menu-logo">
-            <a href="#home">
+            <a
+              href={logos[currentImage].href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Image
                 src={logos[currentImage].src}
                 alt=""
