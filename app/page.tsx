@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import Lenis from "lenis";
 import Script from "next/script";
 import EventsSection from "@/components/EventsSection/EventsSection";
+import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -928,16 +929,8 @@ export default function Home() {
               </p>
             </div>
           </section>
-          <section className="full-screen-section w-full flex items-center justify-center bg-gradient-to-br from-yellow-50 to-yellow-100">
-            <div className="text-center">
-              <h2 className="text-5xl font-bold text-yellow-900 mb-4">
-                Sponsors
-              </h2>
-              <p className="text-xl text-yellow-700">
-                This is a dummy section for Sponsors.
-              </p>
-            </div>
-          </section>
+
+          <SponsorsSection state="coming-soon" />
 
           {/* FAQ Section */}
           <section className="full-screen-section w-full flex flex-col items-center justify-center bg-purple-50">
