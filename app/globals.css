@@ -1,4 +1,48 @@
-﻿/* Bento Accent Blue */
+﻿/* Showreel video controls */
+.showreel-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.32);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.showreel-playpause {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.showreel-playpause svg {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+}
+
+.showreel-scrubber {
+  flex: 1;
+  accent-color: #fff;
+  height: 0.5rem;
+  background: transparent;
+  border-radius: 0.25rem;
+  outline: none;
+  margin-left: 1rem;
+}
+/* Bento Accent Blue */
 .bento-accent-blue {
   background: linear-gradient(135deg, #3a8dde 0%, #5ec6fa 100%);
   color: #fff;
@@ -584,6 +628,156 @@ body {
   flex-direction: row;
   align-items: center;
   overflow: hidden;
+}
+
+.lookback-card {
+  width: clamp(260px, 34vw, 480px);
+  aspect-ratio: 3 / 4;
+  flex-shrink: 0;
+  perspective: 900px;
+  cursor: pointer;
+}
+
+.lookback-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform-style: preserve-3d;
+  transition:
+    transform 0.1s ease-out,
+    box-shadow 0.3s ease;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  will-change: transform;
+}
+
+.lookback-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.lookback-card:hover .lookback-card-img {
+  transform: scale(1.06);
+}
+
+.lookback-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 10, 0.88) 0%,
+    rgba(10, 10, 10, 0.2) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.lookback-card-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.3s ease;
+}
+
+.lookback-card:hover .lookback-card-badge {
+  background: rgba(220, 73, 58, 0.18);
+  border-color: rgba(220, 73, 58, 0.3);
+}
+
+.lookback-card-badge-year {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #f1f2f4;
+  line-height: 1;
+}
+
+.lookback-card-badge-label {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(241, 242, 244, 0.45);
+}
+
+.lookback-card-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transform: translateY(6px);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lookback-card:hover .lookback-card-footer {
+  transform: translateY(0);
+}
+
+.lookback-card-title {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 800;
+  color: #f1f2f4;
+  margin: 0;
+  line-height: 1;
+}
+
+.lookback-card-sub {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: 13px;
+  color: rgba(241, 242, 244, 0.5);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.lookback-card:hover .lookback-card-sub {
+  color: rgba(241, 242, 244, 0.75);
+}
+
+/* Shine sweep on hover */
+.lookback-card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  transform: translateX(-100%);
+}
+
+.lookback-card:hover .lookback-card-shine {
+  opacity: 1;
+  transform: translateX(100%);
+  transition:
+    opacity 0.3s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .lookback-content {

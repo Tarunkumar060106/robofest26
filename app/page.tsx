@@ -1,7 +1,7 @@
 "use client";
 import CardFlip from "../components/CardFlip";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,6 +15,7 @@ import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 import FAQSection from "@/components/FaqSection/FaqSection";
 import PatronsSection from "@/components/PatronsSection/PatronsSection";
 import ContactSection from "@/components/ContactSection/ContactSection";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -45,6 +46,59 @@ function getLoadingText(progress: number) {
 }
 
 export default function Home() {
+  // Showreel video controls state
+  const showreelVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [isShowreelPlaying, setIsShowreelPlaying] = useState(false);
+  const [showreelCurrentTime, setShowreelCurrentTime] = useState(0);
+  const [showreelDuration, setShowreelDuration] = useState(0);
+
+  // Play/pause toggle handler
+  const toggleShowreelPlay = () => {
+    const video = showreelVideoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  };
+
+  // Update play state on play/pause events
+  useEffect(() => {
+    const video = showreelVideoRef.current;
+    if (!video) return;
+    const handlePlay = () => setIsShowreelPlaying(true);
+    const handlePause = () => setIsShowreelPlaying(false);
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
+    return () => {
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+    };
+  }, []);
+
+  // Scrubber/time update handler
+  const handleShowreelTimeUpdate = (
+    e: React.SyntheticEvent<HTMLVideoElement>,
+  ) => {
+    setShowreelCurrentTime(e.currentTarget.currentTime);
+  };
+
+  // Metadata loaded handler (for duration)
+  const handleShowreelLoadedMetadata = (
+    e: React.SyntheticEvent<HTMLVideoElement>,
+  ) => {
+    setShowreelDuration(e.currentTarget.duration || 0);
+  };
+
+  // Scrub (seek) handler
+  const handleShowreelScrub = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const video = showreelVideoRef.current;
+    if (!video) return;
+    const time = parseFloat(e.target.value);
+    video.currentTime = time;
+    setShowreelCurrentTime(time);
+  };
   const [daysLeft, setDaysLeft] = useState<number>(getDaysLeft());
   const [scrollThumbHeight, setScrollThumbHeight] = useState(80);
   const [scrollThumbTop, setScrollThumbTop] = useState(0);
@@ -308,6 +362,42 @@ export default function Home() {
     }, 50);
 
     return () => window.clearTimeout(revealTimeout);
+  }, [isPreloaderDone]);
+
+  useEffect(() => {
+    const card = document.querySelector<HTMLElement>(".lookback-card");
+    const inner = document.querySelector<HTMLElement>(".lookback-card-inner");
+    if (!card || !inner) return;
+
+    const handleMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to(inner, {
+        rotateY: x * 18,
+        rotateX: -y * 18,
+        duration: 0.4,
+        ease: "power2.out",
+        transformPerspective: 900,
+      });
+    };
+
+    const handleLeave = () => {
+      gsap.to(inner, {
+        rotateY: 0,
+        rotateX: 0,
+        duration: 0.7,
+        ease: "power3.out",
+      });
+    };
+
+    card.addEventListener("mousemove", handleMove);
+    card.addEventListener("mouseleave", handleLeave);
+
+    return () => {
+      card.removeEventListener("mousemove", handleMove);
+      card.removeEventListener("mouseleave", handleLeave);
+    };
   }, [isPreloaderDone]);
 
   useEffect(() => {
@@ -921,10 +1011,26 @@ export default function Home() {
                     Unforgettable machines.
                   </p>
                 </div>
-                <div className="lookback-deco">
-                  <div className="lookback-ring lookback-ring--1" />
-                  <div className="lookback-ring lookback-ring--2" />
-                  <div className="lookback-year">2025</div>
+
+                {/* Replace the old lookback-deco with this */}
+                <div className="lookback-card">
+                  <div className="lookback-card-inner">
+                    <img
+                      src="/images/gallery/rf-img-1.svg"
+                      alt="Robofest 2025"
+                      className="lookback-card-img"
+                    />
+                    <div className="lookback-card-overlay" />
+                    <div className="lookback-card-badge">
+                      <span className="lookback-card-badge-year">2025</span>
+                      <span className="lookback-card-badge-label">Edition</span>
+                    </div>
+                    <div className="lookback-card-footer">
+                      <p className="lookback-card-title">Robofest 2025</p>
+                      <p className="lookback-card-sub">SRM Kattankulathur</p>
+                    </div>
+                    <div className="lookback-card-shine" />
+                  </div>
                 </div>
               </div>
 
@@ -1037,13 +1143,66 @@ export default function Home() {
                 </div>
                 <div className="showreel-frame">
                   <video
+                    ref={showreelVideoRef}
                     className="showreel-video"
                     src="/video/rf-showreel.mp4"
-                    autoPlay
                     muted
                     loop
                     playsInline
+                    controls={false}
+                    onTimeUpdate={handleShowreelTimeUpdate}
+                    onLoadedMetadata={handleShowreelLoadedMetadata}
                   />
+                  <div className="showreel-controls">
+                    <button
+                      className="showreel-playpause"
+                      onClick={toggleShowreelPlay}
+                      aria-label={isShowreelPlaying ? "Pause" : "Play"}
+                    >
+                      {isShowreelPlaying ? (
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <rect
+                            x="5"
+                            y="4"
+                            width="4"
+                            height="16"
+                            fill="white"
+                          />
+                          <rect
+                            x="15"
+                            y="4"
+                            width="4"
+                            height="16"
+                            fill="white"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <polygon points="5,4 19,12 5,20" fill="white" />
+                        </svg>
+                      )}
+                    </button>
+                    <input
+                      type="range"
+                      min={0}
+                      max={showreelDuration}
+                      step={0.01}
+                      value={showreelCurrentTime}
+                      onChange={handleShowreelScrub}
+                      className="showreel-scrubber"
+                      aria-label="Seek video"
+                    />
+                  </div>
                   <div className="showreel-vignette" />
                 </div>
               </div>
@@ -1055,11 +1214,11 @@ export default function Home() {
             <CountdownTimer targetDate={EVENT_DATE} />
           </section>
 
-          <EventsSection state="coming-soon" />
+          <EventsSection state="live" />
 
           <PatronsSection ref={patronsSectionRef} />
 
-          <SponsorsSection state="coming-soon" />
+          <SponsorsSection state="live" />
 
           {/* FAQ Section */}
           <FAQSection />
