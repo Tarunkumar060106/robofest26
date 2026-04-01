@@ -1073,7 +1073,7 @@ export default function Home() {
                   <div className="bento-card bento-dark bento-tall">
                     <span className="bento-label">Footfall</span>
                     <p className="bento-stat">
-                      5,000<span className="bento-plus">+</span>
+                      400<span className="bento-plus">+</span>
                     </p>
                     <p className="bento-sub">attendees in 2025</p>
                     <div className="bento-orb bento-orb--red" />
@@ -1082,9 +1082,9 @@ export default function Home() {
                   <div className="bento-card bento-accent-yellow">
                     <span className="bento-label">Teams</span>
                     <p className="bento-stat">
-                      120<span className="bento-plus">+</span>
+                      170<span className="bento-plus">+</span>
                     </p>
-                    <p className="bento-sub">from 30+ schools</p>
+                    <p className="bento-sub">from 40+ schools</p>
                   </div>
 
                   <div className="bento-card bento-dark">
