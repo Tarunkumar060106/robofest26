@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -162,13 +162,15 @@ function ComingSoonState() {
 }
 
 // ── Main export ───────────────────────────────────────────
-export default function EventsSection({ state = "live" }: EventsSectionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const eyebrowRef = useRef<HTMLSpanElement>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const isLive = state === "live";
+const EventsSection = forwardRef<HTMLElement, EventsSectionProps>(
+  ({ state = "live" }, ref) => {
+    const internalRef = useRef<HTMLElement>(null);
+    const sectionRef = (ref as React.RefObject<HTMLElement>) || internalRef;
+    const headingRef = useRef<HTMLHeadingElement>(null);
+    const eyebrowRef = useRef<HTMLSpanElement>(null);
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const isLive = state === "live";
 
   // ── GSAP entrance ──
   useEffect(() => {
@@ -390,4 +392,6 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
       {!isLive && <ComingSoonState />}
     </section>
   );
-}
+});
+
+export default EventsSection;

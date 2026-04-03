@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -37,8 +37,9 @@ const FAQS = [
   },
 ];
 
-export default function FAQSection() {
-  const sectionRef = useRef<HTMLElement>(null);
+const FAQSection = forwardRef<HTMLElement>((props, ref) => {
+  const internalRef = useRef<HTMLElement>(null);
+  const sectionRef = (ref as React.RefObject<HTMLElement>) || internalRef;
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -179,4 +180,8 @@ export default function FAQSection() {
       </div>
     </section>
   );
-}
+});
+
+FAQSection.displayName = "FAQSection";
+
+export default FAQSection;

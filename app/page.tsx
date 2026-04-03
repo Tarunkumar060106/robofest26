@@ -53,6 +53,8 @@ export default function Home() {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
   const [isHeroRevealed, setIsHeroRevealed] = useState(false);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const thumbRef = useRef<HTMLDivElement | null>(null);
+  const heroLogoContainerRef = useRef<HTMLDivElement | null>(null);
   const ctaBarRef = useRef<HTMLDivElement | null>(null);
   const ctaInnerRef = useRef<HTMLDivElement | null>(null);
   const ctaAnimateRef = useRef<(compact: boolean) => void>(() => undefined);
@@ -68,6 +70,9 @@ export default function Home() {
   const patronsSectionRef = useRef<HTMLElement | null>(null);
   const contactSectionRef = useRef<HTMLElement | null>(null);
   const scrollSectionRef = useRef<HTMLDivElement | null>(null);
+  const bentoSlideRef = useRef<HTMLDivElement | null>(null);
+  const eventsSectionRef = useRef<HTMLElement | null>(null);
+  const faqSectionRef = useRef<HTMLElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -472,6 +477,26 @@ export default function Home() {
       ctaBarRef.current?.classList.toggle("is-visible", pastHero);
       const probeY = scrollTop + window.innerHeight * 0.5;
 
+      // 🎨 Check if CTA bar is over beige background sections
+      const ctaBarEl = ctaBarRef.current;
+      const ctaInnerEl = ctaInnerRef.current;
+      if (ctaBarEl && ctaInnerEl) {
+        const ctaRect = ctaBarEl.getBoundingClientRect();
+        const ctaBottomY = scrollTop + ctaRect.bottom;
+        
+        // Check if CTA is overlapping any beige section (Pick Your Arena, FAQ)
+        const isOverBeige = [eventsSectionRef.current, faqSectionRef.current]
+          .some(sectionEl => {
+            if (!sectionEl) return false;
+            const sectionTop = sectionEl.offsetTop;
+            const sectionBottom = sectionTop + sectionEl.offsetHeight;
+            // CTA bar is over the section if its bottom is within the section bounds
+            return ctaBottomY >= sectionTop && ctaBottomY <= sectionBottom;
+          });
+        
+        ctaInnerEl.classList.toggle("dark-text", isOverBeige);
+      }
+
       // 👇 If scroll section is pinned, it controls the CTA — don't touch it
       if (!isScrollSectionPinnedRef.current) {
         const shouldCloseCta =
@@ -508,6 +533,207 @@ export default function Home() {
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Gyro effect for hero logo container - tilt based on mouse position
+  useEffect(() => {
+    const container = heroLogoContainerRef.current;
+    if (!container) return;
+
+    let animationFrameId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // Cancel any pending animation frame
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+
+      animationFrameId = requestAnimationFrame(() => {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        // Calculate distance from center
+        const deltaX = e.clientX - centerX;
+        const deltaY = e.clientY - centerY;
+        
+        // Check if mouse is within or near the container (larger detection area)
+        const padding = 300;
+        const isNear = 
+          e.clientX >= rect.left - padding &&
+          e.clientX <= rect.right + padding &&
+          e.clientY >= rect.top - padding &&
+          e.clientY <= rect.bottom + padding;
+
+        const logo = container.querySelector('.hero-logo') as HTMLElement;
+        const gears = container.querySelectorAll('.hero-gear') as NodeListOf<HTMLElement>;
+        const ball = container.querySelector('.hero-metallic-ball') as HTMLElement;
+
+        if (isNear) {
+          // More pronounced rotation and translation for noticeable effect
+          const maxRotate = 20;
+          const maxTranslate = 25;
+          
+          const normalizedX = deltaX / (rect.width / 2 + padding);
+          const normalizedY = deltaY / (rect.height / 2 + padding);
+          
+          const rotateY = normalizedX * maxRotate;
+          const rotateX = -normalizedY * maxRotate;
+          const translateX = normalizedX * maxTranslate;
+          const translateY = normalizedY * maxTranslate;
+          
+          if (logo) {
+            logo.style.transform = `
+              perspective(1000px)
+              translateX(${translateX}px) 
+              translateY(${translateY}px) 
+              translateZ(50px)
+              rotateX(${rotateX}deg) 
+              rotateY(${rotateY}deg)
+              scale(1.02)
+            `;
+          }
+          
+          // Gears move in opposite direction for parallax depth
+          gears.forEach((gear) => {
+            const isLeft = gear.classList.contains('hero-gear-left');
+            const gearTranslateX = -translateX * 0.5;
+            const gearTranslateY = -translateY * 0.3;
+            gear.style.transform = `
+              translateY(-50%) 
+              translateX(${gearTranslateX}px)
+              translateZ(30px)
+              rotateX(${rotateX * 0.5}deg) 
+              rotateY(${rotateY * 0.5}deg)
+            `;
+          });
+          
+          if (ball) {
+            // Ball moves more dramatically
+            ball.style.transform = `
+              translateX(${translateX * 1.5}px)
+              translateY(${translateY * 1.5}px)
+              translateZ(40px)
+              rotateX(${rotateX * 0.8}deg) 
+              rotateY(${rotateY * 0.8}deg)
+              scale(1.1)
+            `;
+          }
+        } else {
+          // Smoothly reset when mouse moves away
+          if (logo) logo.style.transform = '';
+          gears.forEach((gear) => { gear.style.transform = ''; });
+          if (ball) ball.style.transform = '';
+        }
+      });
+    };
+
+    const handleMouseLeave = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      
+      // Reset all transforms when mouse leaves
+      const logo = container.querySelector('.hero-logo') as HTMLElement;
+      const gears = container.querySelectorAll('.hero-gear') as NodeListOf<HTMLElement>;
+      const ball = container.querySelector('.hero-metallic-ball') as HTMLElement;
+      
+      if (logo) logo.style.transform = '';
+      gears.forEach((gear) => { gear.style.transform = ''; });
+      if (ball) ball.style.transform = '';
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      window.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
+  // Custom scrollbar drag functionality
+  useEffect(() => {
+    const track = trackRef.current;
+    const thumb = thumbRef.current;
+    if (!track || !thumb) return;
+
+    let isDragging = false;
+    let startY = 0;
+    let startScrollTop = 0;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDragging = true;
+      startY = e.clientY;
+      startScrollTop = window.scrollY;
+      
+      thumb.classList.add('dragging');
+      track.classList.add('dragging');
+      document.body.style.userSelect = 'none';
+      
+      e.preventDefault();
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      
+      const trackHeight = track.clientHeight;
+      const thumbHeight = thumb.clientHeight;
+      const maxThumbTop = trackHeight - thumbHeight;
+      
+      const deltaY = e.clientY - startY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      
+      // Calculate scroll position based on thumb movement
+      const scrollDelta = (deltaY / maxThumbTop) * docHeight;
+      const newScrollTop = Math.max(0, Math.min(docHeight, startScrollTop + scrollDelta));
+      
+      window.scrollTo(0, newScrollTop);
+    };
+
+    const handleMouseUp = () => {
+      if (isDragging) {
+        isDragging = false;
+        thumb.classList.remove('dragging');
+        track.classList.remove('dragging');
+        document.body.style.userSelect = '';
+      }
+    };
+
+    // Click on track to jump to position
+    const handleTrackClick = (e: MouseEvent) => {
+      if (e.target === thumb) return;
+      
+      const trackRect = track.getBoundingClientRect();
+      const clickY = e.clientY - trackRect.top;
+      const trackHeight = track.clientHeight;
+      const thumbHeight = thumb.clientHeight;
+      
+      // Center the thumb on click position
+      const targetThumbTop = clickY - thumbHeight / 2;
+      const maxThumbTop = trackHeight - thumbHeight;
+      const progress = Math.max(0, Math.min(1, targetThumbTop / maxThumbTop));
+      
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const newScrollTop = progress * docHeight;
+      
+      window.scrollTo({ top: newScrollTop, behavior: 'smooth' });
+    };
+
+    thumb.addEventListener('mousedown', handleMouseDown);
+    track.addEventListener('click', handleTrackClick);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      thumb.removeEventListener('mousedown', handleMouseDown);
+      track.removeEventListener('click', handleTrackClick);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
   }, []);
 
   useEffect(() => {
@@ -815,7 +1041,7 @@ export default function Home() {
 
             {/* Content Layer - Add your components here */}
             <div className="hero-content">
-              <div className="hero-logo-container">
+              <div ref={heroLogoContainerRef} className="hero-logo-container">
                 {/* Left Gear */}
                 <img 
                   src="/images/RF-gear-left.svg" 
@@ -874,7 +1100,7 @@ export default function Home() {
               </div>
 
               {/* ── SECTION 2 — Bento stats grid ── */}
-              <div className="scroll-section bento-slide">
+              <div ref={bentoSlideRef} className="scroll-section bento-slide">
                 <div className="bento-grid">
                   <div className="bento-card bento-accent-blue">
                     <span className="bento-label">States</span>
@@ -1000,14 +1226,14 @@ export default function Home() {
             <CountdownTimer targetDate={EVENT_DATE} />
           </section>
 
-          <EventsSection state="coming-soon" />
+          <EventsSection ref={eventsSectionRef} state="coming-soon" />
 
           <PatronsSection ref={patronsSectionRef} />
 
           <SponsorsSection state="coming-soon" />
 
           {/* FAQ Section */}
-          <FAQSection />
+          <FAQSection ref={faqSectionRef} />
 
           {/* Contact Section */}
           <ContactSection ref={contactSectionRef} />
@@ -1016,6 +1242,7 @@ export default function Home() {
         {/* Custom Scrollbar */}
         <div ref={trackRef} className="custom-scrollbar-track">
           <div
+            ref={thumbRef}
             className="custom-scrollbar-thumb"
             style={{
               height: `${scrollThumbHeight}px`,
