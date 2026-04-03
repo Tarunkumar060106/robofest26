@@ -714,15 +714,6 @@ export default function Home() {
 
   return (
     <>
-      {isHeroRevealed ? (
-        <Script
-          id="hero-sample-animation"
-          src="/scripts/hero.js"
-          strategy="afterInteractive"
-          type="module"
-        />
-      ) : null}
-
       <div
         className={`site-preloader ${isPreloaderDone ? "is-hidden" : ""}`}
         aria-hidden={isPreloaderDone}
@@ -750,10 +741,24 @@ export default function Home() {
 
       <Navbar />
 
+      {/* SVG Filter for Fluid Glass Effect */}
+      <svg style={{ position: 'absolute', width: 0, height: 0, pointerEvents: 'none' }} aria-hidden="true">
+        <defs>
+          <filter id="frosted-glass" primitiveUnits="objectBoundingBox">
+            <feImage 
+              href="data:image/png;base64,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" 
+              x="0" y="0" width="1" height="1" result="map"
+            />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.012" result="blur"/>
+            <feDisplacementMap in="blur" in2="map" scale="1" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+        </defs>
+      </svg>
+
       <div className={`site-shell ${isPreloaderDone ? "is-ready" : ""}`}>
         {/* CTA Bar */}
         <div ref={ctaBarRef} className="cta-bar">
-          <div ref={ctaInnerRef} className="cta-bar-inner">
+          <div ref={ctaInnerRef} className="cta-bar-inner fluid-glass-capsule">
             <svg
               width="36"
               height="36"
@@ -771,7 +776,7 @@ export default function Home() {
               </g>
             </svg>
             {/* <p className="text-enterance">SRMIST&apos;s Flagship Robotics Event</p> */}
-            <h2 className="italic" data-cta-content>
+            <h2 className="italic cta-title-neon" data-cta-content>
               ROBOFEST
             </h2>
             <p className="p_small" data-cta-content>
@@ -793,48 +798,53 @@ export default function Home() {
             ref={heroSectionRef}
             className={`hero-section ${isHeroRevealed ? "is-visible" : ""}`}
           >
-            <div className="hero-header">
-              <h1>ROBOFEST 2.0</h1>
-              <p>In collaboration with</p>
-              <h3>SRM Directorate of Sports</h3>
+            {/* Video Background with Blur */}
+            <div className="hero-video-wrapper">
+              <video
+                className="hero-video"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+              >
+                <source src="/video/Robofest_hero.mp4" type="video/mp4" />
+              </video>
+              <div className="hero-video-blur-overlay" />
             </div>
 
-            <div className="animated-icons">
-              <div className="animated-icon icon-1">
-                <img src="/images/hero-svgs/gear.svg" alt="Robot 1" />
-              </div>
-              <div className="animated-icon icon-2">
-                <img src="/images/hero-svgs/robo.svg" alt="Robot 1" />
-              </div>
-              <div className="animated-icon icon-3">
-                <img src="/images/hero-svgs/microchip.svg" alt="Robot 1" />
-              </div>
-              <div className="animated-icon icon-4">
-                <img src="/images/hero-svgs/rocket.svg" alt="Robot 1" />
-              </div>
-              <div className="animated-icon icon-5">
-                <img src="/images/hero-svgs/wrench.svg" alt="Robot 1" />
+            {/* Content Layer - Add your components here */}
+            <div className="hero-content">
+              <div className="hero-logo-container">
+                {/* Left Gear */}
+                <img 
+                  src="/images/RF-gear-left.svg" 
+                  alt="Gear Left" 
+                  className="hero-gear hero-gear-left"
+                />
+                
+                {/* Center Logo */}
+                <img 
+                  src="/images/hero-r-logo.png" 
+                  alt="Robofest Logo" 
+                  className="hero-logo"
+                />
+                
+                {/* Right Gear */}
+                <img 
+                  src="/images/RF-gear-right.svg" 
+                  alt="Gear Right" 
+                  className="hero-gear hero-gear-right"
+                />
+                
+                {/* Metallic Ball */}
+                <img 
+                  src="/images/RF-metallicball.svg" 
+                  alt="Metallic Ball" 
+                  className="hero-metallic-ball"
+                />
               </div>
             </div>
-
-            <h1 className="animated-text">
-              <div className="placeholder-icon"></div>
-              <span className="text-segment">Build the future</span>
-
-              <div className="placeholder-icon"></div>
-              <span className="text-segment">compete with precision.</span>
-
-              <span className="text-segment">Push your limits </span>
-
-              <div className="placeholder-icon"></div>
-              <span className="text-segment">in robotics</span>
-
-              <div className="placeholder-icon"></div>
-              <span className="text-segment">innovation and speed</span>
-
-              <div className="placeholder-icon"></div>
-              <span className="text-segment">at Robofest.</span>
-            </h1>
           </section>
 
           <section ref={triggerRef} className="scroll-section-outer">
