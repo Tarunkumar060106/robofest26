@@ -159,6 +159,71 @@
   box-sizing: border-box;
 }
 
+.paarivendharGlow {
+  position: relative;
+  overflow: hidden;
+  border-color: transparent;
+  background:
+    linear-gradient(#141414, #141414) padding-box,
+    linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.95),
+        rgba(187, 6, 6, 0.96),
+        rgba(255, 255, 255, 0.92),
+        rgba(146, 0, 0, 0.98),
+        rgba(255, 255, 255, 0.95)
+      )
+      border-box;
+  isolation: isolate;
+}
+
+.paarivendharGlow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(176, 5, 5, 0.98),
+    rgba(255, 255, 255, 0.92),
+    rgba(140, 0, 0, 1),
+    rgba(255, 255, 255, 0.98)
+  );
+  background-size: 300% 100%;
+  pointer-events: none;
+  z-index: 0;
+  animation: paarivendhar-card-ring-flow 4.2s linear infinite;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.paarivendharGlow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 0 20px rgba(188, 6, 6, 0.28),
+    0 0 32px rgba(255, 255, 255, 0.14);
+  pointer-events: none;
+  z-index: 0;
+  animation: paarivendhar-card-ring-pulse 2.6s ease-in-out infinite;
+}
+
+.paarivendharGlow > * {
+  position: relative;
+  z-index: 1;
+}
+
 .personCard:hover {
   border-color: rgba(175, 0, 0, 0.35);
   background: #1a1010;
@@ -177,11 +242,33 @@
 .personImgWrap {
   width: 96px;
   height: 96px;
+  position: relative;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid rgba(175, 0, 0, 0.4);
   margin-bottom: 1.2rem;
   flex-shrink: 0;
+}
+
+@keyframes paarivendhar-card-ring-spin {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes paarivendhar-card-ring-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
 }
 
 .card--lg .personImgWrap {

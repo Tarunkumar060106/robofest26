@@ -28,6 +28,9 @@ const PRELOADER_FRAMES = [
 const PRELOADER_MIN_DURATION_MS = 4200;
 const PRELOADER_TICK_MS = 90;
 const PRELOADER_EXIT_DELAY_MS = 360;
+const SECTION_SNAP_THRESHOLD_PX = 240;
+const SECTION_SNAP_COOLDOWN_MS = 380;
+const SECTION_SNAP_SETTLE_MS = 0;
 
 function getDaysLeft() {
   const now = new Date();
@@ -71,6 +74,17 @@ export default function Home() {
     const handlePause = () => setIsShowreelPlaying(false);
     video.addEventListener("play", handlePlay);
     video.addEventListener("pause", handlePause);
+
+    const frame = document.querySelector<HTMLElement>(".showreel-frame");
+    const label = document.createElement("div");
+    label.className = "showreel-cursor-label"; // position:fixed, pointer-events:none
+    document.body.appendChild(label);
+    frame?.addEventListener("mousemove", (e: MouseEvent) => {
+      label.style.left = e.clientX + 12 + "px";
+      label.style.top = e.clientY + 12 + "px";
+    });
+    frame?.addEventListener("mouseenter", () => (label.style.opacity = "1"));
+    frame?.addEventListener("mouseleave", () => (label.style.opacity = "0"));
     return () => {
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
@@ -125,6 +139,8 @@ export default function Home() {
   const scrollSectionRef = useRef<HTMLDivElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
   const isCtaManuallyExpandedRef = useRef(false);
+  const lenisRef = useRef<Lenis | null>(null);
+  const isSnappingRef = useRef(false);
 
   const handleCtaClick = () => {
     if (isCtaCompactRef.current) {
@@ -155,6 +171,7 @@ export default function Home() {
       syncTouch: true,
       touchMultiplier: 1.1,
     });
+    lenisRef.current = lenis;
 
     // 🔥 IMPORTANT: Sync Lenis with GSAP ticker
     const raf = (time: number) => {
@@ -192,11 +209,122 @@ export default function Home() {
     }, 100);
 
     return () => {
+      lenisRef.current = null;
       gsap.ticker.remove(raf);
       lenis.off("scroll", ScrollTrigger.update);
       lenis.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    if (!isPreloaderDone) {
+      return;
+    }
+
+    let settleTimeoutId: number | null = null;
+    let unlockTimeoutId: number | null = null;
+    let lastSnapAt = 0;
+
+    const getSnapSections = () => {
+      const mainEl = document.querySelector("main");
+      if (!mainEl) {
+        return [] as HTMLElement[];
+      }
+
+      return Array.from(
+        mainEl.querySelectorAll<HTMLElement>(":scope > section"),
+      );
+    };
+
+    const unlockSnap = () => {
+      isSnappingRef.current = false;
+      if (unlockTimeoutId !== null) {
+        window.clearTimeout(unlockTimeoutId);
+        unlockTimeoutId = null;
+      }
+    };
+
+    const snapToNearestSection = () => {
+      if (isSnappingRef.current || isScrollSectionPinnedRef.current) {
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastSnapAt < SECTION_SNAP_COOLDOWN_MS) {
+        return;
+      }
+
+      const scrollY = window.scrollY;
+      const sections = getSnapSections();
+      if (!sections.length) {
+        return;
+      }
+
+      let nearestTop = sections[0].offsetTop;
+      let nearestDistance = Math.abs(nearestTop - scrollY);
+
+      for (let i = 1; i < sections.length; i += 1) {
+        const candidateTop = sections[i].offsetTop;
+        const candidateDistance = Math.abs(candidateTop - scrollY);
+        if (candidateDistance < nearestDistance) {
+          nearestTop = candidateTop;
+          nearestDistance = candidateDistance;
+        }
+      }
+
+      if (nearestDistance > SECTION_SNAP_THRESHOLD_PX || nearestDistance < 4) {
+        return;
+      }
+
+      isSnappingRef.current = true;
+      lastSnapAt = now;
+
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(nearestTop, { duration: 0.45 });
+      } else {
+        window.scrollTo({ top: nearestTop, behavior: "smooth" });
+      }
+
+      unlockTimeoutId = window.setTimeout(() => {
+        isSnappingRef.current = false;
+      }, 520);
+    };
+
+    const handleScrollSettle = () => {
+      if (isSnappingRef.current) {
+        return;
+      }
+
+      if (SECTION_SNAP_SETTLE_MS <= 0) {
+        snapToNearestSection();
+        return;
+      }
+
+      if (settleTimeoutId !== null) {
+        window.clearTimeout(settleTimeoutId);
+      }
+
+      settleTimeoutId = window.setTimeout(() => {
+        snapToNearestSection();
+      }, SECTION_SNAP_SETTLE_MS);
+    };
+
+    const handleLenisScroll = () => {
+      handleScrollSettle();
+    };
+
+    window.addEventListener("scroll", handleScrollSettle, { passive: true });
+    lenisRef.current?.on("scroll", handleLenisScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollSettle);
+      lenisRef.current?.off("scroll", handleLenisScroll);
+      if (settleTimeoutId !== null) {
+        window.clearTimeout(settleTimeoutId);
+      }
+      unlockSnap();
+    };
+  }, [isPreloaderDone]);
 
   // Listen for menu open/close events from Navbar
   useEffect(() => {
@@ -212,8 +340,10 @@ export default function Home() {
         const scrollTop = window.scrollY;
         const heroBottom =
           heroSectionRef.current?.offsetHeight ?? window.innerHeight;
+        const pastHero = scrollTop >= heroBottom * 0.85;
         const probeY = scrollTop + window.innerHeight * 0.5;
         const shouldCloseCta =
+          pastHero ||
           menuOpenRef.current ||
           !!(
             sectionFourRef.current &&
@@ -538,7 +668,7 @@ export default function Home() {
       heroSectionRef.current?.offsetHeight ?? window.innerHeight;
     const alreadyPastHero = window.scrollY >= heroBottom;
     ctaBarRef.current?.classList.toggle("is-visible", alreadyPastHero);
-    ctaAnimateRef.current(alreadyPastHero ? false : true);
+    ctaAnimateRef.current(alreadyPastHero ? true : false);
 
     const initialProbeY = window.scrollY + window.innerHeight * 0.5;
     ctaSetHiddenRef.current(
@@ -579,6 +709,7 @@ export default function Home() {
       // 👇 If scroll section is pinned, it controls the CTA — don't touch it
       if (!isScrollSectionPinnedRef.current) {
         const shouldCloseCta =
+          pastHero ||
           menuOpenRef.current ||
           isProbeInsideSection(sectionFourRef.current, probeY) ||
           isProbeInsideSection(patronsSectionRef.current, probeY) ||
@@ -591,7 +722,8 @@ export default function Home() {
 
       const shouldCloseCta =
         !isCtaManuallyExpandedRef.current &&
-        (menuOpenRef.current ||
+        (pastHero ||
+          menuOpenRef.current ||
           isProbeInsideSection(sectionFourRef.current, probeY) ||
           isProbeInsideSection(patronsSectionRef.current, probeY) ||
           isProbeInsideSection(contactSectionRef.current, probeY));
@@ -883,6 +1015,38 @@ export default function Home() {
         },
       });
 
+      const bentoStats = document.querySelectorAll<HTMLElement>(".bento-stat");
+      bentoStats.forEach((el) => {
+        const raw = el.querySelector(".bento-plus")
+          ? el.childNodes[0]?.textContent?.replace(/\D/g, "")
+          : el.textContent?.replace(/\D/g, "");
+        const target = parseInt(raw || "0", 10);
+        if (!target) return;
+
+        const originalText = el.childNodes[0]?.textContent ?? "";
+        const prefix = originalText.match(/[₹$€£]/)?.[0] ?? "";
+        const suffix = originalText.match(/[LKM]/)?.[0] ?? "";
+
+        ScrollTrigger.create({
+          trigger: el,
+          containerAnimation: anim,
+          start: "left 85%",
+          once: true,
+          onEnter: () => {
+            const counter = { val: 0 };
+            gsap.to(counter, {
+              val: target,
+              duration: 1.8,
+              ease: "power2.out",
+              onUpdate: () => {
+                const v = Math.ceil(counter.val);
+                el.childNodes[0].textContent = `${prefix}${v}${suffix}`;
+              },
+            });
+          },
+        });
+      });
+
       return () => {
         anim.scrollTrigger?.kill();
         anim.kill();
@@ -1066,14 +1230,16 @@ export default function Home() {
                   <div className="bento-card bento-accent-blue">
                     <span className="bento-label">States</span>
                     <p className="bento-stat">
-                      12<span className="bento-plus">+</span>
+                      {"12"}
+                      <span className="bento-plus">+</span>
                     </p>
                     <p className="bento-sub">in India</p>
                   </div>
                   <div className="bento-card bento-dark bento-tall">
                     <span className="bento-label">Footfall</span>
                     <p className="bento-stat">
-                      400<span className="bento-plus">+</span>
+                      {"400"}
+                      <span className="bento-plus">+</span>
                     </p>
                     <p className="bento-sub">attendees in 2025</p>
                     <div className="bento-orb bento-orb--red" />
@@ -1082,7 +1248,8 @@ export default function Home() {
                   <div className="bento-card bento-accent-yellow">
                     <span className="bento-label">Teams</span>
                     <p className="bento-stat">
-                      170<span className="bento-plus">+</span>
+                      {"170"}
+                      <span className="bento-plus">+</span>
                     </p>
                     <p className="bento-sub">from 40+ schools</p>
                   </div>
@@ -1090,7 +1257,8 @@ export default function Home() {
                   <div className="bento-card bento-dark">
                     <span className="bento-label">Prize Pool</span>
                     <p className="bento-stat bento-stat--sm">
-                      ₹3L<span className="bento-plus">+</span>
+                      {"₹3L"}
+                      <span className="bento-plus">+</span>
                     </p>
                     <p className="bento-sub">in cash & awards</p>
                     <div className="bento-orb bento-orb--orange" />
@@ -1122,7 +1290,8 @@ export default function Home() {
                   <div className="bento-card bento-accent-cream bento-wide">
                     <span className="bento-label">Awards</span>
                     <p className="bento-stat bento-stat--sm">
-                      15<span className="bento-plus">+</span>
+                      {"15"}
+                      <span className="bento-plus">+</span>
                     </p>
                     <p className="bento-sub">categories recognised</p>
                   </div>

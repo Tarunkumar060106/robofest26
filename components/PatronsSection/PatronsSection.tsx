@@ -124,17 +124,21 @@ function PersonCard({
   img,
   title,
   size = "md",
+  highlight = false,
 }: {
   name: string;
   position: string;
   img: string;
   title?: string;
   size?: "sm" | "md" | "lg";
+  highlight?: boolean;
 }) {
   const imgSize = size === "lg" ? 120 : size === "md" ? 96 : 80;
 
   return (
-    <div className={`${styles.personCard} ${styles[`card--${size}`]}`}>
+    <div
+      className={`${styles.personCard} ${styles[`card--${size}`]} ${highlight ? styles.paarivendharGlow : ""}`}
+    >
       <div className={styles.personImgWrap}>
         <Image
           src={img}
@@ -288,7 +292,7 @@ const PatronsSection = forwardRef<HTMLElement>((props, ref) => {
         <SectionBlock label="Patrons" index="01">
           {/* Lead patron — centered on top */}
           <div className={styles.leadRow}>
-            <PersonCard {...PATRON_LEAD} size="lg" />
+            <PersonCard {...PATRON_LEAD} size="lg" highlight />
           </div>
           {/* Remaining 3 underneath */}
           <div className={`${styles.cardGrid} ${styles.grid3}`}>

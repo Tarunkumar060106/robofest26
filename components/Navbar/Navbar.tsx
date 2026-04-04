@@ -264,10 +264,18 @@ export default function Navbar() {
                 <p>info@isdlabsrm.in</p>
               </div>
               <div className="sub-col">
-                <a href="" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://www.instagram.com/robofest.srm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Instagram
                 </a>
-                <a href="" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://www.linkedin.com/company/isd-lab-srm/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   LinkedIn
                 </a>
                 <br />
