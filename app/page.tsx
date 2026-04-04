@@ -28,8 +28,8 @@ const PRELOADER_FRAMES = [
 const PRELOADER_MIN_DURATION_MS = 4200;
 const PRELOADER_TICK_MS = 90;
 const PRELOADER_EXIT_DELAY_MS = 360;
-const SECTION_SNAP_THRESHOLD_PX = 240;
-const SECTION_SNAP_COOLDOWN_MS = 380;
+const SECTION_SNAP_THRESHOLD_PX = 160;
+const SECTION_SNAP_COOLDOWN_MS = 500;
 const SECTION_SNAP_SETTLE_MS = 0;
 
 function getDaysLeft() {
@@ -280,14 +280,14 @@ export default function Home() {
       lastSnapAt = now;
 
       if (lenisRef.current) {
-        lenisRef.current.scrollTo(nearestTop, { duration: 0.45 });
+        lenisRef.current.scrollTo(nearestTop, { duration: 0.65 });
       } else {
         window.scrollTo({ top: nearestTop, behavior: "smooth" });
       }
 
       unlockTimeoutId = window.setTimeout(() => {
         isSnappingRef.current = false;
-      }, 520);
+      }, 700);
     };
 
     const handleScrollSettle = () => {
