@@ -15,7 +15,6 @@ import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 import FAQSection from "@/components/FaqSection/FaqSection";
 import PatronsSection from "@/components/PatronsSection/PatronsSection";
 import ContactSection from "@/components/ContactSection/ContactSection";
-import { SparklesCore } from "@/components/ui/sparkles";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -28,6 +27,7 @@ const PRELOADER_FRAMES = [
 const PRELOADER_MIN_DURATION_MS = 4200;
 const PRELOADER_TICK_MS = 90;
 const PRELOADER_EXIT_DELAY_MS = 360;
+const HERO_SCROLL_DURATION_FACTOR = 0.65;
 
 function isMobileViewport() {
   return window.matchMedia("(max-width: 1024px)").matches;
@@ -883,6 +883,7 @@ export default function Home() {
     const timeout = setTimeout(() => {
       const scrollDistance =
         scrollSectionRef.current!.scrollWidth - window.innerWidth;
+      const triggerDistance = scrollDistance * HERO_SCROLL_DURATION_FACTOR;
 
       const anim = gsap.to(scrollSectionRef.current, {
         x: -scrollDistance,
@@ -890,7 +891,7 @@ export default function Home() {
         scrollTrigger: {
           trigger: triggerRef.current,
           start: "top top",
-          end: () => `+=${scrollDistance}`,
+          end: () => `+=${triggerDistance}`,
           scrub: 0.6,
           pin: true,
           anticipatePin: 1,

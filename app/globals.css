@@ -341,6 +341,17 @@ body {
   font-size: 7vw;
   font-weight: 800;
   line-height: 1;
+  background: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #ffd9d9 28%,
+    #d10000 62%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-header h3 {

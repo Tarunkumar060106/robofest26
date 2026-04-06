@@ -8,8 +8,8 @@ import styles from "./ContactSection.module.css";
 
 const INFO = [
   { icon: "📍", label: "Location", value: "SRMIST, Kattankulathur, Chennai" },
-  { icon: "✉️", label: "Email", value: "robofest@srmist.edu.in" },
-  { icon: "📞", label: "Phone", value: "+91 44 2745 2270" },
+  { icon: "✉️", label: "Email", value: "isdlab@srmist.edu.in" },
+  // { icon: "📞", label: "Phone", value: "+91 44 2745 2270" },
   { icon: "📅", label: "Event Date", value: "August 19, 2026" },
 ];
 
@@ -189,7 +189,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                   <input
                     className={styles.input}
                     type="text"
-                    placeholder="Ada"
+                    placeholder="John"
                     required
                   />
                 </div>
@@ -198,7 +198,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                   <input
                     className={styles.input}
                     type="text"
-                    placeholder="Lovelace"
+                    placeholder="Doe"
                     required
                   />
                 </div>
@@ -209,7 +209,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                 <input
                   className={styles.input}
                   type="email"
-                  placeholder="ada@srmist.edu.in"
+                  placeholder="john.doe@example.com"
                   required
                 />
               </div>
