@@ -28,9 +28,10 @@ const PRELOADER_FRAMES = [
 const PRELOADER_MIN_DURATION_MS = 4200;
 const PRELOADER_TICK_MS = 90;
 const PRELOADER_EXIT_DELAY_MS = 360;
-const SECTION_SNAP_THRESHOLD_PX = 160;
-const SECTION_SNAP_COOLDOWN_MS = 500;
-const SECTION_SNAP_SETTLE_MS = 0;
+
+function isMobileViewport() {
+  return window.matchMedia("(max-width: 1024px)").matches;
+}
 
 function getDaysLeft() {
   const now = new Date();
@@ -140,7 +141,6 @@ export default function Home() {
   const footerRef = useRef<HTMLElement | null>(null);
   const isCtaManuallyExpandedRef = useRef(false);
   const lenisRef = useRef<Lenis | null>(null);
-  const isSnappingRef = useRef(false);
 
   const handleCtaClick = () => {
     if (isCtaCompactRef.current) {
@@ -215,116 +215,6 @@ export default function Home() {
       lenis.destroy();
     };
   }, []);
-
-  useEffect(() => {
-    if (!isPreloaderDone) {
-      return;
-    }
-
-    let settleTimeoutId: number | null = null;
-    let unlockTimeoutId: number | null = null;
-    let lastSnapAt = 0;
-
-    const getSnapSections = () => {
-      const mainEl = document.querySelector("main");
-      if (!mainEl) {
-        return [] as HTMLElement[];
-      }
-
-      return Array.from(
-        mainEl.querySelectorAll<HTMLElement>(":scope > section"),
-      );
-    };
-
-    const unlockSnap = () => {
-      isSnappingRef.current = false;
-      if (unlockTimeoutId !== null) {
-        window.clearTimeout(unlockTimeoutId);
-        unlockTimeoutId = null;
-      }
-    };
-
-    const snapToNearestSection = () => {
-      if (isSnappingRef.current || isScrollSectionPinnedRef.current) {
-        return;
-      }
-
-      const now = Date.now();
-      if (now - lastSnapAt < SECTION_SNAP_COOLDOWN_MS) {
-        return;
-      }
-
-      const scrollY = window.scrollY;
-      const sections = getSnapSections();
-      if (!sections.length) {
-        return;
-      }
-
-      let nearestTop = sections[0].offsetTop;
-      let nearestDistance = Math.abs(nearestTop - scrollY);
-
-      for (let i = 1; i < sections.length; i += 1) {
-        const candidateTop = sections[i].offsetTop;
-        const candidateDistance = Math.abs(candidateTop - scrollY);
-        if (candidateDistance < nearestDistance) {
-          nearestTop = candidateTop;
-          nearestDistance = candidateDistance;
-        }
-      }
-
-      if (nearestDistance > SECTION_SNAP_THRESHOLD_PX || nearestDistance < 4) {
-        return;
-      }
-
-      isSnappingRef.current = true;
-      lastSnapAt = now;
-
-      if (lenisRef.current) {
-        lenisRef.current.scrollTo(nearestTop, { duration: 0.65 });
-      } else {
-        window.scrollTo({ top: nearestTop, behavior: "smooth" });
-      }
-
-      unlockTimeoutId = window.setTimeout(() => {
-        isSnappingRef.current = false;
-      }, 700);
-    };
-
-    const handleScrollSettle = () => {
-      if (isSnappingRef.current) {
-        return;
-      }
-
-      if (SECTION_SNAP_SETTLE_MS <= 0) {
-        snapToNearestSection();
-        return;
-      }
-
-      if (settleTimeoutId !== null) {
-        window.clearTimeout(settleTimeoutId);
-      }
-
-      settleTimeoutId = window.setTimeout(() => {
-        snapToNearestSection();
-      }, SECTION_SNAP_SETTLE_MS);
-    };
-
-    const handleLenisScroll = () => {
-      handleScrollSettle();
-    };
-
-    window.addEventListener("scroll", handleScrollSettle, { passive: true });
-    lenisRef.current?.on("scroll", handleLenisScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScrollSettle);
-      lenisRef.current?.off("scroll", handleLenisScroll);
-      if (settleTimeoutId !== null) {
-        window.clearTimeout(settleTimeoutId);
-      }
-      unlockSnap();
-    };
-  }, [isPreloaderDone]);
 
   // Listen for menu open/close events from Navbar
   useEffect(() => {
@@ -608,7 +498,14 @@ export default function Home() {
       }
 
       isCtaCompactRef.current = compact;
-      const targetWidth = compact ? 86 : ctaExpandedWidthRef.current;
+      const isMobile = window.innerWidth <= 900;
+      const targetWidth = compact
+        ? isMobile
+          ? 56
+          : 86
+        : ctaExpandedWidthRef.current;
+
+      ctaBarEl.classList.toggle("is-compact", compact);
 
       gsap.killTweensOf(ctaInnerEl);
       gsap.killTweensOf(ctaContentEls);
@@ -623,14 +520,16 @@ export default function Home() {
         // Keep content visible through most of collapse, then fade near the end.
         gsap.to(ctaContentEls, {
           autoAlpha: 0,
-          duration: 0.24,
-          delay: 0.38,
+          duration: isMobile ? 0.18 : 0.24,
+          delay: isMobile ? 0.1 : 0.38,
           ease: "power1.out",
           // stagger: 0.015,
         });
 
         return;
       }
+
+      ctaBarEl.classList.remove("is-compact");
 
       const openTl = gsap.timeline();
 
@@ -668,7 +567,7 @@ export default function Home() {
       heroSectionRef.current?.offsetHeight ?? window.innerHeight;
     const alreadyPastHero = window.scrollY >= heroBottom;
     ctaBarRef.current?.classList.toggle("is-visible", alreadyPastHero);
-    ctaAnimateRef.current(alreadyPastHero ? true : false);
+    ctaAnimateRef.current(window.innerWidth <= 900 || alreadyPastHero);
 
     const initialProbeY = window.scrollY + window.innerHeight * 0.5;
     ctaSetHiddenRef.current(
@@ -758,6 +657,7 @@ export default function Home() {
   useEffect(() => {
     const thumb = thumbRef.current;
     const track = trackRef.current;
+    if (isMobileViewport()) return;
     if (!thumb || !track) return;
 
     let isDragging = false;
@@ -977,6 +877,7 @@ export default function Home() {
   useEffect(() => {
     if (!scrollSectionRef.current || !triggerRef.current) return;
     if (!isPreloaderDone) return; // 👈 add this guard
+    if (isMobileViewport()) return;
 
     // Small delay to let layout paint after preloader exits
     const timeout = setTimeout(() => {
@@ -1128,7 +1029,9 @@ export default function Home() {
             <p className="p_small" data-cta-content>
               days.
             </p>
-            <a href="_blank" className="n_button" data-cta-content></a>
+            <a href="/coming-soon" className="n_button" data-cta-content>
+              {/* Register Now */}
+            </a>
           </div>
           {/* <div className="n_logo z-1"></div> */}
         </div>

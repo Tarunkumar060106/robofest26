@@ -1,0 +1,369 @@
+/* ══════════════════════════════════════════
+   COMING SOON PAGE
+══════════════════════════════════════════ */
+
+.cs-root {
+  position: relative;
+  width: 100vw;
+  min-height: 100svh;
+  background: #0c0b09;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 6vw;
+  box-sizing: border-box;
+}
+
+/* ── Canvas ── */
+.cs-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Radial glow ── */
+.cs-glow {
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(220, 73, 58, 0.12) 0%,
+    transparent 70%
+  );
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Grid texture ── */
+.cs-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 50%,
+    black 10%,
+    transparent 100%
+  );
+}
+
+/* ── Watermark ── */
+.cs-watermark {
+  position: absolute;
+  bottom: -4vw;
+  right: -2vw;
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(160px, 22vw, 340px);
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.022);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+/* ── Content wrapper ── */
+.cs-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+  padding: 3rem 0;
+}
+
+/* ── Top bar ── */
+.cs-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cs-logo-mark {
+  line-height: 0;
+}
+
+.cs-logo-text {
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f1f2f4;
+}
+
+.cs-live-badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(220, 73, 58, 0.4);
+  background: rgba(220, 73, 58, 0.08);
+  color: #dc493a;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cs-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #dc493a;
+  animation: cs-pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ── Hero ── */
+.cs-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cs-eyebrow {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #dc493a;
+}
+
+.cs-heading {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(56px, 8.5vw, 128px);
+  font-weight: 800;
+  line-height: 0.92;
+  color: #f1f2f4;
+  margin: 0;
+  perspective: 800px;
+}
+
+.cs-heading em {
+  font-family: "AwesomeSerifItalic", Georgia, serif;
+  font-style: italic;
+  color: #dc493a;
+  font-weight: 400;
+}
+
+.cs-sub {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(14px, 1.2vw, 18px);
+  color: rgba(241, 242, 244, 0.42);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Countdown ── */
+.cs-countdown {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+}
+
+.cs-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 36px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  margin-right: 12px;
+}
+
+.cs-tile:last-child {
+  margin-right: 0;
+}
+
+.cs-tile-val {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(42px, 5.5vw, 80px);
+  font-weight: 800;
+  color: #f1f2f4;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.cs-tile-label {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(241, 242, 244, 0.28);
+}
+
+.cs-tile-sep {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-60%);
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 800;
+  color: rgba(220, 73, 58, 0.5);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Form ── */
+.cs-form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 480px;
+}
+
+.cs-form {
+  display: flex;
+  gap: 8px;
+}
+
+.cs-input {
+  flex: 1;
+  height: 52px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f1f2f4;
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.cs-input::placeholder {
+  color: rgba(241, 242, 244, 0.25);
+}
+
+.cs-input:focus {
+  border-color: rgba(220, 73, 58, 0.5);
+  background: rgba(220, 73, 58, 0.04);
+}
+
+.cs-submit {
+  height: 52px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: none;
+  background: #dc493a;
+  color: #fff;
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.22s ease,
+    transform 0.18s ease;
+  flex-shrink: 0;
+}
+
+.cs-submit:hover {
+  background: #c4410c;
+  transform: scale(1.03);
+}
+
+.cs-success {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(220, 73, 58, 0.3);
+  background: rgba(220, 73, 58, 0.08);
+  color: #dc493a;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.cs-success-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #dc493a;
+  flex-shrink: 0;
+  animation: cs-pulse 1.8s ease-in-out infinite;
+}
+
+.cs-form-note {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: 12px;
+  color: rgba(241, 242, 244, 0.22);
+  margin: 0;
+  padding-left: 4px;
+}
+
+/* ── Bottom ── */
+.cs-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cs-bottom-text {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: 11px;
+  color: rgba(241, 242, 244, 0.2);
+  letter-spacing: 0.04em;
+}
+
+.cs-socials {
+  display: flex;
+  gap: 2rem;
+}
+
+.cs-social-link {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(241, 242, 244, 0.28);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.cs-social-link:hover {
+  color: #dc493a;
+}
+
+/* ── Keyframe ── */
+@keyframes cs-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.7);
+  }
+}

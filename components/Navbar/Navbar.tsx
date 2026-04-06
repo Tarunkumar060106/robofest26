@@ -21,11 +21,21 @@ export default function Navbar() {
       className: "nav-logo-image nav-logo-image-sports",
       href: "https://www.srmist.edu.in/sports/",
     },
+    {
+      src: "/images/soc.svg",
+      className: "nav-logo-image nav-logo-image-soc",
+      href: "https://www.srmist.edu.in",
+    },
+    {
+      src: "/images/ctech.svg",
+      className: "nav-logo-image nav-logo-image-ctech",
+      href: "https://www.srmist.edu.in",
+    },
   ] as const;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev === 0 ? 1 : 0));
+      setCurrentImage((prev) => (prev + 1) % logos.length);
     }, 2000);
     return () => clearInterval(interval);
   }, []);
@@ -213,80 +223,43 @@ export default function Navbar() {
         <div className="col col-1">
           <div className="links">
             <div className="link">
-              <a href="#">Home</a>
+              <a href="/">Home</a>
             </div>
             <div className="link">
-              <a href="#">Events</a>
+              <a href="/coming-soon">Events</a>
             </div>
             <div className="link">
-              <a href="#">Sponsors</a>
+              <a href="/coming-soon">Sponsors</a>
             </div>
             <div className="link">
-              <a href="#">Gallery</a>
+              <a href="/coming-soon">Gallery</a>
             </div>
             <div className="link">
-              <a href="#"></a>
+              <a href="/coming-soon">Contact</a>
             </div>
           </div>
-          <div className="video-wrapper">
-            <video autoPlay muted loop>
-              <source src="/video/rf-showreel.mp4" type="video/mp4" />
-            </video>
+          <div className="menu-register-cta-wrap">
+            <a
+              className="menu-register-cta"
+              href="/coming-soon"
+              aria-label="Register now for Robofest 2.0"
+            >
+              <span className="menu-register-cta-copy">
+                <span className="menu-register-cta-title">Register Now</span>
+                <span className="menu-register-cta-sub">Limited slots</span>
+              </span>
+              <span className="menu-register-cta-arrow" aria-hidden>
+                {"→"}
+              </span>
+            </a>
           </div>
         </div>
 
         <div className="col col-2">
-          {/* Top: event tag + tagline */}
-          <div className="menu-brand">
-            <div className="menu-event-tag">
-              <span className="menu-event-dot" />
-              <span>#RoboFest2.0</span>
-            </div>
-            <p className="menu-tagline">
-              Build. Compete.
-              <br />
-              <em>Dominate.</em>
-            </p>
-            <p className="menu-sub">
-              SRMIST&apos;s flagship robotics event returns — bigger arenas,
-              bolder machines, zero mercy.
-            </p>
-          </div>
-
-          {/* Bottom: socials + address */}
-          <div className="menu-footer">
-            <div className="socials">
-              <div className="sub-col">
-                <p>SRMIST,</p>
-                <p>Kattankulathur,</p>
-                <p>Chennai 603203</p>
-                <br />
-                <p>info@isdlabsrm.in</p>
-              </div>
-              <div className="sub-col">
-                <a
-                  href="https://www.instagram.com/robofest.srm"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Instagram
-                </a>
-                <a
-                  href="https://www.linkedin.com/company/isd-lab-srm/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  LinkedIn
-                </a>
-                <br />
-                <p>01 62 31 82 42</p>
-              </div>
-            </div>
-
-            {/* Ghost "2.0" heading */}
-            <div className="header">
-              <h1>2.0</h1>
-            </div>
+          <div className="video-wrapper video-wrapper-right">
+            <video autoPlay muted loop playsInline controls>
+              <source src="/video/rf-showreel.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </div>

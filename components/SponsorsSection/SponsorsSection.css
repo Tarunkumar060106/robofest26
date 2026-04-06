@@ -326,3 +326,88 @@
     transform: scale(0.7);
   }
 }
+
+@media (max-width: 1024px) {
+  .sponsors-section {
+    min-height: auto;
+    padding: 5.5rem 0 4rem;
+  }
+
+  .sponsors-header {
+    margin-bottom: 3rem;
+    padding: 0 1rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .sponsors-eyebrow,
+  .sponsors-heading,
+  .sponsors-subtext {
+    text-align: left;
+  }
+
+  .sponsors-subtext {
+    max-width: 100%;
+  }
+
+  .sponsors-band {
+    transform: rotate(-2deg);
+    margin: 0 -5vw;
+    gap: 10px;
+    padding: 1.2rem 0;
+  }
+
+  .sponsor-card {
+    width: 178px;
+    height: 132px;
+    border-radius: 12px;
+  }
+
+  .sponsor-card-logo svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sponsors-cta-wrap {
+    margin-top: 2.4rem;
+    padding: 0 1rem;
+    text-align: left;
+  }
+
+  .sponsors-idle-wrap {
+    margin: 0 1rem 2rem;
+    min-height: 420px;
+    border-radius: 18px;
+  }
+
+  .sponsors-idle-overlay {
+    width: calc(100% - 2rem);
+    padding: 2rem 1.25rem;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sponsors-heading {
+    font-size: clamp(38px, 13vw, 52px);
+  }
+
+  .sponsor-card {
+    width: 152px;
+    height: 116px;
+    gap: 8px;
+  }
+
+  .sponsor-card-name {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .sponsors-idle-heading {
+    font-size: clamp(30px, 11.5vw, 42px);
+  }
+
+  .sponsors-idle-sub {
+    font-size: 13px;
+  }
+}

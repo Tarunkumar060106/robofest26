@@ -594,3 +594,147 @@
     transform: scale(0.7);
   }
 }
+
+@media (max-width: 1024px) {
+  .events-section {
+    padding: 5.5rem 0 4.5rem;
+  }
+
+  .events-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.6rem;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+
+  .events-header-right {
+    width: 100%;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 0;
+  }
+
+  .events-sub {
+    text-align: left;
+  }
+
+  .events-total-prize {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .acc-track {
+    height: auto;
+    flex-direction: column;
+    padding: 0 1rem;
+    gap: 0.7rem;
+  }
+
+  .acc-panel {
+    height: auto;
+    min-height: 82px;
+    flex: none;
+    border-radius: 14px;
+  }
+
+  .acc-panel.is-active {
+    flex: none;
+  }
+
+  .acc-label {
+    position: relative;
+    inset: auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem;
+  }
+
+  .acc-panel.is-active .acc-label {
+    opacity: 1;
+  }
+
+  .acc-title-vert {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0;
+    flex: 1;
+  }
+
+  .acc-tag-vert {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .acc-content {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+    pointer-events: auto;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .acc-panel.is-active .acc-content {
+    max-height: 560px;
+  }
+
+  .acc-content-inner {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    padding: 0 1rem 1rem;
+  }
+
+  .acc-top {
+    margin-bottom: 14px;
+  }
+
+  .acc-title-big {
+    font-size: clamp(26px, 9vw, 38px);
+    margin-bottom: 10px;
+  }
+
+  .ev-cs-wrap {
+    height: auto;
+    min-height: 430px;
+    margin: 0 1rem;
+  }
+
+  .ev-cs-overlay {
+    padding: 2rem 1.2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .events-heading {
+    font-size: clamp(40px, 14vw, 58px);
+  }
+
+  .acc-panel {
+    min-height: 72px;
+  }
+
+  .acc-label {
+    padding: 0.9rem;
+  }
+
+  .acc-title-vert {
+    font-size: 19px;
+  }
+
+  .acc-detail-val {
+    font-size: 16px;
+  }
+
+  .ev-cs-heading {
+    font-size: clamp(30px, 12vw, 44px);
+  }
+}

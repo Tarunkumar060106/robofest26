@@ -41,11 +41,6 @@ const ADVISORY = [
     img: "/images/committee/vice-chancellor.webp",
   },
   {
-    name: "Dr. R. Mohana Krishnan",
-    position: "Director of Sports, SRMIST",
-    img: "/images/committee/directorsports.jpeg",
-  },
-  {
     name: "Dr. S. Ponnusamy",
     position: "Registrar, SRMIST",
     img: "/images/committee/registrar-sir.webp",
@@ -82,20 +77,28 @@ const ADVISORY = [
   },
 ];
 
-const CONVENER = {
-  title: "Convener",
-  name: "Dr. Poovammal E",
-  position: "Professor and Director (Hostels)",
-  img: "/images/committee/poovammal-mam.webp",
-};
-
-const KEY_ORGANISERS = [
+const CONVENERS = [
+  {
+    title: "Convener",
+    name: "Dr. Poovammal E",
+    position: "Professor and Director (Hostels)",
+    img: "/images/committee/poovammal-mam.webp",
+  },
   {
     title: "Co-Convener",
-    name: "Dr. Sowmiya B",
-    position: "Assistant Professor, SRMIST",
-    img: "/images/committee/sowmiya-mam.jpg",
+    name: "Dr. R. Mohana Krishnan",
+    position: "Director of Sports, SRMIST",
+    img: "/images/committee/directorsports.jpeg",
   },
+];
+
+const KEY_ORGANISERS = [
+  // {
+  //   title: "Co-Convener",
+  //   name: "Dr. Sowmiya B",
+  //   position: "Assistant Professor, SRMIST",
+  //   img: "/images/committee/sowmiya-mam.jpg",
+  // },
   {
     title: "Co-Convener",
     name: "Dr. Ida Seraphim",
@@ -103,13 +106,13 @@ const KEY_ORGANISERS = [
     img: "/images/committee/ida-mam.jpeg",
   },
   {
-    title: "Organizing Secretary",
+    title: "Co-Convener",
     name: "Dr. Aswathy K Cherian",
     position: "Assistant Professor, SRMIST",
     img: "/images/committee/aswathy-mam.jpg",
   },
   {
-    title: "Organizing Secretary",
+    title: "Co-Convener",
     name: "Dr. Vidhyalakshmi M K",
     position: "Assistant Professor, SRMIST",
     img: "/images/committee/vidhyalakshmi-mam.png",
@@ -314,7 +317,9 @@ const PatronsSection = forwardRef<HTMLElement>((props, ref) => {
         {/* ── 03 Key Organisers ── */}
         <SectionBlock label="Key Organisers" index="03">
           <div className={styles.leadRow}>
-            <PersonCard {...CONVENER} size="lg" />
+            {CONVENERS.map((person) => (
+              <PersonCard key={person.name} {...person} size="lg" />
+            ))}
           </div>
           <div className={`${styles.cardGrid} ${styles.grid3}`}>
             {KEY_ORGANISERS.map((p) => (
