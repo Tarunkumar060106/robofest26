@@ -15,6 +15,7 @@ import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 import FAQSection from "@/components/FaqSection/FaqSection";
 import PatronsSection from "@/components/PatronsSection/PatronsSection";
 import ContactSection from "@/components/ContactSection/ContactSection";
+import LiquidGlass from "liquid-glass-react";
 
 const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
@@ -999,8 +1000,18 @@ export default function Home() {
       <div className={`site-shell ${isPreloaderDone ? "is-ready" : ""}`}>
         {/* CTA Bar */}
         <div ref={ctaBarRef} className="cta-bar" onClick={handleCtaClick}>
-          <div ref={ctaInnerRef} className="cta-bar-inner">
-            <svg
+          <LiquidGlass
+            displacementScale={72}
+            blurAmount={0.12}
+            saturation={135}
+            aberrationIntensity={1.6}
+            elasticity={0.4}
+            cornerRadius={200}
+            padding="0px"
+            className="cta-liquid-glass"
+          >
+            <div ref={ctaInnerRef} className="cta-bar-inner">
+              <svg
               width="36"
               height="36"
               viewBox="0 0 36 36"
@@ -1016,24 +1027,25 @@ export default function Home() {
                   fill="white"
                 />
               </g>
-            </svg>
-            {/* <p className="text-enterance">SRMIST&apos;s Flagship Robotics Event</p> */}
-            <h2 className="italic" data-cta-content>
-              ROBOFEST
-            </h2>
-            <p className="p_small" data-cta-content>
-              in
-            </p>
-            <h2 className="count-number" data-cta-content>
-              {daysLeft}
-            </h2>
-            <p className="p_small" data-cta-content>
-              days.
-            </p>
-            <a href="/coming-soon" className="n_button" data-cta-content>
-              {/* Register Now */}
-            </a>
-          </div>
+              </svg>
+              {/* <p className="text-enterance">SRMIST&apos;s Flagship Robotics Event</p> */}
+              <h2 className="italic" data-cta-content>
+                ROBOFEST
+              </h2>
+              <p className="p_small" data-cta-content>
+                in
+              </p>
+              <h2 className="count-number" data-cta-content>
+                {daysLeft}
+              </h2>
+              <p className="p_small" data-cta-content>
+                days.
+              </p>
+              <a href="/coming-soon" className="n_button" data-cta-content>
+                {/* Register Now */}
+              </a>
+            </div>
+          </LiquidGlass>
           {/* <div className="n_logo z-1"></div> */}
         </div>
         {/* Placeholder Sections */}

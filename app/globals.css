@@ -482,7 +482,7 @@ body {
 
 .cta-bar .cta-bar-inner {
   align-items: center;
-  background-color: #fff;
+  background-color: transparent;
   border-radius: 200px;
   display: flex;
   gap: 12px;
@@ -490,6 +490,11 @@ body {
   padding: 10px 20px 10px 10px;
   z-index: 0;
   overflow: hidden;
+}
+
+.cta-liquid-glass {
+  border-radius: 200px;
+  display: flex;
 }
 
 .cta-bar h2,
