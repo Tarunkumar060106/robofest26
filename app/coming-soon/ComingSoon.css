@@ -275,7 +275,7 @@
   font-family: "SpaceGroteskBold", Arial, sans-serif;
   font-size: 13px;
   letter-spacing: 0.04em;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
   white-space: nowrap;
   transition:
     background 0.22s ease,

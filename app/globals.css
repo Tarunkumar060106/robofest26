@@ -31,7 +31,7 @@
   background: none;
   border: none;
   outline: none;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
   width: 2.5rem;
   height: 2.5rem;
   display: flex;
@@ -660,7 +660,7 @@ body {
   aspect-ratio: 3 / 4;
   flex-shrink: 0;
   perspective: 900px;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
 }
 
 .lookback-card-inner {
