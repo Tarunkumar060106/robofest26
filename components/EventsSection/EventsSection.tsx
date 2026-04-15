@@ -10,111 +10,118 @@ import "./EventsSection.css";
 const EVENTS = [
   {
     number: "01",
-    title: "Robo Wars",
+    title: "Robo War",
     tag: "Combat",
     description:
-      "Ultimate combat robotics. Build your destroyer and enter the arena. Engineer the perfect killing machine and watch it dominate.",
+      "Arena combat robotics. Build your bot, outmaneuver opponents, and survive the final clash.",
     prize: "₹1,25,000",
     fee: "₹2,000",
     venue: "Sports Hanger",
     team: "4 members",
     color: "#b83224",
+    backgroundImage: "/images/events/war.jpg",
   },
   {
     number: "02",
-    title: "Line Follower",
-    tag: "Autonomous",
+    title: "Robo Soccer 1v1",
+    tag: "Battle",
     description:
-      "Precision autonomous navigation. Your bot, your algorithm, one line. The fastest and most accurate bot takes it all.",
+      "One robot, one opponent, one goal. Head-to-head robotic football with pure control and aggression.",
     prize: "₹30,000",
     fee: "₹500",
     venue: "Tech Arena",
-    team: "3 members",
+    team: "2 members",
     color: "#1a1612",
+    backgroundImage: "/images/events/soccer.jpg",
   },
   {
     number: "03",
-    title: "Sumo Bot",
-    tag: "Combat",
+    title: "Robo Soccer 2v2",
+    tag: "Battle",
     description:
-      "Push or be pushed. The ring is small. The fight is everything. Last bot standing wins.",
+      "Team strategy meets machine control. Coordinate two bots and dominate the robotic pitch.",
     prize: "₹40,000",
     fee: "₹800",
     venue: "Main Hall",
-    team: "2 members",
+    team: "4 members",
     color: "#c4410c",
   },
   {
     number: "04",
-    title: "Maze Solver",
-    tag: "Autonomous",
+    title: "Robo Sumo",
+    tag: "Combat",
     description:
-      "Navigate the unknown. Code that thinks. Robots that find the way through every twist and dead end.",
+      "Push or be pushed. Enter the ring and force your rival out to claim victory.",
     prize: "₹25,000",
     fee: "₹600",
     venue: "Lab 2",
-    team: "3 members",
+    team: "2 members",
     color: "#2a2018",
+    backgroundImage: "/images/events/sumo.png",
   },
   {
     number: "05",
-    title: "Innovation",
-    tag: "Open",
+    title: "OBS Race",
+    tag: "Speed",
     description:
-      "No rulebook. Pure ingenuity. Show the world what you've built from scratch with nothing but your imagination.",
+      "Race through obstacles at full throttle. Precision handling and speed decide the winner.",
     prize: "₹50,000",
     fee: "₹1,000",
     venue: "Expo Hall",
-    team: "5 members",
+    team: "2 members",
     color: "#b83224",
+    backgroundImage: "/images/events/obs.png",
   },
   {
     number: "06",
-    title: "Robo Race",
+    title: "Drone Race",
     tag: "Speed",
     description:
-      "Fastest robot wins. Tune it, push it, break the track record. Speed is the only metric that matters here.",
+      "High-speed aerial racing through technical gates. Reflexes, stability, and control are everything.",
     prize: "₹20,000",
     fee: "₹400",
     venue: "Race Track",
     team: "2 members",
     color: "#1a1612",
+    backgroundImage: "/images/events/drone.jpg",
   },
   {
     number: "07",
-    title: "Pick & Place",
+    title: "LFR",
     tag: "Precision",
     description:
-      "Surgical accuracy. Robotic arms that move with intention and place with millimetre perfection.",
+      "Line Follower Robot challenge. Build the fastest bot that can track the path without error.",
     prize: "₹15,000",
     fee: "₹300",
     venue: "Lab 1",
     team: "2 members",
     color: "#c4410c",
+    backgroundImage: "/images/events/lfr.jpg",
   },
   {
     number: "08",
-    title: "Workshop",
-    tag: "Learn",
+    title: "Project Expo",
+    tag: "Open",
     description:
-      "Hands-on sessions with industry experts. Build, break, learn. Walk out knowing more than you walked in with.",
-    prize: "Certificate",
-    fee: "₹200",
-    venue: "Workshop Room",
-    team: "Solo",
+      "Showcase your engineering ideas and prototypes to judges, peers, and industry visitors.",
+    prize: "₹50,000",
+    fee: "₹1,000",
+    venue: "Expo Hall",
+    team: "5 members",
     color: "#2a2018",
   },
   {
     number: "09",
-    title: "Workshop",
-    tag: "Learn",
+    title: "Boat Race",
+    tag: "Speed",
     description:
-      "Hands-on sessions with industry experts. Build, break, learn. Walk out knowing more than you walked in with.",
-    prize: "Certificate",
-    fee: "₹200",
-    venue: "Workshop Room",
-    team: "Solo",
+      "Design and build a high-performance water bot that can race through the course with speed and stability.",
+    prize: "₹25,000",
+    fee: "₹500",
+    venue: "Water Arena",
+    team: "3 members",
     color: "#b83224",
+    backgroundImage: "/images/events/obs.png",
   },
 ];
 
@@ -167,7 +174,6 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const eyebrowRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const isLive = state === "live";
 
   // ── GSAP entrance ──
@@ -176,7 +182,11 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
     const heading = headingRef.current;
     const eyebrow = eyebrowRef.current;
     if (!section || !heading || !eyebrow) return;
+    const shouldReduceMotion = window.matchMedia(
+      "(max-width: 1024px), (prefers-reduced-motion: reduce)",
+    ).matches;
 
+    gsap.registerPlugin(ScrollTrigger, SplitText);
     const ctx = gsap.context(() => {
       gsap.fromTo(
         eyebrow,
@@ -190,16 +200,30 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
         },
       );
 
-      const split = new SplitText(heading, { type: "lines,words" });
-      gsap.set(split.words, { autoAlpha: 0, yPercent: 100 });
-      gsap.to(split.words, {
-        autoAlpha: 1,
-        yPercent: 0,
-        duration: 0.8,
-        ease: "power4.out",
-        stagger: 0.055,
-        scrollTrigger: { trigger: section, start: "top 72%" },
-      });
+      if (shouldReduceMotion) {
+        gsap.fromTo(
+          heading,
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.55,
+            ease: "power3.out",
+            scrollTrigger: { trigger: section, start: "top 74%" },
+          },
+        );
+      } else {
+        const split = new SplitText(heading, { type: "lines,words" });
+        gsap.set(split.words, { autoAlpha: 0, yPercent: 100 });
+        gsap.to(split.words, {
+          autoAlpha: 1,
+          yPercent: 0,
+          duration: 0.8,
+          ease: "power4.out",
+          stagger: 0.055,
+          scrollTrigger: { trigger: section, start: "top 72%" },
+        });
+      }
 
       const panels = section.querySelectorAll(".acc-panel, .ev-cs-panel");
       gsap.fromTo(
@@ -209,9 +233,9 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
           autoAlpha: 1,
           y: 0,
           scaleY: 1,
-          duration: 0.55,
+          duration: shouldReduceMotion ? 0.35 : 0.55,
           ease: "power3.out",
-          stagger: 0.055,
+          stagger: shouldReduceMotion ? 0 : 0.055,
           scrollTrigger: { trigger: section, start: "top 62%" },
         },
       );
@@ -235,21 +259,6 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
 
     return () => ctx.revert();
   }, [isLive]);
-
-  // ── Panel hover micro-interaction via GSAP ──
-  const handlePanelEnter = (i: number, el: HTMLElement) => {
-    if (activeIndex === i) return;
-    setHoveredIndex(i);
-    gsap.to(el, { y: -4, duration: 0.3, ease: "power2.out" });
-    // subtle glow via box-shadow
-    el.style.boxShadow = "0 12px 32px rgba(0,0,0,0.28)";
-  };
-
-  const handlePanelLeave = (i: number, el: HTMLElement) => {
-    setHoveredIndex(null);
-    gsap.to(el, { y: 0, duration: 0.35, ease: "power2.out" });
-    el.style.boxShadow = "";
-  };
 
   // ── Panel open — number count-up ──
   const handlePanelClick = (i: number) => {
@@ -282,14 +291,14 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
             Robofest 2.0 — Events
           </span>
           <h2 ref={headingRef} className="events-heading">
-            Pick your
+            Choose your
             <br />
-            <em>arena.</em>
+            <em>challenge.</em>
           </h2>
         </div>
         <div className="events-header-right">
           <p className="events-sub">
-            Nine arenas. One campus.
+            {/* Nine arenas. One campus. */}
             <br />
             {isLive ? "Click any panel to explore." : "Lineup dropping soon."}
           </p>
@@ -298,7 +307,7 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
             <span className="events-prize-amount">
               {isLive ? (
                 <>
-                  ₹3,25,000<span>+</span>
+                  ₹7,00,000<span>+</span>
                 </>
               ) : (
                 <span>Coming Soon</span>
@@ -317,10 +326,16 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
               <div
                 key={ev.number}
                 className={`acc-panel ${isActive ? "is-active" : ""}`}
-                style={{ "--acc-color": ev.color } as React.CSSProperties}
+                style={
+                  {
+                    "--acc-color": ev.color,
+                    "--acc-bg-image": ev.backgroundImage
+                      ? `url("${ev.backgroundImage}")`
+                      : "none",
+                    "--acc-overlay-opacity": ev.backgroundImage ? 0.34 : 0,
+                  } as React.CSSProperties
+                }
                 onClick={() => handlePanelClick(i)}
-                onMouseEnter={(e) => handlePanelEnter(i, e.currentTarget)}
-                onMouseLeave={(e) => handlePanelLeave(i, e.currentTarget)}
               >
                 {/* Collapsed label */}
                 <div className="acc-label">

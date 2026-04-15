@@ -93,12 +93,12 @@ const CONVENERS = [
 ];
 
 const KEY_ORGANISERS = [
-  // {
-  //   title: "Co-Convener",
-  //   name: "Dr. Sowmiya B",
-  //   position: "Assistant Professor, SRMIST",
-  //   img: "/images/committee/sowmiya-mam.jpg",
-  // },
+  {
+    title: "Co-Convener",
+    name: "Dr. Sowmiya B",
+    position: "Assistant Professor, SRMIST",
+    img: "/images/committee/sowmiya-mam.jpg",
+  },
   {
     title: "Co-Convener",
     name: "Dr. Ida Seraphim",
@@ -106,13 +106,13 @@ const KEY_ORGANISERS = [
     img: "/images/committee/ida-mam.jpeg",
   },
   {
-    title: "Co-Convener",
+    title: "Organizing Secretary",
     name: "Dr. Aswathy K Cherian",
     position: "Assistant Professor, SRMIST",
     img: "/images/committee/aswathy-mam.jpg",
   },
   {
-    title: "Co-Convener",
+    title: "Organizing Secretary",
     name: "Dr. Vidhyalakshmi M K",
     position: "Assistant Professor, SRMIST",
     img: "/images/committee/vidhyalakshmi-mam.png",
