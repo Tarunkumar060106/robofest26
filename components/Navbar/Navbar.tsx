@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
@@ -9,6 +9,47 @@ import { splitTextIntoSpans } from "@/lib/utils";
 
 export default function Navbar() {
   const [currentImage, setCurrentImage] = useState(0);
+
+  const handleMenuLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    const href = event.currentTarget.getAttribute("href") || "";
+
+    // Smooth-scroll only for same-page menu anchors.
+    if (href !== "/" && !href.startsWith("/#")) {
+      return;
+    }
+
+    if (window.location.pathname !== "/") {
+      return;
+    }
+
+    event.preventDefault();
+
+    const menuToggle = document.querySelector(
+      ".menu-toggle",
+    ) as HTMLElement | null;
+
+    if (menuToggle?.classList.contains("active")) {
+      menuToggle.click();
+    }
+
+    window.setTimeout(() => {
+      if (href === "/") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.replaceState(null, "", "/");
+        return;
+      }
+
+      const targetId = href.slice(2);
+      const section = document.getElementById(targetId);
+
+      if (!section) {
+        return;
+      }
+
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.replaceState(null, "", `/#${targetId}`);
+    }, 380);
+  };
 
   const logos = [
     {
@@ -223,19 +264,27 @@ export default function Navbar() {
         <div className="col col-1">
           <div className="links">
             <div className="link">
-              <a href="/">Home</a>
+              <a href="/" onClick={handleMenuLinkClick}>
+                Home
+              </a>
             </div>
             <div className="link">
-              <a href="/coming-soon">Events</a>
+              <a href="/#events" onClick={handleMenuLinkClick}>
+                Events
+              </a>
             </div>
             <div className="link">
-              <a href="/coming-soon">Sponsors</a>
+              <a href="/sponsors">Sponsors</a>
             </div>
             <div className="link">
-              <a href="/coming-soon">Gallery</a>
+              <a href="/#gallery" onClick={handleMenuLinkClick}>
+                Gallery
+              </a>
             </div>
             <div className="link">
-              <a href="/coming-soon">Contact</a>
+              <a href="/#contact" onClick={handleMenuLinkClick}>
+                Contact
+              </a>
             </div>
           </div>
           <div className="menu-register-cta-wrap">

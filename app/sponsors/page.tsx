@@ -1,35 +1,31 @@
 import type { Metadata } from "next";
-import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
+import SponsorsComingSoon from "./SponsorsComingSoon";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.vercel.app";
 
 export const metadata: Metadata = {
-  title: "Sponsors",
+  title: "Sponsors | Coming Soon",
   description:
-    "Explore the sponsor lineup for ROBOFEST 2026 and partner with us to support the next generation of robotics innovators.",
+    "Sponsor lineup and partnership opportunities for ROBOFEST 2026 are coming soon.",
   alternates: {
     canonical: "/sponsors",
   },
   openGraph: {
-    title: "Sponsors | ROBOFEST 2026",
+    title: "Sponsors | Coming Soon | ROBOFEST 2026",
     description:
-      "Explore the sponsor lineup for ROBOFEST 2026 and partner with us to support the next generation of robotics innovators.",
+      "Sponsor lineup and partnership opportunities for ROBOFEST 2026 are coming soon.",
     url: `${siteUrl}/sponsors`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sponsors | ROBOFEST 2026",
+    title: "Sponsors | Coming Soon | ROBOFEST 2026",
     description:
-      "Explore the sponsor lineup for ROBOFEST 2026 and partner with us to support the next generation of robotics innovators.",
+      "Sponsor lineup and partnership opportunities for ROBOFEST 2026 are coming soon.",
   },
 };
 
 export default function SponsorsPage() {
-  return (
-    <main>
-      <SponsorsSection state="live" />
-    </main>
-  );
+  return <SponsorsComingSoon />;
 }

@@ -266,6 +266,10 @@
 }
 
 .cs-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   height: 52px;
   padding: 0 28px;
   border-radius: 999px;
@@ -277,9 +281,17 @@
   letter-spacing: 0.04em;
   cursor: var(--cursor-pointer, pointer);
   white-space: nowrap;
+  line-height: 1;
   transition:
     background 0.22s ease,
     transform 0.18s ease;
+  flex-shrink: 0;
+}
+
+.cs-submit svg {
+  width: 14px;
+  height: 14px;
+  display: block;
   flex-shrink: 0;
 }
 

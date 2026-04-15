@@ -103,7 +103,7 @@ const KEY_ORGANISERS = [
     title: "Co-Convener",
     name: "Dr. Ida Seraphim",
     position: "Assistant Professor, SRMIST",
-    img: "/images/committee/ida-mam.jpeg",
+    img: "/images/committee/ida-mam.jpg",
   },
   {
     title: "Organizing Secretary",
@@ -118,6 +118,8 @@ const KEY_ORGANISERS = [
     img: "/images/committee/vidhyalakshmi-mam.png",
   },
 ];
+
+const KEY_ORGANISERS_ALL = [...CONVENERS, ...KEY_ORGANISERS];
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -142,7 +144,9 @@ function PersonCard({
     <div
       className={`${styles.personCard} ${styles[`card--${size}`]} ${highlight ? styles.paarivendharGlow : ""}`}
     >
-      <div className={styles.personImgWrap}>
+      <div
+        className={`${styles.personImgWrap} ${highlight ? styles.paarivendharImgSpin : ""}`}
+      >
         <Image
           src={img}
           alt={name}
@@ -316,13 +320,8 @@ const PatronsSection = forwardRef<HTMLElement>((props, ref) => {
 
         {/* ── 03 Key Organisers ── */}
         <SectionBlock label="Key Organisers" index="03">
-          <div className={styles.leadRow}>
-            {CONVENERS.map((person) => (
-              <PersonCard key={person.name} {...person} size="lg" />
-            ))}
-          </div>
-          <div className={`${styles.cardGrid} ${styles.grid3}`}>
-            {KEY_ORGANISERS.map((p) => (
+          <div className={`${styles.cardGrid} ${styles.grid2x3}`}>
+            {KEY_ORGANISERS_ALL.map((p) => (
               <PersonCard key={p.name} {...p} size="md" />
             ))}
           </div>
