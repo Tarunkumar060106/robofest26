@@ -85,7 +85,7 @@ const CONVENERS = [
     img: "/images/committee/poovammal-mam.webp",
   },
   {
-    title: "Co-Convener",
+    title: "Convener",
     name: "Dr. R. Mohana Krishnan",
     position: "Director of Sports, SRMIST",
     img: "/images/committee/directorsports.jpeg",

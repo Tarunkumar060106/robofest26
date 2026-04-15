@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robofest 2.0 — Color Palette</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      background: #0e0e10;
+      color: #f1f2f4;
+      min-height: 100vh;
+      padding: 3rem 2rem 4rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #ffffff 0%, #ffd9d9 28%, #dc493a 62%, #ffffff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: rgba(241, 242, 244, 0.5);
+      font-size: 1.05rem;
+      font-weight: 400;
+    }
+
+    .header .date {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(241, 242, 244, 0.3);
+      border: 1px solid rgba(241, 242, 244, 0.12);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+    }
+
+    .section-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #dc493a;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      padding-left: 0.25rem;
+    }
+
+    .palette-section {
+      margin-bottom: 3rem;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .color-card {
+      background: #1a1a1e;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+    }
+
+    .color-card:hover {
+      transform: translateY(-4px) scale(1.015);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .color-swatch {
+      height: 100px;
+      width: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .color-swatch .copy-hint {
+      opacity: 0;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      backdrop-filter: blur(4px);
+      transition: opacity 0.25s ease;
+      cursor: pointer;
+    }
+
+    .color-card:hover .copy-hint {
+      opacity: 1;
+    }
+
+    .color-info {
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .color-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #f1f2f4;
+    }
+
+    .color-codes {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .color-code {
+      font-size: 0.78rem;
+      color: rgba(241, 242, 244, 0.55);
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+      cursor: pointer;
+      padding: 0.15rem 0;
+      transition: color 0.2s ease;
+    }
+
+    .color-code:hover {
+      color: rgba(241, 242, 244, 0.9);
+    }
+
+    .color-usage {
+      font-size: 0.7rem;
+      color: rgba(241, 242, 244, 0.3);
+      font-style: italic;
+      margin-top: 0.15rem;
+    }
+
+    /* Gradient section */
+    .gradient-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .gradient-card {
+      background: #1a1a1e;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+    }
+
+    .gradient-card:hover {
+      transform: translateY(-4px) scale(1.015);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .gradient-swatch {
+      height: 80px;
+      width: 100%;
+    }
+
+    .gradient-info {
+      padding: 1rem 1.15rem;
+    }
+
+    .gradient-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #f1f2f4;
+      margin-bottom: 0.25rem;
+    }
+
+    .gradient-css {
+      font-size: 0.72rem;
+      color: rgba(241, 242, 244, 0.45);
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .gradient-usage {
+      font-size: 0.7rem;
+      color: rgba(241, 242, 244, 0.3);
+      font-style: italic;
+      margin-top: 0.3rem;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      margin: 2.5rem 0;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #dc493a;
+      color: #fff;
+      padding: 0.6rem 1.5rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      box-shadow: 0 8px 30px rgba(220, 73, 58, 0.35);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: rgba(241, 242, 244, 0.2);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 2rem 1rem 3rem; }
+      .color-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+      .gradient-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; color: #141414; padding: 1rem; }
+      .color-card { border: 1px solid #ddd; }
+      .color-name { color: #141414; }
+      .color-code { color: #555; }
+      .color-card:hover { transform: none; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>ROBOFEST 2.0</h1>
+    <p>Complete Color Palette &amp; Design Tokens</p>
+    <span class="date">Extracted April 2026</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PRIMARY BRAND COLORS                        -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="palette-section">
+    <h2 class="section-title">Primary Brand Colors</h2>
+    <div class="color-grid" id="brand-colors"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- DARK / NEUTRAL BACKGROUNDS                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="palette-section">
+    <h2 class="section-title">Dark / Neutral Backgrounds</h2>
+    <div class="color-grid" id="dark-colors"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- WARM / CREAM TONES                          -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="palette-section">
+    <h2 class="section-title">Warm / Cream Tones</h2>
+    <div class="color-grid" id="warm-colors"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ACCENT COLORS                               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="palette-section">
+    <h2 class="section-title">Accent Colors</h2>
+    <div class="color-grid" id="accent-colors"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TYPOGRAPHY & TEXT COLORS                    -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="palette-section">
+    <h2 class="section-title">Typography &amp; Text Colors</h2>
+    <div class="color-grid" id="text-colors"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- UI COMPONENT COLORS                         -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="palette-section">
+    <h2 class="section-title">UI Component Colors</h2>
+    <div class="color-grid" id="ui-colors"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- GRADIENTS                                   -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="palette-section">
+    <h2 class="section-title">Gradients</h2>
+    <div class="gradient-grid" id="gradients"></div>
+  </div>
+
+  <div class="footer">
+    ROBOFEST 2.0 — SRM IST &bull; Color Palette Reference Document
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    // ─── Helpers ───
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function isLightColor(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance > 0.55;
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text);
+      const toast = document.getElementById('toast');
+      toast.textContent = `Copied: ${text}`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function renderColorCard(container, color) {
+      const card = document.createElement('div');
+      card.className = 'color-card';
+      const textColor = isLightColor(color.hex) ? '#141414' : '#ffffff';
+      card.innerHTML = `
+        <div class="color-swatch" style="background:${color.hex}" onclick="copyToClipboard('${color.hex}')">
+          <span class="copy-hint" style="color:${textColor};background:${isLightColor(color.hex) ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,0.45)'}">Click to copy</span>
+        </div>
+        <div class="color-info">
+          <span class="color-name">${color.name}</span>
+          <div class="color-codes">
+            <span class="color-code" onclick="copyToClipboard('${color.hex}')">${color.hex.toUpperCase()}</span>
+            <span class="color-code" onclick="copyToClipboard('${hexToRgb(color.hex)}')">${hexToRgb(color.hex)}</span>
+          </div>
+          <span class="color-usage">${color.usage}</span>
+        </div>
+      `;
+      container.appendChild(card);
+    }
+
+    function renderGradientCard(container, grad) {
+      const card = document.createElement('div');
+      card.className = 'gradient-card';
+      card.innerHTML = `
+        <div class="gradient-swatch" style="background:${grad.css}"></div>
+        <div class="gradient-info">
+          <span class="gradient-name">${grad.name}</span>
+          <span class="gradient-css">${grad.css}</span>
+          <span class="gradient-usage">${grad.usage}</span>
+        </div>
+      `;
+      container.appendChild(card);
+    }
+
+    // ─── COLOR DATA ───
+
+    const brandColors = [
+      { hex: '#dc493a', name: 'Robofest Red', usage: 'Primary brand, headings, CTAs, accents' },
+      { hex: '#af0000', name: 'SRM Crimson', usage: 'Navbar CTA, patron borders, links' },
+      { hex: '#b83224', name: 'Deep Red', usage: 'FAQ accents, event labels, highlight text' },
+      { hex: '#c03a2b', name: 'Burnt Red', usage: 'Contact button hover state' },
+      { hex: '#d10000', name: 'Vivid Red', usage: 'Hero heading gradient mid-stop' },
+      { hex: '#f5c400', name: 'Gold Yellow', usage: 'Bento accent card (Teams)' },
+      { hex: '#ff9147', name: 'Flame Orange', usage: 'Lookback ring accent, preloader gradient' },
+      { hex: '#ffd369', name: 'Warm Gold', usage: 'Preloader progress bar end' },
+    ];
+
+    const darkColors = [
+      { hex: '#000000', name: 'True Black', usage: 'Navbar background, CTA dot, base elements' },
+      { hex: '#0a0a0a', name: 'Near Black', usage: 'Showreel background, CTA text' },
+      { hex: '#0a0a0b', name: 'Sponsors BG', usage: 'Sponsors section background' },
+      { hex: '#090a0b', name: 'Preloader Edge', usage: 'Preloader radial gradient outer' },
+      { hex: '#0e0e0e', name: 'Dark Carbon', usage: 'Lookback slide background' },
+      { hex: '#0f0f0f', name: 'Navbar Dark', usage: 'Navbar expanded panel BG' },
+      { hex: '#0f0f10', name: 'Sponsor Card Dark', usage: 'Sponsors coming-soon container' },
+      { hex: '#111214', name: 'Preloader Mid', usage: 'Preloader radial gradient mid' },
+      { hex: '#141414', name: 'Charcoal', usage: 'Hero BG, bento dark card, contact BG, text' },
+      { hex: '#1a1a1a', name: 'Soft Dark', usage: 'Navbar menu background' },
+      { hex: '#1a1a1c', name: 'Sponsor Tile BG', usage: 'Sponsor tier card background' },
+      { hex: '#1c1c1e', name: 'Sponsor Alt', usage: 'Sponsor logo placeholder' },
+      { hex: '#1e1e1e', name: 'Gallery Item BG', usage: 'Gallery placeholder background' },
+      { hex: '#232327', name: 'Preloader Center', usage: 'Preloader radial gradient center' },
+      { hex: '#242426', name: 'Sponsor Skeleton', usage: 'Sponsor skeleton shimmer' },
+    ];
+
+    const warmColors = [
+      { hex: '#f5f0e8', name: 'Warm Cream', usage: 'Bento slide BG, FAQ BG, Events BG, Patrons BG' },
+      { hex: '#e8e0d0', name: 'Sand', usage: 'Bento accent cream card' },
+      { hex: '#e5e6ee', name: 'Mist Grey', usage: 'Navbar pill background' },
+      { hex: '#ffffff', name: 'White', usage: 'CTA bar inner, text-on-dark, pure white' },
+      { hex: '#ffd9d9', name: 'Blush Pink', usage: 'Hero heading gradient stop' },
+    ];
+
+    const accentColors = [
+      { hex: '#3a8dde', name: 'Sky Blue', usage: 'Bento accent blue gradient start' },
+      { hex: '#5ec6fa', name: 'Light Sky', usage: 'Bento accent blue gradient end' },
+      { hex: '#0d47a1', name: 'Deep Blue', usage: 'Sparkle particle background' },
+      { hex: '#0cac8a', name: 'Teal Green', usage: 'Navbar status badge' },
+      { hex: '#ff6b5b', name: 'Coral', usage: 'Scrollbar thumb gradient start' },
+      { hex: '#ffb04d', name: 'Amber', usage: 'Scrollbar thumb gradient mid' },
+      { hex: '#ffc9e3', name: 'Soft Pink', usage: 'Scrollbar thumb gradient end' },
+      { hex: '#dd2476', name: 'Hot Pink', usage: 'Event card flip back gradient end' },
+      { hex: '#ff512f', name: 'Vivid Orange', usage: 'Event card flip back gradient start' },
+      { hex: '#23243a', name: 'Midnight Indigo', usage: 'Event card flip front gradient start' },
+      { hex: '#3a1c71', name: 'Purple', usage: 'Event card flip front gradient end' },
+      { hex: '#c4410c', name: 'Burnt Orange', usage: 'Event category accent color' },
+      { hex: '#2b2e3a', name: 'Slate', usage: 'Navbar time display background' },
+    ];
+
+    const textColors = [
+      { hex: '#f1f2f4', name: 'Off White', usage: 'Primary text on dark, headings, card titles' },
+      { hex: '#e3e3db', name: 'Warm White', usage: 'Hero section text color' },
+      { hex: '#e0e0e0', name: 'Light Grey', usage: 'Event card description text' },
+      { hex: '#f3f3f3', name: 'Near White', usage: 'Event card list text' },
+      { hex: '#1a1612', name: 'Dark Espresso', usage: 'FAQ headings, event titles, dark text on cream' },
+      { hex: '#14110f', name: 'Deep Espresso', usage: 'Patron name text' },
+      { hex: '#2a2018', name: 'Warm Dark', usage: 'Event category accent (dark)' },
+      { hex: '#0e0e0e', name: 'Almost Black', usage: 'Bento yellow card text' },
+    ];
+
+    const uiColors = [
+      { hex: '#dd7bbb', name: 'Glow Pink', usage: 'Glowing effect radial gradient' },
+      { hex: '#d79f1e', name: 'Glow Gold', usage: 'Glowing effect radial gradient' },
+      { hex: '#5a922c', name: 'Glow Green', usage: 'Glowing effect radial gradient' },
+      { hex: '#4c7894', name: 'Glow Teal', usage: 'Glowing effect radial gradient' },
+    ];
+
+    // ─── GRADIENTS ───
+    const gradients = [
+      {
+        name: 'Hero Heading',
+        css: 'linear-gradient(120deg, #ffffff 0%, #ffd9d9 28%, #d10000 62%, #ffffff 100%)',
+        usage: 'Main hero title text gradient'
+      },
+      {
+        name: 'Preloader Progress',
+        css: 'linear-gradient(90deg, #dc493a 0%, #ff9147 50%, #ffd369 100%)',
+        usage: 'Loading bar fill gradient'
+      },
+      {
+        name: 'Scrollbar Thumb',
+        css: 'linear-gradient(180deg, #ff6b5b 0%, #ffb04d 50%, #ffc9e3 100%)',
+        usage: 'Custom scrollbar thumb'
+      },
+      {
+        name: 'Bento Accent Blue',
+        css: 'linear-gradient(135deg, #3a8dde 0%, #5ec6fa 100%)',
+        usage: 'Bento grid — States card'
+      },
+      {
+        name: 'Event Card Front',
+        css: 'linear-gradient(135deg, #23243a 60%, #3a1c71 100%)',
+        usage: 'Event flip card front face'
+      },
+      {
+        name: 'Event Card Back',
+        css: 'linear-gradient(135deg, #ff512f 0%, #dd2476 100%)',
+        usage: 'Event flip card back face'
+      },
+      {
+        name: 'Preloader BG',
+        css: 'radial-gradient(circle at 20% 20%, #232327 0%, #111214 60%, #090a0b 100%)',
+        usage: 'Preloader overlay background'
+      },
+      {
+        name: 'Bubble Glow',
+        css: 'radial-gradient(circle at 18% 24%, rgba(125, 212, 255, 0.3) 0%, transparent 52%), radial-gradient(circle at 82% 22%, rgba(255, 212, 132, 0.28) 0%, transparent 50%)',
+        usage: 'Hero bubble ambient glow'
+      },
+    ];
+
+    // ─── RENDER ───
+    const brandGrid = document.getElementById('brand-colors');
+    brandColors.forEach(c => renderColorCard(brandGrid, c));
+
+    const darkGrid = document.getElementById('dark-colors');
+    darkColors.forEach(c => renderColorCard(darkGrid, c));
+
+    const warmGrid = document.getElementById('warm-colors');
+    warmColors.forEach(c => renderColorCard(warmGrid, c));
+
+    const accentGrid = document.getElementById('accent-colors');
+    accentColors.forEach(c => renderColorCard(accentGrid, c));
+
+    const textGrid = document.getElementById('text-colors');
+    textColors.forEach(c => renderColorCard(textGrid, c));
+
+    const uiGrid = document.getElementById('ui-colors');
+    uiColors.forEach(c => renderColorCard(uiGrid, c));
+
+    const gradientGrid = document.getElementById('gradients');
+    gradients.forEach(g => renderGradientCard(gradientGrid, g));
+  </script>
+</body>
+</html>
