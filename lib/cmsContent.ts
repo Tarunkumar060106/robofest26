@@ -37,6 +37,7 @@ export interface RuleItem {
 export interface RulesContent {
   pageTitle: string;
   sectionTitle: string;
+  eventRulebooksState: "live" | "coming-soon";
   registerUrl: string;
   accommodationTitle: string;
   accommodationParagraphs: string[];
@@ -139,6 +140,7 @@ export const DEFAULT_CMS_CONTENT: CmsContent = {
   rules: {
     pageTitle: "Robofest Rule Book",
     sectionTitle: "General Rules",
+    eventRulebooksState: "live",
     registerUrl: "https://registration.isdlabsrm.in/",
     accommodationTitle: "Accommodation Details",
     accommodationParagraphs: [
