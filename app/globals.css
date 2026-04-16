@@ -334,12 +334,13 @@ body {
   flex-direction: column;
   gap: 1rem;
   will-change: transform, opacity;
-  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
 }
 
 .hero-header h1 {
   font-size: 7vw;
   font-weight: 800;
+  font-family: "AwesomeSerifVAR", Georgia, serif;
   line-height: 1;
   background: linear-gradient(
     120deg,
@@ -355,32 +356,44 @@ body {
 }
 
 .hero-header h3 {
-  font-size: 4vw;
-  font-weight: 500;
+  font-size: 4.8vw;
+  font-weight: 600;
 }
 
 .hero-header p {
-  font-size: 2rem;
-  font-weight: 600;
-  font-family: "AwesomeSerifItalic", Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 500;
 }
 
 .hero-department {
-  font-size: 4vw;
-  font-weight: 500;
+  font-size: 4.8vw;
+  font-weight: 600;
   line-height: 1.15;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-family: "SpaceGroteskMed", Arial, sans-serif;
   color: rgba(255, 255, 255, 0.88);
   margin: 0;
   margin-bottom: 0.5rem;
   font-style: normal;
 }
 
+.hero-header h3,
+.hero-department {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+}
+
+.hero-cross {
+  display: inline-block;
+  font-size: clamp(0.8rem, 1.4vw, 1.15rem);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
 @media (min-width: 1025px) {
+  .hero-header h3,
   .hero-department {
-    font-size: 1.5vw;
+    font-size: clamp(1.85rem, 2.35vw, 2.6rem);
   }
 }
 
@@ -1236,17 +1249,17 @@ body {
   }
 
   .hero-header h3 {
-    font-size: clamp(1.05rem, 4.8vw, 1.6rem);
+    font-size: clamp(1.3rem, 5.8vw, 2.1rem);
     line-height: 1.15;
   }
 
   .hero-department {
-    font-size: clamp(1.05rem, 4.8vw, 1.6rem);
+    font-size: clamp(1.3rem, 5.8vw, 2.1rem);
     line-height: 1.15;
   }
 
   .hero-header p {
-    font-size: clamp(0.95rem, 3.9vw, 1.2rem);
+    font-size: clamp(0.78rem, 2.9vw, 0.95rem);
     line-height: 1.2;
   }
 
@@ -1414,15 +1427,15 @@ body {
   }
 
   .hero-header h3 {
-    font-size: clamp(0.96rem, 4.9vw, 1.2rem);
+    font-size: clamp(1.15rem, 6.2vw, 1.6rem);
   }
 
   .hero-department {
-    font-size: clamp(0.82rem, 3.9vw, 0.98rem);
+    font-size: clamp(1.15rem, 6.2vw, 1.6rem);
   }
 
   .hero-header p {
-    font-size: clamp(0.82rem, 3.9vw, 0.98rem);
+    font-size: clamp(0.68rem, 3.2vw, 0.82rem);
   }
 
   .animated-icons {

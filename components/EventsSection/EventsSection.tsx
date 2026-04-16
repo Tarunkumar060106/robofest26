@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   DEFAULT_EVENTS,
@@ -59,6 +58,8 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const eyebrowRef = useRef<HTMLSpanElement>(null);
+  const expandedNumberRefs = useRef<Record<number, HTMLSpanElement | null>>({});
+  const countAnimationFrameRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [events, setEvents] = useState<EventItem[]>(DEFAULT_EVENTS);
   const isLive = state === "live";
@@ -90,10 +91,14 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
     };
   }, []);
 
-  const totalPrize = events.reduce((sum, ev) => {
-    const amount = Number(ev.prize.replace(/[^0-9]/g, ""));
-    return Number.isFinite(amount) ? sum + amount : sum;
-  }, 0);
+  const totalPrize = useMemo(
+    () =>
+      events.reduce((sum, ev) => {
+        const amount = Number(ev.prize.replace(/[^0-9]/g, ""));
+        return Number.isFinite(amount) ? sum + amount : sum;
+      }, 0),
+    [events],
+  );
 
   // ── GSAP entrance ──
   useEffect(() => {
@@ -101,11 +106,12 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
     const heading = headingRef.current;
     const eyebrow = eyebrowRef.current;
     if (!section || !heading || !eyebrow) return;
+    const isMobile = window.matchMedia("(max-width: 1024px)").matches;
     const shouldReduceMotion = window.matchMedia(
-      "(max-width: 1024px), (prefers-reduced-motion: reduce)",
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    gsap.registerPlugin(ScrollTrigger, SplitText);
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       gsap.fromTo(
         eyebrow,
@@ -119,30 +125,17 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
         },
       );
 
-      if (shouldReduceMotion) {
-        gsap.fromTo(
-          heading,
-          { autoAlpha: 0, y: 16 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.55,
-            ease: "power3.out",
-            scrollTrigger: { trigger: section, start: "top 74%" },
-          },
-        );
-      } else {
-        const split = new SplitText(heading, { type: "lines,words" });
-        gsap.set(split.words, { autoAlpha: 0, yPercent: 100 });
-        gsap.to(split.words, {
+      gsap.fromTo(
+        heading,
+        { autoAlpha: 0, y: isMobile ? 10 : 16 },
+        {
           autoAlpha: 1,
-          yPercent: 0,
-          duration: 0.8,
-          ease: "power4.out",
-          stagger: 0.055,
-          scrollTrigger: { trigger: section, start: "top 72%" },
-        });
-      }
+          y: 0,
+          duration: isMobile || shouldReduceMotion ? 0.45 : 0.65,
+          ease: "power3.out",
+          scrollTrigger: { trigger: section, start: "top 74%" },
+        },
+      );
 
       const panels = section.querySelectorAll(".acc-panel, .ev-cs-panel");
       gsap.fromTo(
@@ -152,9 +145,9 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
           autoAlpha: 1,
           y: 0,
           scaleY: 1,
-          duration: shouldReduceMotion ? 0.35 : 0.55,
+          duration: shouldReduceMotion || isMobile ? 0.28 : 0.5,
           ease: "power3.out",
-          stagger: shouldReduceMotion ? 0 : 0.055,
+          stagger: shouldReduceMotion || isMobile ? 0 : 0.05,
           scrollTrigger: { trigger: section, start: "top 62%" },
         },
       );
@@ -179,23 +172,48 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
     return () => ctx.revert();
   }, [isLive]);
 
+  useEffect(() => {
+    return () => {
+      if (countAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(countAnimationFrameRef.current);
+      }
+    };
+  }, []);
+
   // ── Panel open — number count-up ──
   const handlePanelClick = (i: number) => {
     const next = activeIndex === i ? null : i;
     setActiveIndex(next);
 
+    if (countAnimationFrameRef.current !== null) {
+      window.cancelAnimationFrame(countAnimationFrameRef.current);
+      countAnimationFrameRef.current = null;
+    }
+
     if (next !== null) {
-      // animate the expanded number ticking up
-      const numEl = document.querySelector(`.acc-num-expanded-${i}`);
-      if (numEl) {
-        const target = parseInt(events[i].number);
-        let current = 0;
-        const tick = setInterval(() => {
-          current++;
-          numEl.textContent = String(current).padStart(2, "0");
-          if (current >= target) clearInterval(tick);
-        }, 60);
-      }
+      const numEl = expandedNumberRefs.current[i];
+      const target = Number.parseInt(events[i].number, 10);
+      if (!numEl || !Number.isFinite(target)) return;
+
+      let start: number | null = null;
+      const duration = 280;
+      const animate = (now: number) => {
+        if (start === null) {
+          start = now;
+        }
+
+        const progress = Math.min((now - start) / duration, 1);
+        const value = Math.max(1, Math.round(progress * target));
+        numEl.textContent = String(value).padStart(2, "0");
+
+        if (progress < 1) {
+          countAnimationFrameRef.current = window.requestAnimationFrame(animate);
+        } else {
+          countAnimationFrameRef.current = null;
+        }
+      };
+
+      countAnimationFrameRef.current = window.requestAnimationFrame(animate);
     }
   };
 
@@ -270,6 +288,9 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                       <div className="acc-top-left">
                         <span
                           className={`acc-num-expanded acc-num-expanded-${i}`}
+                          ref={(el) => {
+                            expandedNumberRefs.current[i] = el;
+                          }}
                         >
                           {ev.number}
                         </span>

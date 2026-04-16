@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
+import { Analytics } from '@vercel/analytics/next';
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.vercel.app";
@@ -142,6 +144,15 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        <Script id="zoho-salesiq-init" strategy="afterInteractive">
+          {`window.$zoho=window.$zoho||{};$zoho.salesiq=$zoho.salesiq||{ready:function(){}};`}
+        </Script>
+        <Script
+          id="zsiqscript"
+          src="https://salesiq.zohopublic.in/widget?wc=siqe5af35de3fbd3b4214d534a2712885e2f1bf2973da60c6ab85e6fe4f208cacf1"
+          strategy="afterInteractive"
+        />
+        <Analytics />
         {children}
       </body>
     </html>

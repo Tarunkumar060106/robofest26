@@ -60,7 +60,7 @@
   font-size: clamp(48px, 6.5vw, 96px);
   font-weight: 800;
   line-height: 0.92;
-  color: #1a1612;
+  color: #ffffff;
   margin: 0;
   overflow: hidden;
 }
@@ -76,7 +76,7 @@
 .events-sub {
   font-family: "SpaceGroteskReg", Arial, sans-serif;
   font-size: clamp(13px, 1vw, 16px);
-  color: rgba(26, 22, 18, 0.42);
+  color: #ffffff;
   margin: 0;
   text-align: right;
   line-height: 1.65;
@@ -97,14 +97,14 @@
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.4);
+  color: #ffffff;
 }
 
 .events-prize-amount {
   font-family: "AwesomeSerifVAR", Georgia, serif;
   font-size: clamp(22px, 2vw, 30px);
   font-weight: 800;
-  color: #f5f0e8;
+  color: #ffffff;
   line-height: 1;
 }
 
@@ -145,17 +145,23 @@
   cursor: var(--cursor-pointer);
   flex: 1;
   transition:
-    flex 0.65s cubic-bezier(0.77, 0, 0.175, 1),
+    flex 0.48s cubic-bezier(0.77, 0, 0.175, 1),
     transform 0.3s ease,
     box-shadow 0.3s ease;
   user-select: none;
   transform-origin: bottom center;
-  will-change: transform;
+  contain: layout paint;
 }
 
-.acc-panel:not(.is-active):hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+@media (hover: hover) and (pointer: fine) {
+  .acc-panel {
+    will-change: transform;
+  }
+
+  .acc-panel:not(.is-active):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  }
 }
 
 .acc-panel.is-active {
@@ -218,7 +224,7 @@
   font-family: "AwesomeSerifVAR", Georgia, serif;
   font-size: 11px;
   font-weight: 700;
-  color: rgba(245, 240, 232, 0.3);
+  color: #ffffff;
   letter-spacing: 0.08em;
 }
 
@@ -245,7 +251,7 @@
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.35);
+  color: #ffffff;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
 }
@@ -259,6 +265,7 @@
   transition: opacity 0.25s ease 0s;
   z-index: 1;
   will-change: opacity;
+  contain: layout paint;
 }
 
 .acc-panel.is-active .acc-content {
@@ -294,7 +301,7 @@
   font-family: "AwesomeSerifVAR", Georgia, serif;
   font-size: 12px;
   font-weight: 700;
-  color: rgba(245, 240, 232, 0.3);
+  color: #ffffff;
   letter-spacing: 0.1em;
   font-variant-numeric: tabular-nums;
 }
@@ -310,7 +317,7 @@
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.5);
+  color: #ffffff;
   width: fit-content;
   /* starts hidden — GSAP animates it in */
   opacity: 0;
@@ -331,7 +338,7 @@
   border-radius: 50%;
   border: 1px solid rgba(245, 240, 232, 0.2);
   background: transparent;
-  color: rgba(245, 240, 232, 0.55);
+  color: #ffffff;
   font-size: 10px;
   display: flex;
   align-items: center;
@@ -364,7 +371,7 @@
   font-family: "SpaceGroteskReg", Arial, sans-serif;
   font-size: 13px;
   line-height: 1.65;
-  color: rgba(245, 240, 232, 0.55);
+  color: #ffffff;
   margin: 0 0 20px;
 }
 
@@ -516,7 +523,7 @@
   border-radius: 999px;
   border: 1px solid rgba(184, 50, 36, 0.3);
   background: rgba(184, 50, 36, 0.08);
-  color: #b83224;
+  color: #ffffff;
   font-family: "SpaceGroteskMed", Arial, sans-serif;
   font-size: 11px;
   letter-spacing: 0.18em;
@@ -538,14 +545,14 @@
   font-size: clamp(32px, 4vw, 60px);
   font-weight: 800;
   line-height: 1;
-  color: #1a1612;
+  color: #ffffff;
   text-align: center;
 }
 
 .ev-cs-heading em {
   font-family: "AwesomeSerifItalic", Georgia, serif;
   font-style: italic;
-  color: #b83224;
+  color: #ffffff;
   font-weight: 400;
 }
 
@@ -553,7 +560,7 @@
   margin: 0;
   font-family: "SpaceGroteskReg", Arial, sans-serif;
   font-size: clamp(13px, 1vw, 16px);
-  color: rgba(26, 22, 18, 0.5);
+  color: #ffffff;
   line-height: 1.65;
   text-align: center;
   max-width: 360px;
@@ -656,6 +663,7 @@
     flex: none;
     border-radius: 0;
     will-change: auto;
+    background-image: none;
   }
 
   .acc-panel.is-active {
@@ -700,11 +708,11 @@
     pointer-events: auto;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.35s ease;
+    transition: max-height 0.24s ease;
   }
 
   .acc-panel.is-active .acc-content {
-    max-height: 560px;
+    max-height: 520px;
   }
 
   .acc-content-inner {
@@ -713,6 +721,8 @@
     width: 100%;
     padding: 0 0.95rem 1rem;
     align-items: center;
+    content-visibility: auto;
+    contain-intrinsic-size: 460px;
   }
 
   .acc-top {

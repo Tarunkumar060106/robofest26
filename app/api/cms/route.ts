@@ -78,12 +78,7 @@ function mergeCmsContent(partial: CmsContentPatch): CmsContent {
   };
 }
 
-export async function GET(req: Request) {
-  const authError = ensureAuthorized(req);
-  if (authError) {
-    return authError;
-  }
-
+export async function GET() {
   try {
     const supabase = getSupabaseAdminClient();
     const { data, error } = await supabase
