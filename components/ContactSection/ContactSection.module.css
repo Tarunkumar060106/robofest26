@@ -356,3 +356,12 @@
     padding: 2.5rem 1.25rem;
   }
 }
+@media (max-width: 1024px) {
+  .contact-section {
+    padding: 5rem 3rem;
+  }
+
+  .contact-section .layout {
+    grid-template-columns: 1fr;
+  }
+}

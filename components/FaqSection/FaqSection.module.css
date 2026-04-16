@@ -231,3 +231,12 @@
     font-size: clamp(17px, 5.8vw, 22px);
   }
 }
+@media (max-width: 1024px) {
+  .faq-section .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-section .heading {
+    font-size: clamp(40px, 10vw, 64px);
+  }
+}

@@ -309,8 +309,59 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
         }
 
         @media (max-width: 640px) {
+          .countdown {
+            height: auto;
+            min-height: 54vh;
+            padding: 4.5rem 0.9rem 5rem;
+          }
+
+          .heading {
+            top: 1.25rem;
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+          }
+
+          .timerGrid {
+            width: 100%;
+            grid-template-columns: max-content max-content max-content max-content max-content max-content max-content;
+            grid-template-rows: auto auto;
+            column-gap: 0.02em;
+            row-gap: 0.5rem;
+            align-items: center;
+            transform: scale(0.9);
+            transform-origin: center;
+          }
+
+          .numberCell,
+          .colonCell {
+            font-size: clamp(2.3rem, 11vw, 3.7rem);
+          }
+
+          .labelCell {
+            font-size: 0.58rem;
+            letter-spacing: 0.12em;
+          }
+
+          .labelDays {
+            grid-column: 1;
+          }
+
+          .labelHours {
+            grid-column: 3;
+          }
+
+          .labelMinutes {
+            grid-column: 5;
+          }
+
+          .labelSeconds {
+            grid-column: 7;
+          }
+
           .calendarCta {
-            bottom: 1rem;
+            position: relative;
+            bottom: auto;
+            margin-top: 1.5rem;
             padding: 0.62rem 1.05rem;
             font-size: 0.86rem;
           }
