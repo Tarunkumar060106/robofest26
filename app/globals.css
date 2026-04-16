@@ -344,8 +344,8 @@ body {
   background: linear-gradient(
     120deg,
     #ffffff 0%,
-    #ffd9d9 28%,
-    #d10000 62%,
+    #ffe8d6 30%,
+    #ff9147 65%,
     #ffffff 100%
   );
   -webkit-background-clip: text;
@@ -363,6 +363,18 @@ body {
   font-size: 2rem;
   font-weight: 600;
   font-family: "AwesomeSerifItalic", Georgia, serif;
+}
+
+.hero-department span {
+  font-size: clamp(0.95rem, 1.5vw, 1.3rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-style: normal;
 }
 
 @keyframes bubbleRise {

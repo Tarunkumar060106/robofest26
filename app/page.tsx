@@ -9,7 +9,6 @@ import CountdownTimer from "@/components/CountdownTimer";
 import Navbar from "@/components/Navbar/Navbar";
 
 import Lenis from "lenis";
-import Script from "next/script";
 import EventsSection from "@/components/EventsSection/EventsSection";
 import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 import FAQSection from "@/components/FaqSection/FaqSection";
@@ -28,6 +27,8 @@ const PRELOADER_MIN_DURATION_MS = 4200;
 const PRELOADER_TICK_MS = 90;
 const PRELOADER_EXIT_DELAY_MS = 360;
 const HERO_SCROLL_DURATION_FACTOR = 0.65;
+const HERO_SCRIPT_ID = "hero-sample-animation-runtime";
+const HERO_STATE_KEY = "__robofestHeroScriptState";
 
 function isMobileViewport() {
   return window.matchMedia("(max-width: 1024px)").matches;
@@ -161,6 +162,22 @@ export default function Home() {
 
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isPreloaderDone) return;
+
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+
+    const timer = window.setTimeout(() => {
+      const target = document.getElementById(hash);
+      if (!target) return;
+
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 220);
+
+    return () => window.clearTimeout(timer);
+  }, [isPreloaderDone]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -958,17 +975,28 @@ export default function Home() {
     return () => clearTimeout(timeout);
   }, [isPreloaderDone]);
 
+  useEffect(() => {
+    if (!isHeroRevealed) return;
+
+    if (document.getElementById(HERO_SCRIPT_ID)) {
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = HERO_SCRIPT_ID;
+    script.src = "/scripts/hero.js";
+    script.type = "module";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      (window as any)[HERO_STATE_KEY]?.cleanup?.();
+      script.remove();
+    };
+  }, [isHeroRevealed]);
+
   return (
     <>
-      {isHeroRevealed ? (
-        <Script
-          id="hero-sample-animation"
-          src="/scripts/hero.js"
-          strategy="afterInteractive"
-          type="module"
-        />
-      ) : null}
-
       <div
         className={`site-preloader ${isPreloaderDone ? "is-hidden" : ""}`}
         aria-hidden={isPreloaderDone}
@@ -1037,12 +1065,15 @@ export default function Home() {
           {/* <div className="n_logo z-1"></div> */}
         </div>
         {/* Placeholder Sections */}
-        <main className="w-full">
+        <main id="top" className="w-full">
           <section
             ref={heroSectionRef}
             className={`hero-section ${isHeroRevealed ? "is-visible" : ""}`}
           >
             <div className="hero-header">
+              <span className="hero-department">
+                Department of Computing Technologies
+              </span>
               <h1>ROBOFEST 2.0</h1>
               <p>In collaboration with</p>
               <h3>SRM Directorate of Sports</h3>
@@ -1203,7 +1234,7 @@ export default function Home() {
               </div>
 
               {/* ── SECTION 3 — Photo gallery strip ── */}
-              <div className="scroll-section gallery-slide">
+              <div id="gallery" className="scroll-section gallery-slide">
                 <div className="gallery-header">
                   <span className="lookback-eyebrow">Moments</span>
                   <h2 className="gallery-heading">
@@ -1317,7 +1348,9 @@ export default function Home() {
             <CountdownTimer targetDate={EVENT_DATE} />
           </section>
 
-          <EventsSection state="coming-soon" />
+          <section id="events">
+            <EventsSection state="live" />
+          </section>
 
           <PatronsSection ref={patronsSectionRef} />
 
@@ -1327,7 +1360,9 @@ export default function Home() {
           <FAQSection />
 
           {/* Contact Section */}
-          <ContactSection ref={contactSectionRef} />
+          <section id="contact">
+            <ContactSection ref={contactSectionRef} />
+          </section>
         </main>
 
         {/* Custom Scrollbar */}
