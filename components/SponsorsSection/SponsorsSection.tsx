@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { DEFAULT_CMS_CONTENT, type SponsorsContent } from "@/lib/cmsContent";
 import "./SponsorsSection.css";
 
 type SponsorsSectionState = "live" | "coming-soon";
@@ -8,30 +9,7 @@ interface SponsorsSectionProps {
   state?: SponsorsSectionState;
 }
 
-const SPONSORS_ROW_1 = [
-  { name: "TechCore" },
-  { name: "NovaSys" },
-  { name: "ArcFlux" },
-  { name: "Quantum" },
-  { name: "ByteForge" },
-  { name: "PulseAI" },
-  { name: "IronGrid" },
-  { name: "VoltEdge" },
-  { name: "NexGen" },
-  { name: "CoreMind" },
-];
-const SPONSORS_ROW_2 = [
-  { name: "SkyLoop" },
-  { name: "DriveX" },
-  { name: "CypherLab" },
-  { name: "OmniBot" },
-  { name: "FusionHub" },
-  { name: "SignalWave" },
-  { name: "MetaFrame" },
-  { name: "SonicPath" },
-  { name: "BitRover" },
-  { name: "EchoSpark" },
-];
+const DEFAULT_SPONSORS = DEFAULT_CMS_CONTENT.sponsors;
 
 function SponsorLogo({ name }: { name: string }) {
   const hash = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -181,7 +159,7 @@ function MarqueeRow({
   );
 }
 
-function ComingSoonIdle() {
+function ComingSoonIdle({ ctaText, ctaUrl }: { ctaText: string; ctaUrl: string }) {
   return (
     <div className="sponsors-idle-wrap">
       {/* Blurred ghost grid behind */}
@@ -209,8 +187,8 @@ function ComingSoonIdle() {
           <br />
           Check back closer to the event.
         </p>
-        <a href="#" className="sponsors-cta-btn">
-          Become a Sponsor <span className="sponsors-cta-arrow">→</span>
+        <a href={ctaUrl} className="sponsors-cta-btn">
+          {ctaText} <span className="sponsors-cta-arrow">→</span>
         </a>
       </div>
     </div>
@@ -220,42 +198,72 @@ function ComingSoonIdle() {
 export default function SponsorsSection({
   state = "live",
 }: SponsorsSectionProps) {
-  const isLive = state === "live";
+  const [content, setContent] = useState<SponsorsContent>(DEFAULT_SPONSORS);
+  const [cmsState, setCmsState] = useState<SponsorsSectionState | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSponsors = async () => {
+      try {
+        const response = await fetch("/api/cms", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = await response.json();
+
+        if (isMounted && payload?.content?.sponsors) {
+          setContent(payload.content.sponsors as SponsorsContent);
+        }
+
+        if (
+          isMounted &&
+          (payload?.content?.siteSettings?.sponsorsState === "live" ||
+            payload?.content?.siteSettings?.sponsorsState === "coming-soon")
+        ) {
+          setCmsState(payload.content.siteSettings.sponsorsState);
+        }
+      } catch {
+        // Keep defaults when API is unavailable.
+      }
+    };
+
+    loadSponsors();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const isLive = (cmsState ?? state) === "live";
+  const sponsorsRow1 = content.row1.map((name) => ({ name }));
+  const sponsorsRow2 = content.row2.map((name) => ({ name }));
+
   return (
     <section className="sponsors-section">
       <div className="sponsors-grid-bg" />
 
       <div className="sponsors-header">
-        <p className="sponsors-eyebrow">Sponsors</p>
+        <p className="sponsors-eyebrow">{content.eyebrow}</p>
         <h2 className="sponsors-heading">
-          Our <em>Partners</em>
+          {content.headingPrefix} <em>{content.headingEmphasis}</em>
         </h2>
-        <p className="sponsors-subtext">
-          Proudly backed by industry leaders who believe in the next generation
-          of robotics innovators.
-        </p>
+        <p className="sponsors-subtext">{content.subtext}</p>
       </div>
 
       {isLive && (
         <>
           <div className="sponsors-band">
-            <MarqueeRow sponsors={SPONSORS_ROW_1} direction="left" speed={40} />
-            <MarqueeRow
-              sponsors={SPONSORS_ROW_2}
-              direction="right"
-              speed={32}
-            />
+            <MarqueeRow sponsors={sponsorsRow1} direction="left" speed={40} />
+            <MarqueeRow sponsors={sponsorsRow2} direction="right" speed={32} />
           </div>
           <div className="sponsors-fade" />
           <div className="sponsors-cta-wrap">
-            <a href="#" className="sponsors-cta-btn">
-              Become a Sponsor <span className="sponsors-cta-arrow">→</span>
+            <a href={content.ctaUrl} className="sponsors-cta-btn">
+              {content.ctaText} <span className="sponsors-cta-arrow">→</span>
             </a>
           </div>
         </>
       )}
 
-      {!isLive && <ComingSoonIdle />}
+      {!isLive && <ComingSoonIdle ctaText={content.ctaText} ctaUrl={content.ctaUrl} />}
     </section>
   );
 }

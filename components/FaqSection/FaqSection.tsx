@@ -4,46 +4,44 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import { DEFAULT_CMS_CONTENT, type FaqItem } from "@/lib/cmsContent";
 import styles from "./FaqSection.module.css";
-
-const FAQS = [
-  {
-    q: "What is Robofest?",
-    a: "Robofest is SRMIST's flagship annual robotics competition and festival — bringing together students, engineers, and innovators to compete, build, and push the limits of autonomous machines.",
-  },
-  {
-    q: "Who can participate?",
-    a: "Anyone passionate about robotics — from school students to college teams. Teams of up to 4 members can register across multiple event categories.",
-  },
-  {
-    q: "What events are part of Robofest 2.0?",
-    a: "Robofest 2.0 features multiple events including line following, maze solving, sumo bots, freestyle robotics, and more. Full event details will be announced soon.",
-  },
-  {
-    q: "How do I register?",
-    a: "Registration will open shortly. Click the 'Register Now' button in the CTA bar or keep an eye on our official announcements for the registration link.",
-  },
-  {
-    q: "What is the prize pool?",
-    a: "Robofest 2.0 has a total prize pool of ₹2L+ across 15+ categories. Individual event prize breakdowns will be announced with the event schedule.",
-  },
-  {
-    q: "Where is Robofest held?",
-    a: "Robofest takes place at the SRM Institute of Science and Technology, Kattankulathur, Chennai. The event spans multiple arenas within the campus.",
-  },
-  {
-    q: "Is accommodation provided?",
-    a: "Outstation participants may avail campus accommodation at a nominal fee. Details will be shared upon registration confirmation.",
-  },
-];
 
 export default function FAQSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const [faqs, setFaqs] = useState<FaqItem[]>(DEFAULT_CMS_CONTENT.faqs);
   const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    FAQS.forEach((_, i) => {
+    let isMounted = true;
+
+    const loadFaqs = async () => {
+      try {
+        const response = await fetch("/api/cms", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = await response.json();
+        if (
+          isMounted &&
+          Array.isArray(payload?.content?.faqs) &&
+          payload.content.faqs.length > 0
+        ) {
+          setFaqs(payload.content.faqs as FaqItem[]);
+          setOpenIdx(0);
+        }
+      } catch {
+        // Keep default FAQ content when API is unavailable.
+      }
+    };
+
+    loadFaqs();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    faqs.forEach((_, i) => {
       const el = answerRefs.current[i];
       if (!el) return;
       const inner = el.querySelector<HTMLElement>(`.${styles.answerInner}`);
@@ -58,7 +56,7 @@ export default function FAQSection() {
         gsap.to(el, { height: 0, duration: 0.4, ease: "power3.inOut" });
       }
     });
-  }, [openIdx]);
+  }, [openIdx, faqs]);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -140,7 +138,7 @@ export default function FAQSection() {
             Everything you need to know before you show up and compete.
           </p>
           <div className={styles.countBadge}>
-            <span className={styles.countNum}>{FAQS.length}</span>
+            <span className={styles.countNum}>{faqs.length}</span>
             <span className={styles.countLabel}>
               questions
               <br />
@@ -150,7 +148,7 @@ export default function FAQSection() {
         </div>
 
         <div className={styles.list}>
-          {FAQS.map((faq, i) => (
+          {faqs.map((faq, i) => (
             <div
               key={i}
               className={`${styles.item}${openIdx === i ? ` ${styles.itemOpen}` : ""}`}

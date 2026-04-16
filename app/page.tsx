@@ -14,8 +14,8 @@ import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 import FAQSection from "@/components/FaqSection/FaqSection";
 import PatronsSection from "@/components/PatronsSection/PatronsSection";
 import ContactSection from "@/components/ContactSection/ContactSection";
+import { DEFAULT_CMS_CONTENT } from "@/lib/cmsContent";
 
-const EVENT_DATE = new Date("2026-08-19T00:10:00+05:30");
 const PRELOADER_FRAMES = [
   "camo.png",
   "leather.png",
@@ -34,9 +34,9 @@ function isMobileViewport() {
   return window.matchMedia("(max-width: 1024px)").matches;
 }
 
-function getDaysLeft() {
+function getDaysLeft(eventDate: Date) {
   const now = new Date();
-  const diffMs = EVENT_DATE.getTime() - now.getTime();
+  const diffMs = eventDate.getTime() - now.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   return Math.max(0, diffDays);
@@ -51,6 +51,15 @@ function getLoadingText(progress: number) {
 }
 
 export default function Home() {
+  const [siteSettings, setSiteSettings] = useState(
+    DEFAULT_CMS_CONTENT.siteSettings,
+  );
+  const eventDate = useMemo(
+    () => new Date(siteSettings.eventDateIso),
+    [siteSettings.eventDateIso],
+  );
+  const heroLines = siteSettings.heroAnimatedLines;
+
   // Showreel video controls state
   const showreelVideoRef = useRef<HTMLVideoElement | null>(null);
   const [isShowreelPlaying, setIsShowreelPlaying] = useState(false);
@@ -115,7 +124,7 @@ export default function Home() {
     video.currentTime = time;
     setShowreelCurrentTime(time);
   };
-  const [daysLeft, setDaysLeft] = useState<number>(getDaysLeft());
+  const [daysLeft, setDaysLeft] = useState<number>(getDaysLeft(eventDate));
   const [scrollThumbHeight, setScrollThumbHeight] = useState(80);
   const [scrollThumbTop, setScrollThumbTop] = useState(0);
   const [preloaderFrame, setPreloaderFrame] = useState(0);
@@ -156,11 +165,38 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setDaysLeft(getDaysLeft(eventDate));
+
     const timer = window.setInterval(() => {
-      setDaysLeft(getDaysLeft());
+      setDaysLeft(getDaysLeft(eventDate));
     }, 60000);
 
     return () => window.clearInterval(timer);
+  }, [eventDate]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSiteSettings = async () => {
+      try {
+        const response = await fetch("/api/cms", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = await response.json();
+        if (isMounted && payload?.content?.siteSettings) {
+          setSiteSettings((prev) => ({
+            ...prev,
+            ...payload.content.siteSettings,
+          }));
+        }
+      } catch {
+        // Keep fallback defaults when API is unavailable.
+      }
+    };
+
+    loadSiteSettings();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -1059,13 +1095,13 @@ export default function Home() {
               days.
             </p>
             <a
-              href="https://registration.isdlabsrm.in/"
+              href={siteSettings.registrationUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="n_button"
               data-cta-content
             >
-              {/* Register Now */}
+              {/* {siteSettings.ctaLabel} */}
             </a>
           </div>
           {/* <div className="n_logo z-1"></div> */}
@@ -1078,11 +1114,11 @@ export default function Home() {
           >
             <div className="hero-header">
               <span className="hero-department">
-                Department of Computing Technologies
+                {siteSettings.heroDepartment}
               </span>
-              <h1>ROBOFEST 2.0</h1>
-              <p>In collaboration with</p>
-              <h3>SRM Directorate of Sports</h3>
+              <h1>{siteSettings.heroTitle}</h1>
+              <p>{siteSettings.heroCollabPrefix}</p>
+              <h3>{siteSettings.heroCollabOrg}</h3>
             </div>
 
             <div className="animated-icons">
@@ -1105,21 +1141,21 @@ export default function Home() {
 
             <h1 className="animated-text">
               <div className="placeholder-icon"></div>
-              <span className="text-segment">Build the future</span>
+              <span className="text-segment">{heroLines[0] ?? "Build the future"}</span>
 
               <div className="placeholder-icon"></div>
-              <span className="text-segment">compete with precision.</span>
+              <span className="text-segment">{heroLines[1] ?? "compete with precision."}</span>
 
-              <span className="text-segment">Push your limits </span>
-
-              <div className="placeholder-icon"></div>
-              <span className="text-segment">in robotics</span>
+              <span className="text-segment">{heroLines[2] ?? "Push your limits"}</span>
 
               <div className="placeholder-icon"></div>
-              <span className="text-segment">innovation and speed</span>
+              <span className="text-segment">{heroLines[3] ?? "in robotics"}</span>
 
               <div className="placeholder-icon"></div>
-              <span className="text-segment">at Robofest.</span>
+              <span className="text-segment">{heroLines[4] ?? "innovation and speed"}</span>
+
+              <div className="placeholder-icon"></div>
+              <span className="text-segment">{heroLines[5] ?? "at Robofest."}</span>
             </h1>
           </section>
 
@@ -1351,7 +1387,7 @@ export default function Home() {
 
           {/* Countdown Timer Section */}
           <section className="w-full">
-            <CountdownTimer targetDate={EVENT_DATE} />
+            <CountdownTimer targetDate={eventDate} />
           </section>
 
           <section id="events">
@@ -1360,7 +1396,7 @@ export default function Home() {
 
           <PatronsSection ref={patronsSectionRef} />
 
-          <SponsorsSection state="coming-soon" />
+          <SponsorsSection state={siteSettings.sponsorsState} />
 
           {/* FAQ Section */}
           <FAQSection />
