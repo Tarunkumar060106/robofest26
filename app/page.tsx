@@ -1058,7 +1058,13 @@ export default function Home() {
             <p className="p_small" data-cta-content>
               days.
             </p>
-            <a href="/coming-soon" className="n_button" data-cta-content>
+            <a
+              href="https://registration.isdlabsrm.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="n_button"
+              data-cta-content
+            >
               {/* Register Now */}
             </a>
           </div>

@@ -387,7 +387,12 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                       ))}
                     </div>
 
-                    <a href="#" className="acc-register-btn">
+                    <a
+                      href="https://registration.isdlabsrm.in/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="acc-register-btn"
+                    >
                       Register Now →
                     </a>
                   </div>

@@ -290,7 +290,9 @@ export default function Navbar() {
           <div className="menu-register-cta-wrap">
             <a
               className="menu-register-cta"
-              href="/coming-soon"
+              href="https://registration.isdlabsrm.in/"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Register now for Robofest 2.0"
             >
               <span className="menu-register-cta-copy">
