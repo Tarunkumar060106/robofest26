@@ -49,7 +49,16 @@ const measureCenterStop = () => {
   // Reset transform before measuring so refresh/reload from mid-page remains stable.
   gsap.set(animatedIcons, { x: 0, y: 0, scale: 1 });
   const rect = animatedIcons.getBoundingClientRect();
-  centerStopY = window.innerHeight / 2 - (rect.top + rect.height / 2);
+  const measuredOffset = window.innerHeight / 2 - (rect.top + rect.height / 2);
+  // Icons should always travel upward from their bottom start position.
+  centerStopY = Math.min(measuredOffset, -12);
+};
+
+const resetIconTransforms = () => {
+  gsap.set(animatedIcons, { x: 0, y: 0, scale: 1, opacity: 1 });
+  iconElements.forEach((icon) => {
+    gsap.set(icon, { x: 0, y: 0 });
+  });
 };
 
 const clearDuplicateIcons = () => {
@@ -64,6 +73,7 @@ const clearDuplicateIcons = () => {
 };
 
 measureCenterStop();
+resetIconTransforms();
 
 const handleResize = () => {
   measureCenterStop();
@@ -317,5 +327,9 @@ window[HERO_STATE_KEY] = {
     heroTrigger.kill();
     clearDuplicateIcons();
     window.removeEventListener("resize", handleResize);
+    gsap.set(animatedIcons, { clearProps: "transform,opacity" });
+    gsap.set(iconElements, { clearProps: "transform,opacity" });
+    gsap.set(heroHeader, { clearProps: "transform,opacity" });
+    heroSection.style.backgroundColor = "";
   },
 };

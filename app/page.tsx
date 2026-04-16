@@ -1,5 +1,4 @@
 "use client";
-import CardFlip from "../components/CardFlip";
 
 import { useEffect, useRef, useState, useMemo } from "react";
 import { gsap } from "gsap";
@@ -26,6 +25,7 @@ const PRELOADER_FRAMES = [
 const PRELOADER_MIN_DURATION_MS = 4200;
 const PRELOADER_TICK_MS = 90;
 const PRELOADER_EXIT_DELAY_MS = 360;
+const PRELOADER_SESSION_KEY = "robofest.preloader.seen";
 const HERO_SCROLL_DURATION_FACTOR = 0.65;
 const HERO_SCRIPT_ID = "hero-sample-animation-runtime";
 const HERO_STATE_KEY = "__robofestHeroScriptState";
@@ -34,9 +34,8 @@ function isMobileViewport() {
   return window.matchMedia("(max-width: 1024px)").matches;
 }
 
-function getDaysLeft(eventDate: Date) {
-  const now = new Date();
-  const diffMs = eventDate.getTime() - now.getTime();
+function getDaysLeft(eventDate: Date, nowMs = Date.now()) {
+  const diffMs = eventDate.getTime() - nowMs;
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   return Math.max(0, diffDays);
@@ -58,6 +57,8 @@ export default function Home() {
     () => new Date(siteSettings.eventDateIso),
     [siteSettings.eventDateIso],
   );
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  const daysLeft = useMemo(() => getDaysLeft(eventDate, nowMs), [eventDate, nowMs]);
   const heroLines = siteSettings.heroAnimatedLines;
 
   // Showreel video controls state
@@ -90,15 +91,28 @@ export default function Home() {
     const label = document.createElement("div");
     label.className = "showreel-cursor-label"; // position:fixed, pointer-events:none
     document.body.appendChild(label);
-    frame?.addEventListener("mousemove", (e: MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
       label.style.left = e.clientX + 12 + "px";
       label.style.top = e.clientY + 12 + "px";
-    });
-    frame?.addEventListener("mouseenter", () => (label.style.opacity = "1"));
-    frame?.addEventListener("mouseleave", () => (label.style.opacity = "0"));
+    };
+    const handleMouseEnter = () => {
+      label.style.opacity = "1";
+    };
+    const handleMouseLeave = () => {
+      label.style.opacity = "0";
+    };
+
+    frame?.addEventListener("mousemove", handleMouseMove);
+    frame?.addEventListener("mouseenter", handleMouseEnter);
+    frame?.addEventListener("mouseleave", handleMouseLeave);
+
     return () => {
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
+      frame?.removeEventListener("mousemove", handleMouseMove);
+      frame?.removeEventListener("mouseenter", handleMouseEnter);
+      frame?.removeEventListener("mouseleave", handleMouseLeave);
+      label.remove();
     };
   }, []);
 
@@ -106,7 +120,13 @@ export default function Home() {
   const handleShowreelTimeUpdate = (
     e: React.SyntheticEvent<HTMLVideoElement>,
   ) => {
-    setShowreelCurrentTime(e.currentTarget.currentTime);
+    const currentTime = e.currentTarget.currentTime;
+    if (Math.abs(currentTime - showreelCurrentTimeRef.current) < 0.08) {
+      return;
+    }
+
+    showreelCurrentTimeRef.current = currentTime;
+    setShowreelCurrentTime(currentTime);
   };
 
   // Metadata loaded handler (for duration)
@@ -122,11 +142,9 @@ export default function Home() {
     if (!video) return;
     const time = parseFloat(e.target.value);
     video.currentTime = time;
+    showreelCurrentTimeRef.current = time;
     setShowreelCurrentTime(time);
   };
-  const [daysLeft, setDaysLeft] = useState<number>(getDaysLeft(eventDate));
-  const [scrollThumbHeight, setScrollThumbHeight] = useState(80);
-  const [scrollThumbTop, setScrollThumbTop] = useState(0);
   const [preloaderFrame, setPreloaderFrame] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(1);
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
@@ -151,6 +169,9 @@ export default function Home() {
   const footerRef = useRef<HTMLElement | null>(null);
   const isCtaManuallyExpandedRef = useRef(false);
   const lenisRef = useRef<Lenis | null>(null);
+  const showreelCurrentTimeRef = useRef(0);
+  const scrollThumbHeightRef = useRef(80);
+  const scrollRafIdRef = useRef<number | null>(null);
 
   const handleCtaClick = () => {
     if (isCtaCompactRef.current) {
@@ -165,14 +186,22 @@ export default function Home() {
   };
 
   useEffect(() => {
-    setDaysLeft(getDaysLeft(eventDate));
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
     const timer = window.setInterval(() => {
-      setDaysLeft(getDaysLeft(eventDate));
+      setNowMs(Date.now());
     }, 60000);
 
     return () => window.clearInterval(timer);
-  }, [eventDate]);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -325,6 +354,16 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const hasSeenPreloader =
+      window.sessionStorage.getItem(PRELOADER_SESSION_KEY) === "1";
+
+    if (hasSeenPreloader) {
+      setPreloaderFrame(PRELOADER_FRAMES.length - 1);
+      setLoadingProgress(100);
+      setIsPreloaderDone(true);
+      return;
+    }
+
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -355,6 +394,7 @@ export default function Home() {
 
       setLoadingProgress(100);
       finishTimeoutId = window.setTimeout(() => {
+        window.sessionStorage.setItem(PRELOADER_SESSION_KEY, "1");
         setIsPreloaderDone(true);
       }, PRELOADER_EXIT_DELAY_MS);
     };
@@ -487,37 +527,7 @@ export default function Home() {
   }, [isPreloaderDone]);
 
   useEffect(() => {
-    const isProbeInsideSection = (
-      sectionEl: HTMLElement | null,
-      probeY: number,
-    ) => {
-      // Data for horizontal slides
-      const robofestSlides = [
-        {
-          title: "👣 Footfall",
-          stat: "Over 350+ attendees",
-          desc: "Robofest 2025 saw record-breaking participation and energy from students, mentors, and visitors.",
-          img: "/images/hero-svgs/footfall.svg",
-          imgAlt: "Footfall",
-        },
-        {
-          title: "🤖 Teams",
-          stat: "170+ teams from 43+ colleges.",
-          desc: "Young innovators from across the region competed in a variety of robotics challenges.",
-          img: "/images/hero-svgs/teams.svg",
-          imgAlt: "Teams",
-        },
-        {
-          title: "🏆 Awards",
-          stat: "15+ categories recognized",
-          desc: "Celebrating creativity, teamwork, and technical excellence in robotics and automation.",
-          img: "/images/hero-svgs/awards.svg",
-          imgAlt: "Awards",
-        },
-      ];
-
-      menuOpenRef.current = false;
-    };
+    menuOpenRef.current = false;
   }, []);
 
   useEffect(() => {
@@ -658,28 +668,19 @@ export default function Home() {
       ctaBarRef.current?.classList.toggle("is-visible", pastHero);
       const probeY = scrollTop + window.innerHeight * 0.5;
 
-      // 👇 If scroll section is pinned, it controls the CTA — don't touch it
       if (!isScrollSectionPinnedRef.current) {
         const shouldCloseCta =
-          pastHero ||
-          menuOpenRef.current ||
-          isProbeInsideSection(sectionFourRef.current, probeY) ||
-          isProbeInsideSection(patronsSectionRef.current, probeY) ||
-          isProbeInsideSection(contactSectionRef.current, probeY);
+          !isCtaManuallyExpandedRef.current &&
+          (pastHero ||
+            menuOpenRef.current ||
+            isProbeInsideSection(sectionFourRef.current, probeY) ||
+            isProbeInsideSection(patronsSectionRef.current, probeY) ||
+            isProbeInsideSection(contactSectionRef.current, probeY));
         ctaAnimateRef.current(shouldCloseCta);
 
         const shouldHideCta = isProbeInsideSection(footerRef.current, probeY);
         ctaSetHiddenRef.current(shouldHideCta);
       }
-
-      const shouldCloseCta =
-        !isCtaManuallyExpandedRef.current &&
-        (pastHero ||
-          menuOpenRef.current ||
-          isProbeInsideSection(sectionFourRef.current, probeY) ||
-          isProbeInsideSection(patronsSectionRef.current, probeY) ||
-          isProbeInsideSection(contactSectionRef.current, probeY));
-      ctaAnimateRef.current(shouldCloseCta);
 
       // Scrollbar thumb — always update regardless
       const docHeight =
@@ -687,23 +688,45 @@ export default function Home() {
       const trackHeight =
         trackRef.current?.clientHeight ?? window.innerHeight * 0.36;
       const thumbHeight = Math.min(56, trackHeight * 0.4);
+      const thumb = thumbRef.current;
 
       if (docHeight > 0) {
         const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
         const progress = Math.min(Math.max(scrollTop / docHeight, 0), 1);
         const thumbTop = progress * maxThumbTop;
-        setScrollThumbHeight(thumbHeight);
-        setScrollThumbTop(thumbTop);
+        scrollThumbHeightRef.current = thumbHeight;
+        if (thumb) {
+          thumb.style.height = `${thumbHeight}px`;
+          thumb.style.top = `${thumbTop}px`;
+        }
       } else {
-        setScrollThumbHeight(thumbHeight);
-        setScrollThumbTop(0);
+        scrollThumbHeightRef.current = thumbHeight;
+        if (thumb) {
+          thumb.style.height = `${thumbHeight}px`;
+          thumb.style.top = "0px";
+        }
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const handleScrollRaf = () => {
+      if (scrollRafIdRef.current !== null) return;
+      scrollRafIdRef.current = window.requestAnimationFrame(() => {
+        scrollRafIdRef.current = null;
+        handleScroll();
+      });
+    };
+
+    window.addEventListener("scroll", handleScrollRaf, { passive: true });
+    window.addEventListener("resize", handleScrollRaf);
     handleScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScrollRaf);
+      window.removeEventListener("resize", handleScrollRaf);
+      if (scrollRafIdRef.current !== null) {
+        window.cancelAnimationFrame(scrollRafIdRef.current);
+      }
+    };
   }, []);
 
   // Scrollbar drag functionality
@@ -733,7 +756,7 @@ export default function Home() {
       const trackHeight = track.clientHeight;
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
-      const maxThumbTop = trackHeight - scrollThumbHeight;
+      const maxThumbTop = trackHeight - scrollThumbHeightRef.current;
 
       if (maxThumbTop > 0) {
         const scrollDelta = (deltaY / maxThumbTop) * docHeight;
@@ -771,7 +794,7 @@ export default function Home() {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [scrollThumbHeight]);
+  }, []);
 
   useEffect(() => {
     if (!isPreloaderDone) {
@@ -1116,9 +1139,10 @@ export default function Home() {
               <span className="hero-department">
                 {siteSettings.heroDepartment}
               </span>
-              <h1>{siteSettings.heroTitle}</h1>
-              <p>{siteSettings.heroCollabPrefix}</p>
+              <span className="hero-cross">X</span>
               <h3>{siteSettings.heroCollabOrg}</h3>
+              <p>{siteSettings.heroCollabPrefix}</p>
+              <h1>{siteSettings.heroTitle}</h1>
             </div>
 
             <div className="animated-icons">
@@ -1413,8 +1437,8 @@ export default function Home() {
             ref={thumbRef}
             className="custom-scrollbar-thumb"
             style={{
-              height: `${scrollThumbHeight}px`,
-              top: `${scrollThumbTop}px`,
+              height: "80px",
+              top: "0px",
             }}
           />
         </div>
