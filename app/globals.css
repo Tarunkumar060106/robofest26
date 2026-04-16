@@ -365,16 +365,23 @@ body {
   font-family: "AwesomeSerifItalic", Georgia, serif;
 }
 
-.hero-department span {
-  font-size: clamp(0.95rem, 1.5vw, 1.3rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+.hero-department {
+  font-size: 4vw;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   font-family: "SpaceGroteskMed", Arial, sans-serif;
   color: rgba(255, 255, 255, 0.88);
   margin: 0;
   margin-bottom: 0.5rem;
   font-style: normal;
+}
+
+@media (min-width: 1025px) {
+  .hero-department {
+    font-size: 1.5vw;
+  }
 }
 
 @keyframes bubbleRise {
@@ -1233,6 +1240,11 @@ body {
     line-height: 1.15;
   }
 
+  .hero-department {
+    font-size: clamp(1.05rem, 4.8vw, 1.6rem);
+    line-height: 1.15;
+  }
+
   .hero-header p {
     font-size: clamp(0.95rem, 3.9vw, 1.2rem);
     line-height: 1.2;
@@ -1403,6 +1415,10 @@ body {
 
   .hero-header h3 {
     font-size: clamp(0.96rem, 4.9vw, 1.2rem);
+  }
+
+  .hero-department {
+    font-size: clamp(0.82rem, 3.9vw, 0.98rem);
   }
 
   .hero-header p {

@@ -6,9 +6,16 @@ import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import "./styles.css";
 import { splitTextIntoSpans } from "@/lib/utils";
+import { DEFAULT_CMS_CONTENT } from "@/lib/cmsContent";
 
 export default function Navbar() {
   const [currentImage, setCurrentImage] = useState(0);
+  const [registrationUrl, setRegistrationUrl] = useState(
+    DEFAULT_CMS_CONTENT.siteSettings.registrationUrl,
+  );
+  const [menuRegisterSubtext, setMenuRegisterSubtext] = useState(
+    DEFAULT_CMS_CONTENT.siteSettings.menuRegisterSubtext,
+  );
 
   const handleMenuLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
     const href = event.currentTarget.getAttribute("href") || "";
@@ -79,6 +86,34 @@ export default function Navbar() {
       setCurrentImage((prev) => (prev + 1) % logos.length);
     }, 2000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSiteSettings = async () => {
+      try {
+        const response = await fetch("/api/cms", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = await response.json();
+        const settings = payload?.content?.siteSettings;
+        if (!isMounted || !settings) return;
+
+        if (typeof settings.registrationUrl === "string") {
+          setRegistrationUrl(settings.registrationUrl);
+        }
+        if (typeof settings.menuRegisterSubtext === "string") {
+          setMenuRegisterSubtext(settings.menuRegisterSubtext);
+        }
+      } catch {
+        // Keep defaults if CMS API is unavailable.
+      }
+    };
+
+    loadSiteSettings();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -274,6 +309,9 @@ export default function Navbar() {
               </a>
             </div>
             <div className="link">
+              <a href="/rules">Rules</a>
+            </div>
+            <div className="link">
               <a href="/sponsors">Sponsors</a>
             </div>
             <div className="link">
@@ -290,14 +328,14 @@ export default function Navbar() {
           <div className="menu-register-cta-wrap">
             <a
               className="menu-register-cta"
-              href="https://registration.isdlabsrm.in/"
+              href={registrationUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Register now for Robofest 2.0"
             >
               <span className="menu-register-cta-copy">
                 <span className="menu-register-cta-title">Register Now</span>
-                <span className="menu-register-cta-sub">Limited slots</span>
+                <span className="menu-register-cta-sub">{menuRegisterSubtext}</span>
               </span>
               <span className="menu-register-cta-arrow" aria-hidden>
                 {"→"}
