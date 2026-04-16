@@ -10,6 +10,26 @@ type CmsContentPatch = {
   rules?: Partial<CmsContent["rules"]>;
 };
 
+function ensureAuthorized(req: Request): NextResponse | null {
+  const configuredKey = process.env.CMS_ADMIN_KEY;
+  if (!configuredKey) {
+    return NextResponse.json(
+      {
+        error:
+          "CMS auth is not configured. Set CMS_ADMIN_KEY in your server environment.",
+      },
+      { status: 500 },
+    );
+  }
+
+  const providedKey = req.headers.get("x-cms-key");
+  if (!providedKey || providedKey !== configuredKey) {
+    return NextResponse.json({ error: "Unauthorized CMS request." }, { status: 401 });
+  }
+
+  return null;
+}
+
 function mergeCmsContent(partial: CmsContentPatch): CmsContent {
   return {
     siteSettings: {
@@ -58,7 +78,12 @@ function mergeCmsContent(partial: CmsContentPatch): CmsContent {
   };
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const authError = ensureAuthorized(req);
+  if (authError) {
+    return authError;
+  }
+
   try {
     const supabase = getSupabaseAdminClient();
     const { data, error } = await supabase
@@ -101,6 +126,11 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
+  const authError = ensureAuthorized(req);
+  if (authError) {
+    return authError;
+  }
+
   let body: { content?: CmsContentPatch };
 
   try {
