@@ -307,7 +307,7 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                     </div>
 
                     <a
-                      href="https://registration.isdlabsrm.in/"
+                      href="https://register.robofest.in/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="acc-register-btn"

@@ -56,7 +56,7 @@ export interface CmsContent {
 export const DEFAULT_CMS_CONTENT: CmsContent = {
   siteSettings: {
     eventDateIso: "2026-08-19T00:10:00+05:30",
-    registrationUrl: "https://registration.isdlabsrm.in/",
+    registrationUrl: "https://register.robofest.in/",
     ctaLabel: "Register Now",
     menuRegisterSubtext: "Limited slots",
     heroDepartment: "Department of Computing Technologies",
@@ -141,7 +141,7 @@ export const DEFAULT_CMS_CONTENT: CmsContent = {
     pageTitle: "Robofest Rule Book",
     sectionTitle: "General Rules",
     eventRulebooksState: "live",
-    registerUrl: "https://registration.isdlabsrm.in/",
+    registerUrl: "https://register.robofest.in/",
     accommodationTitle: "Accommodation Details",
     accommodationParagraphs: [
       "Accommodation will be provided on the spot for participants, strictly on a first-come, first-served basis.",

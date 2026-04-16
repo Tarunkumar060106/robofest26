@@ -211,7 +211,7 @@ export default function CardFlip({
           </div>
 
           <div className="flex flex-col relative z-10 mt-auto border-t border-slate-200 pt-4 space-y-2 dark:border-zinc-800">
-            <Link href="https://registration.isdlabsrm.in/" passHref>
+            <Link href="https://register.robofest.in/" passHref>
               <div
                 className={cn(
                   "group/start relative",
