@@ -2,7 +2,15 @@ import { NextResponse } from "next/server";
 import { DEFAULT_CMS_CONTENT, type CmsContent } from "@/lib/cmsContent";
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
 
-function mergeCmsContent(partial: Partial<CmsContent>): CmsContent {
+type CmsContentPatch = {
+  siteSettings?: Partial<CmsContent["siteSettings"]>;
+  events?: CmsContent["events"];
+  faqs?: CmsContent["faqs"];
+  sponsors?: Partial<CmsContent["sponsors"]>;
+  rules?: Partial<CmsContent["rules"]>;
+};
+
+function mergeCmsContent(partial: CmsContentPatch): CmsContent {
   return {
     siteSettings: {
       ...DEFAULT_CMS_CONTENT.siteSettings,
@@ -62,7 +70,7 @@ export async function GET() {
       return NextResponse.json({ content: DEFAULT_CMS_CONTENT, source: "default" });
     }
 
-    const partial: Partial<CmsContent> = {
+    const partial: CmsContentPatch = {
       siteSettings: data.find((row) => row.key === "site_settings")
         ?.value as Partial<CmsContent["siteSettings"]> | undefined,
       events: data.find((row) => row.key === "events")?.value as
@@ -93,10 +101,10 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  let body: { content?: Partial<CmsContent> };
+  let body: { content?: CmsContentPatch };
 
   try {
-    body = (await req.json()) as { content?: Partial<CmsContent> };
+    body = (await req.json()) as { content?: CmsContentPatch };
   } catch {
     return NextResponse.json(
       { error: "Failed to parse request body." },
