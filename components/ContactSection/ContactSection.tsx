@@ -6,11 +6,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import styles from "./ContactSection.module.css";
 
+const WEB3FORMS_ACCESS_KEY = "73b92019-67ca-4d52-85a8-6d1d543997a5";
+
 const INFO = [
-  { icon: "📍", label: "Location", value: "SRMIST, Kattankulathur, Chennai" },
-  { icon: "✉️", label: "Email", value: "isdlab@srmist.edu.in" },
-  // { icon: "📞", label: "Phone", value: "+91 44 2745 2270" },
-  { icon: "📅", label: "Event Date", value: "August 19, 2026" },
+  { label: "Location", value: "SRMIST, Kattankulathur, Chennai" },
+  { label: "Event Date", value: "August 19, 2026" },
+  { label: "Response Time", value: "Within 24 hours" },
 ];
 
 import { forwardRef } from "react";
@@ -19,6 +20,8 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState("");
+  const [error, setError] = useState(false);
   const combinedRef = (node: HTMLElement | null) => {
     sectionRef.current = node;
     if (typeof ref === "function") ref(node);
@@ -130,13 +133,51 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setSubmitted(false);
+    setError(false);
+    setResult("");
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const formEl = e.currentTarget;
+      const formData = new FormData(formEl);
+      const firstName = String(formData.get("first_name") ?? "").trim();
+      const lastName = String(formData.get("last_name") ?? "").trim();
+      const fullName = `${firstName} ${lastName}`.trim();
+
+      if (fullName) {
+        formData.set("name", fullName);
+      }
+
+      formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || "Could not send your message.");
+      }
+
       setLoading(false);
       setSubmitted(true);
-    }, 1200);
+      setResult("Message sent successfully.");
+      formEl.reset();
+    } catch (submitError) {
+      setLoading(false);
+      setError(true);
+      setResult(
+        submitError instanceof Error
+          ? submitError.message
+          : "Something went wrong. Please try again.",
+      );
+    }
   };
 
   return (
@@ -161,7 +202,6 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
           <div className={styles.infoCards}>
             {INFO.map((item) => (
               <a key={item.label} href="#" className={styles.infoCard}>
-                <div className={styles.infoIcon}>{item.icon}</div>
                 <div>
                   <p className={styles.infoLabel}>{item.label}</p>
                   <p className={styles.infoValue}>{item.value}</p>
@@ -189,6 +229,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                   <input
                     className={styles.input}
                     type="text"
+                    name="first_name"
                     placeholder="John"
                     required
                   />
@@ -198,6 +239,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                   <input
                     className={styles.input}
                     type="text"
+                    name="last_name"
                     placeholder="Doe"
                     required
                   />
@@ -209,6 +251,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                 <input
                   className={styles.input}
                   type="email"
+                  name="email"
                   placeholder="john.doe@example.com"
                   required
                 />
@@ -219,6 +262,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                 <input
                   className={styles.input}
                   type="text"
+                  name="subject"
                   placeholder="Event registration query"
                   required
                 />
@@ -228,6 +272,7 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                 <label className={styles.label}>Message</label>
                 <textarea
                   className={styles.textarea}
+                  name="message"
                   rows={5}
                   placeholder="Tell us what you'd like to know..."
                   required
@@ -242,6 +287,15 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
                 {loading ? "Sending…" : "Send message"}
                 {!loading && <span className={styles.arrow}>→</span>}
               </button>
+
+              {result ? (
+                <p
+                  className={`${styles.result} ${error ? styles.resultError : styles.resultSuccess}`}
+                  role={error ? "alert" : "status"}
+                >
+                  {result}
+                </p>
+              ) : null}
             </form>
           )}
         </div>
