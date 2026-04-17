@@ -13,6 +13,7 @@ import SponsorsSection from "@/components/SponsorsSection/SponsorsSection";
 import FAQSection from "@/components/FaqSection/FaqSection";
 import PatronsSection from "@/components/PatronsSection/PatronsSection";
 import ContactSection from "@/components/ContactSection/ContactSection";
+import Footer from "@/components/Footer/Footer";
 import { DEFAULT_CMS_CONTENT } from "@/lib/cmsContent";
 
 const PRELOADER_FRAMES = [
@@ -66,13 +67,19 @@ export default function Home() {
   const [isShowreelPlaying, setIsShowreelPlaying] = useState(false);
   const [showreelCurrentTime, setShowreelCurrentTime] = useState(0);
   const [showreelDuration, setShowreelDuration] = useState(0);
+  const [isShowreelAvailable, setIsShowreelAvailable] = useState(true);
 
   // Play/pause toggle handler
-  const toggleShowreelPlay = () => {
+  const toggleShowreelPlay = async () => {
     const video = showreelVideoRef.current;
-    if (!video) return;
+    if (!video || !isShowreelAvailable) return;
     if (video.paused) {
-      video.play();
+      try {
+        await video.play();
+      } catch {
+        setIsShowreelAvailable(false);
+        setIsShowreelPlaying(false);
+      }
     } else {
       video.pause();
     }
@@ -133,7 +140,13 @@ export default function Home() {
   const handleShowreelLoadedMetadata = (
     e: React.SyntheticEvent<HTMLVideoElement>,
   ) => {
+    setIsShowreelAvailable(true);
     setShowreelDuration(e.currentTarget.duration || 0);
+  };
+
+  const handleShowreelError = () => {
+    setIsShowreelAvailable(false);
+    setIsShowreelPlaying(false);
   };
 
   // Scrub (seek) handler
@@ -1349,12 +1362,14 @@ export default function Home() {
                     autoPlay
                     onTimeUpdate={handleShowreelTimeUpdate}
                     onLoadedMetadata={handleShowreelLoadedMetadata}
+                    onError={handleShowreelError}
                   />
                   <div className="showreel-controls">
                     <button
                       className="showreel-playpause"
                       onClick={toggleShowreelPlay}
                       aria-label={isShowreelPlaying ? "Pause" : "Play"}
+                      disabled={!isShowreelAvailable}
                     >
                       {isShowreelPlaying ? (
                         <svg
@@ -1420,7 +1435,9 @@ export default function Home() {
 
           <PatronsSection ref={patronsSectionRef} />
 
-          <SponsorsSection state={siteSettings.sponsorsState} />
+          <section id="sponsors">
+            <SponsorsSection state={siteSettings.sponsorsState} />
+          </section>
 
           {/* FAQ Section */}
           <FAQSection />
@@ -1430,6 +1447,8 @@ export default function Home() {
             <ContactSection ref={contactSectionRef} />
           </section>
         </main>
+
+        <Footer ref={footerRef} />
 
         {/* Custom Scrollbar */}
         <div ref={trackRef} className="custom-scrollbar-track">
