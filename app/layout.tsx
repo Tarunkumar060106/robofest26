@@ -9,20 +9,38 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.vercel.app";
 const siteName = "ROBOFEST 2026";
 const siteDescription =
-  "ROBOFEST 2026 is an interactive robotics festival experience featuring events, sponsors, patrons, and updates.";
+  "ROBOFEST 2026 – SRMIST's flagship robotics competition at SRM Kattankulathur. Robot battles, line followers, drone events & ₹3L+ prize pool. Register now.";
+
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "WebSite",
-      name: siteName,
+      "@type": "Event",
+      name: "ROBOFEST 2026",
       url: siteUrl,
       description: siteDescription,
       inLanguage: "en-IN",
+      organizer: {
+        "@type": "Organization",
+        name: "SRM Institute of Science and Technology",
+        url: "https://www.srmist.edu.in",
+      },
+      location: {
+        "@type": "Place",
+        name: "SRM Institute of Science and Technology",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Kattankulathur",
+          addressRegion: "Tamil Nadu",
+          addressCountry: "IN",
+        },
+      },
+      eventStatus: "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     },
     {
-      "@type": "Organization",
-      name: siteName,
+      "@type": "WebSite",
+      name: "ROBOFEST 2026",
       url: siteUrl,
     },
   ],
@@ -87,7 +105,7 @@ const spaceGrotesk = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} | Robotics Festival`,
+    default: `${siteName} | SRM Robotics Festival`,
     template: `%s | ${siteName}`,
   },
   description: siteDescription,
@@ -95,11 +113,17 @@ export const metadata: Metadata = {
   category: "technology",
   keywords: [
     "ROBOFEST 2026",
-    "robotics fest",
-    "robotics event",
-    "engineering festival",
-    "tech fest",
-    "robotics competition",
+    "SRMIST robotics fest",
+    "SRM robotics competition 2026",
+    "SRM Kattankulathur tech fest",
+    "robotics event Chennai",
+    "robot battle competition India",
+    "line follower robot competition",
+    "drone competition SRM",
+    "engineering fest Tamil Nadu",
+    "robotics festival India 2026",
+    "SRM Institute robotics",
+    "tech fest SRM 2026",
   ],
   alternates: {
     canonical: "/",
@@ -108,13 +132,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName,
-    title: `${siteName} | Robotics Festival`,
+    title: `${siteName} | SRM Robotics Festival`,
     description: siteDescription,
     locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteName} | Robotics Festival`,
+    title: `${siteName} | SRM Robotics Festival`,
     description: siteDescription,
   },
   robots: {
