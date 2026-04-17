@@ -464,6 +464,17 @@ export default function CmsPage() {
                 />
               </label>
               <label className={labelClass}>
+                <span className="font-medium text-zinc-700">Launch Ceremony</span>
+                <select
+                  value={content.siteSettings.launch ? "true" : "false"}
+                  onChange={(e) => updateSiteSetting("launch", e.target.value === "true")}
+                  className={inputClass}
+                >
+                  <option value="false">false (homepage)</option>
+                  <option value="true">true (show ceremony)</option>
+                </select>
+              </label>
+              <label className={labelClass}>
                 <span className="font-medium text-zinc-700">Registration URL</span>
                 <input
                   value={content.siteSettings.registrationUrl}

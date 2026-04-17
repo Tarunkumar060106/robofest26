@@ -267,6 +267,7 @@ export default function Navbar() {
       {/* Logo */}
       <div className="nav-logo">
         <a
+          className="nav-logo-link"
           href={logos[currentImage].href}
           target="_blank"
           rel="noopener noreferrer"
