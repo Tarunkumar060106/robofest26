@@ -1162,7 +1162,7 @@ export default function Home() {
               <span className="hero-cross">X</span>
               <h3>{siteSettings.heroCollabOrg}</h3>
               <p>{siteSettings.heroCollabPrefix}</p>
-              <h1>{siteSettings.heroTitle}</h1>
+              <h1>{siteSettings.heroTitle ?? "ROBOFEST 2026 — SRM's Robotics Festival"}</h1>
             </div>
 
             <div className="animated-icons">
@@ -1183,7 +1183,7 @@ export default function Home() {
               </div>
             </div>
 
-            <h1 className="animated-text">
+            <h2 className="animated-text">
               <div className="placeholder-icon"></div>
               <span className="text-segment">{heroLines[0] ?? "Build the future"}</span>
 
@@ -1200,7 +1200,7 @@ export default function Home() {
 
               <div className="placeholder-icon"></div>
               <span className="text-segment">{heroLines[5] ?? "at Robofest."}</span>
-            </h1>
+            </h2>
           </section>
 
           <section ref={triggerRef} className="scroll-section-outer">
