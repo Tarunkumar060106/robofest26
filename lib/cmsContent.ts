@@ -2,6 +2,7 @@ import { DEFAULT_EVENTS, type EventItem } from "@/lib/eventsData";
 
 export interface SiteSettings {
   eventDateIso: string;
+  launch: boolean;
   registrationUrl: string;
   ctaLabel: string;
   menuRegisterSubtext: string;
@@ -56,6 +57,7 @@ export interface CmsContent {
 export const DEFAULT_CMS_CONTENT: CmsContent = {
   siteSettings: {
     eventDateIso: "2026-08-19T00:10:00+05:30",
+    launch: false,
     registrationUrl: "https://register.robofest.in/",
     ctaLabel: "Register Now",
     menuRegisterSubtext: "Limited slots",

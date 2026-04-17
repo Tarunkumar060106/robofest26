@@ -242,6 +242,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (!siteSettings.launch) return;
+    if (window.location.pathname.startsWith("/opening-ceremony")) return;
+
+    window.location.href = "/opening-ceremony";
+  }, [siteSettings.launch]);
+
+  useEffect(() => {
     if (!isPreloaderDone) return;
 
     const hash = window.location.hash.replace("#", "");
