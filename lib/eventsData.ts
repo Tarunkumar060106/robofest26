@@ -113,6 +113,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     venue: "Mini Hall",
     team: "5 members",
     color: "#2a2018",
+    backgroundImage: "/images/events/expo.jpg",
   },
   {
     number: "09",
