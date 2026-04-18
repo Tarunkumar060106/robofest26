@@ -201,12 +201,12 @@ const ContactSection = forwardRef<HTMLElement>((props, ref) => {
 
           <div className={styles.infoCards}>
             {INFO.map((item) => (
-              <a key={item.label} href="#" className={styles.infoCard}>
+              <div key={item.label} className={styles.infoCard}>
                 <div>
                   <p className={styles.infoLabel}>{item.label}</p>
                   <p className={styles.infoValue}>{item.value}</p>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         </div>
