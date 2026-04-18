@@ -66,10 +66,16 @@ const Footer = forwardRef<HTMLElement>((props, ref) => {
           </div>
 
           <div className={styles.bottom}>
-            <p className={styles.bottomText} data-footer-bottom>
+            <p
+              className={`${styles.bottomText} ${styles.bottomCopyright}`}
+              data-footer-bottom
+            >
               © {new Date().getFullYear()} Robofest. All rights reserved.
             </p>
-            <p className={styles.bottomText} data-footer-bottom>
+            <p
+              className={`${styles.bottomText} ${styles.bottomTagline}`}
+              data-footer-bottom
+            >
               Crafted for the next generation of robotics builders.
             </p>
           </div>
