@@ -49,7 +49,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     venue: "Vendhir Square, TP2, Hangar",
     team: "4 members",
     color: "#c4410c",
-    backgroundImage: "/images/events/soccer.png",
+    backgroundImage: "/images/events/soccer2.jpg",
   },
   {
     number: "04",
