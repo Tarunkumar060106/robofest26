@@ -334,14 +334,20 @@
 
 /* ── Bottom ── */
 .cs-bottom {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .cs-bottom-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
   font-family: "SpaceGroteskReg", Arial, sans-serif;
   font-size: 11px;
   color: rgba(241, 242, 244, 0.2);

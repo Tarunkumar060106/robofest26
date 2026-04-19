@@ -2,11 +2,51 @@
 
 import { useEffect, useState, type MouseEvent } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import "./styles.css";
 import { splitTextIntoSpans } from "@/lib/utils";
 import { DEFAULT_CMS_CONTENT } from "@/lib/cmsContent";
+
+const NAV_LOGOS = [
+  {
+    src: "/images/srm-logo-white.svg",
+    className: "nav-logo-image nav-logo-image-srm",
+    linkClassName: "nav-logo-link-srm",
+    href: "https://www.srmist.edu.in",
+    label: "SRM Institute of Science and Technology",
+    width: 600,
+    height: 203,
+  },
+  {
+    src: "/images/srm-logo-sports.svg",
+    className: "nav-logo-image nav-logo-image-sports",
+    linkClassName: "nav-logo-link-sports",
+    href: "https://www.srmist.edu.in/sports/",
+    label: "SRM Sports",
+    width: 600,
+    height: 203,
+  },
+  {
+    src: "/images/soc.svg",
+    className: "nav-logo-image nav-logo-image-soc",
+    linkClassName: "nav-logo-link-soc",
+    href: "https://www.srmist.edu.in",
+    label: "School of Computing",
+    width: 489,
+    height: 204,
+  },
+  {
+    src: "/images/ctech.svg",
+    className: "nav-logo-image nav-logo-image-ctech",
+    linkClassName: "nav-logo-link-ctech",
+    href: "https://www.srmist.edu.in",
+    label: "College of Engineering and Technology",
+    width: 448,
+    height: 218,
+  },
+] as const;
 
 export default function Navbar() {
   const [currentImage, setCurrentImage] = useState(0);
@@ -58,32 +98,11 @@ export default function Navbar() {
     }, 380);
   };
 
-  const logos = [
-    {
-      src: "/images/srm-logo-white.svg",
-      className: "nav-logo-image nav-logo-image-srm",
-      href: "https://www.srmist.edu.in",
-    },
-    {
-      src: "/images/srm-logo-sports.svg",
-      className: "nav-logo-image nav-logo-image-sports",
-      href: "https://www.srmist.edu.in/sports/",
-    },
-    {
-      src: "/images/soc.svg",
-      className: "nav-logo-image nav-logo-image-soc",
-      href: "https://www.srmist.edu.in",
-    },
-    {
-      src: "/images/ctech.svg",
-      className: "nav-logo-image nav-logo-image-ctech",
-      href: "https://www.srmist.edu.in",
-    },
-  ] as const;
+  const activeLogo = NAV_LOGOS[currentImage];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % logos.length);
+      setCurrentImage((prev) => (prev + 1) % NAV_LOGOS.length);
     }, 2000);
     return () => clearInterval(interval);
   }, []);
@@ -267,17 +286,19 @@ export default function Navbar() {
       {/* Logo */}
       <div className="nav-logo">
         <a
-          className="nav-logo-link"
-          href={logos[currentImage].href}
+          className={`nav-logo-link ${activeLogo.linkClassName}`}
+          href={activeLogo.href}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={activeLogo.label}
         >
           <Image
-            src={logos[currentImage].src}
-            alt=""
-            width={150}
-            height={50}
-            className={logos[currentImage].className}
+            key={activeLogo.src}
+            src={activeLogo.src}
+            alt={activeLogo.label}
+            width={activeLogo.width}
+            height={activeLogo.height}
+            className={activeLogo.className}
           />
         </a>
       </div>
@@ -300,14 +321,14 @@ export default function Navbar() {
         <div className="col col-1">
           <div className="links">
             <div className="link">
-              <a href="/" onClick={handleMenuLinkClick}>
+              <Link href="/" onClick={handleMenuLinkClick}>
                 Home
-              </a>
+              </Link>
             </div>
             <div className="link">
-              <a href="/#events" onClick={handleMenuLinkClick}>
+              <Link href="/#events" onClick={handleMenuLinkClick}>
                 Events
-              </a>
+              </Link>
             </div>
             <div className="link">
               <a href="/rules">Rules</a>
@@ -316,14 +337,14 @@ export default function Navbar() {
               <a href="/sponsors">Sponsors</a>
             </div>
             <div className="link">
-              <a href="/#gallery" onClick={handleMenuLinkClick}>
+              <Link href="/#gallery" onClick={handleMenuLinkClick}>
                 Gallery
-              </a>
+              </Link>
             </div>
             <div className="link">
-              <a href="/#contact" onClick={handleMenuLinkClick}>
+              <Link href="/#contact" onClick={handleMenuLinkClick}>
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
           <div className="menu-register-cta-wrap">

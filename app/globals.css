@@ -356,7 +356,7 @@ body {
 }
 
 .hero-header h3 {
-  font-size: 4.8vw;
+  font-size: 4vw;
   font-weight: 600;
 }
 
@@ -366,7 +366,7 @@ body {
 }
 
 .hero-department {
-  font-size: 4.8vw;
+  font-size: 4vw;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: 0.04em;
@@ -393,7 +393,7 @@ body {
 @media (min-width: 1025px) {
   .hero-header h3,
   .hero-department {
-    font-size: clamp(1.85rem, 2.35vw, 2.6rem);
+    font-size: clamp(1.4rem, 1.8vw, 2.1rem);
   }
 }
 

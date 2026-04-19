@@ -18,9 +18,13 @@
   }
 
   .nav-logo-link {
+    --nav-logo-scale: 1;
+    --nav-logo-width-duration: 0.55s;
+    --nav-logo-fade-duration: 0.32s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: calc(var(--nav-logo-active-width, 150px) * var(--nav-logo-scale));
     padding: 10px 14px;
     border-radius: 999px;
     background-color: rgba(255, 255, 255, 0.02);
@@ -28,31 +32,43 @@
     -webkit-backdrop-filter: blur(11px) saturate(125%);
     backdrop-filter: blur(11px) saturate(125%);
     box-shadow: none;
+    transition:
+      width var(--nav-logo-width-duration) cubic-bezier(0.22, 1, 0.36, 1),
+      padding 0.35s ease,
+      background-color 0.25s ease;
+  }
+
+  .nav-logo-link-srm,
+  .nav-logo-link-soc {
+    --nav-logo-active-width: 195px;
+  }
+
+  .nav-logo-link-sports {
+    --nav-logo-active-width: 100px;
+    --nav-logo-width-duration: 0.01s;
+    --nav-logo-fade-duration: 0.12s;
+  }
+
+  .nav-logo-link-ctech {
+    --nav-logo-active-width: 150px;
   }
 
   .nav-logo-image {
     display: block;
-    width: 150px;
+    width: 100%;
     height: auto;
+    animation: nav-logo-fade-in var(--nav-logo-fade-duration) ease both;
   }
 
-  .nav-logo-image-sports {
-    transform: scale(1.3);
-    transform-origin: left center;
-  }
-
-  .nav-logo-image-srm {
-    transform: scale(1.3);
-    transform-origin: left center;
-  }
-
-  .nav-logo-image-soc {
-    transform: scale(1.3);
-    transform-origin: left center;
-  }
-  .nav-logo-image-ctech {
-    transform: scale(1);
-    transform-origin: left center;
+  @keyframes nav-logo-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(2px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
   /* ── Menu Toggle ── */
@@ -613,6 +629,7 @@
     font-weight: 200;
     line-height: 1;
     height: 240px;
+    -webkit-user-select: none;
     user-select: none;
     letter-spacing: -12px;
     margin-top: -0.05em;
@@ -698,12 +715,9 @@
 
     .nav-logo-link {
       padding: 8px 11px;
+      --nav-logo-scale: 0.76;
       -webkit-backdrop-filter: blur(9px) saturate(120%);
       backdrop-filter: blur(9px) saturate(120%);
-    }
-
-    .nav-logo-image {
-      width: 114px;
     }
 
     .menu-toggle {
@@ -835,8 +849,10 @@
   }
 @media (max-width: 1024px) {
   .nav-logo { top: 1.1rem; left: 1.1rem; }
-  .nav-logo-link { padding: 8px 10px; }
-  .nav-logo-image { width: 110px; }
+  .nav-logo-link {
+    padding: 8px 10px;
+    --nav-logo-scale: 0.733333;
+  }
 
   .menu {
     flex-direction: column;
@@ -850,8 +866,10 @@
 
 @media (max-width: 640px) {
   .nav-logo { top: 0.9rem; left: 0.9rem; }
-  .nav-logo-link { padding: 7px 9px; }
-  .nav-logo-image { width: 96px; }
+  .nav-logo-link {
+    padding: 7px 9px;
+    --nav-logo-scale: 0.64;
+  }
 
   .link a {
     font-size: clamp(22px, 7.5vw, 28px);

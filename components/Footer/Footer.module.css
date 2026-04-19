@@ -153,12 +153,13 @@
 }
 
 .bottom {
+  position: relative;
   border-top: 1px solid rgba(241, 242, 244, 0.1);
   padding-top: 1rem;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-end;
   gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .bottomText {
@@ -166,6 +167,22 @@
   font-family: "SpaceGroteskReg", Arial, sans-serif;
   font-size: 12px;
   color: rgba(241, 242, 244, 0.48);
+}
+
+.bottomCopyright {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bottomTagline {
+  margin-left: auto;
+  text-align: right;
 }
 
 @media (max-width: 980px) {
@@ -184,6 +201,20 @@
 
   .bottom {
     flex-direction: column;
+    align-items: center;
     gap: 0.45rem;
+  }
+
+  .bottomCopyright {
+    position: static;
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+    white-space: normal;
+  }
+
+  .bottomTagline {
+    margin-left: 0;
+    text-align: center;
   }
 }

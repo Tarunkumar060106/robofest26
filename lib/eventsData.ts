@@ -49,6 +49,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     venue: "Vendhir Square, TP2, Hangar",
     team: "4 members",
     color: "#c4410c",
+    backgroundImage: "/images/events/soccer2.jpg",
   },
   {
     number: "04",
@@ -113,6 +114,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     venue: "Mini Hall",
     team: "5 members",
     color: "#2a2018",
+    backgroundImage: "/images/events/expo.jpg",
   },
   {
     number: "09",
