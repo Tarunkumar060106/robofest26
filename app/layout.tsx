@@ -7,16 +7,16 @@ import { Analytics } from '@vercel/analytics/next';
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.vercel.app";
-const siteName = "ROBOFEST 2026";
+const siteName = "ROBOFEST 2.0";
 const siteDescription =
-  "ROBOFEST 2026 – SRMIST's flagship robotics competition at SRM Kattankulathur. Robot battles, line followers, drone events & ₹3L+ prize pool. Register now.";
+  "ROBOFEST 2.0 – SRMIST's flagship robotics competition at SRM Kattankulathur. Robot battles, line followers, drone events & ₹3L+ prize pool. Register now.";
 
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Event",
-      name: "ROBOFEST 2026",
+      name: "ROBOFEST 2.0",
       url: siteUrl,
       description: siteDescription,
       inLanguage: "en-IN",
@@ -105,7 +105,7 @@ const spaceGrotesk = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} | SRM Robotics Festival`,
+    default: `${siteName}`,
     template: `%s | ${siteName}`,
   },
   description: siteDescription,
