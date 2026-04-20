@@ -68,6 +68,9 @@ const Footer = forwardRef<HTMLElement>((props, ref) => {
               <a href="#contact" className={styles.link} data-footer-link>
                 Contact Us
               </a>
+              <a href="/privacy-policy" className={styles.link} data-footer-link>
+                Privacy Policy
+              </a>
             </div>
           </div>
 
