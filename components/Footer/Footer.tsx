@@ -42,9 +42,15 @@ const Footer = forwardRef<HTMLElement>((props, ref) => {
               >
                 robofest@srmist.edu.in
               </a>
-              {/* <a href="tel:+914427452270" className={styles.link} data-footer-link>
+              <a
+                href="tel:+914427452270"
+                className={styles.link}
+                data-footer-link
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 +91 44 2745 2270
-              </a> */}
+              </a>
               <p className={styles.meta}>SRMIST, Kattankulathur, Chennai</p>
             </div>
 
