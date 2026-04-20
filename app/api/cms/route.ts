@@ -1,14 +1,46 @@
 import { NextResponse } from "next/server";
-import { DEFAULT_CMS_CONTENT, type CmsContent } from "@/lib/cmsContent";
+import {
+  DEFAULT_CMS_CONTENT,
+  type BentoContent,
+  type BentoMetric,
+  type CmsContent,
+} from "@/lib/cmsContent";
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
 
 type CmsContentPatch = {
   siteSettings?: Partial<CmsContent["siteSettings"]>;
+  bento?: Partial<CmsContent["bento"]>;
   events?: CmsContent["events"];
   faqs?: CmsContent["faqs"];
   sponsors?: Partial<CmsContent["sponsors"]>;
   rules?: Partial<CmsContent["rules"]>;
 };
+
+function mergeBentoMetric(
+  partial: Partial<BentoMetric> | undefined,
+  defaults: BentoMetric,
+): BentoMetric {
+  return {
+    ...defaults,
+    ...(partial ?? {}),
+  };
+}
+
+function mergeBentoContent(partial: CmsContentPatch["bento"]): BentoContent {
+  const defaults = DEFAULT_CMS_CONTENT.bento;
+
+  return {
+    eyebrow: partial?.eyebrow ?? defaults.eyebrow,
+    heading: partial?.heading ?? defaults.heading,
+    events: mergeBentoMetric(partial?.events, defaults.events),
+    states: mergeBentoMetric(partial?.states, defaults.states),
+    footfall: mergeBentoMetric(partial?.footfall, defaults.footfall),
+    teams: mergeBentoMetric(partial?.teams, defaults.teams),
+    prizePool: mergeBentoMetric(partial?.prizePool, defaults.prizePool),
+    sponsors: mergeBentoMetric(partial?.sponsors, defaults.sponsors),
+    awards: mergeBentoMetric(partial?.awards, defaults.awards),
+  };
+}
 
 function ensureAuthorized(req: Request): NextResponse | null {
   const configuredKey = process.env.CMS_ADMIN_KEY;
@@ -36,6 +68,7 @@ function mergeCmsContent(partial: CmsContentPatch): CmsContent {
       ...DEFAULT_CMS_CONTENT.siteSettings,
       ...(partial.siteSettings ?? {}),
     },
+    bento: mergeBentoContent(partial.bento),
     events:
       Array.isArray(partial.events) && partial.events.length > 0
         ? partial.events
@@ -84,7 +117,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("cms_content")
       .select("key, value")
-      .in("key", ["site_settings", "events", "faqs", "sponsors", "rules"]);
+      .in("key", ["site_settings", "bento", "events", "faqs", "sponsors", "rules"]);
 
     if (error || !data) {
       return NextResponse.json({ content: DEFAULT_CMS_CONTENT, source: "default" });
@@ -93,6 +126,9 @@ export async function GET() {
     const partial: CmsContentPatch = {
       siteSettings: data.find((row) => row.key === "site_settings")
         ?.value as Partial<CmsContent["siteSettings"]> | undefined,
+      bento: data.find((row) => row.key === "bento")?.value as
+        | Partial<CmsContent["bento"]>
+        | undefined,
       events: data.find((row) => row.key === "events")?.value as
         | CmsContent["events"]
         | undefined,
@@ -147,6 +183,7 @@ export async function PUT(req: Request) {
 
     const rows = [
       { key: "site_settings", value: merged.siteSettings },
+      { key: "bento", value: merged.bento },
       { key: "events", value: merged.events },
       { key: "faqs", value: merged.faqs },
       { key: "sponsors", value: merged.sponsors },

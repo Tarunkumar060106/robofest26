@@ -928,16 +928,132 @@ body {
 ══════════════════════════════════════════ */
 .bento-slide {
   background: #f5f0e8;
-  padding: 0 4vw;
+  padding: 6.5rem 4vw 3.5rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.bento-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.75fr) minmax(760px, 2.25fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  width: min(100%, 1400px);
+  align-items: start;
+  margin-inline: auto;
+}
+
+.bento-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 340px;
+  margin: 0;
+  position: sticky;
+  top: 6.5rem;
+}
+
+.bento-heading {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(34px, 3.9vw, 56px);
+  line-height: 0.92;
+  font-weight: 800;
+  margin: 0;
+  color: #171412;
+}
+
+.bento-intro-copy {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(13px, 1.05vw, 16px);
+  line-height: 1.55;
+  color: rgba(23, 20, 18, 0.76);
+  max-width: 34ch;
+  margin: 0;
+}
+
+.bento-mini-stat {
+  border: 1px solid rgba(23, 20, 18, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 0.85rem 0.95rem;
+  width: fit-content;
+  box-shadow: 0 10px 26px rgba(23, 20, 18, 0.06);
+}
+
+.bento-mini-label {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(23, 20, 18, 0.55);
+}
+
+.bento-mini-value {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(26px, 2.4vw, 40px);
+  line-height: 1;
+  margin: 0.2rem 0 0;
+  color: #171412;
+}
+
+.bento-mini-sub {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(23, 20, 18, 0.72);
+  margin: 0.4rem 0 0;
+}
+
+.bento-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
+  background: #171412;
+  color: #f8f4ee;
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.bento-cta:hover {
+  transform: translateY(-1px);
+  background: #000;
+}
+
+.bento-card-cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 0.62rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
 }
 
 .bento-grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr 1.4fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
-  width: min(92vw, 1200px);
-  height: min(82vh, 700px); /* slightly taller to fill better */
+  width: 100%;
+  height: min(82vh, 700px);
+  justify-self: stretch;
 }
 
 .bento-card {
@@ -989,6 +1105,30 @@ body {
   grid-column: 2;
 }
 
+.bento-accent-yellow,
+.bento-accent-cream {
+  text-align: left;
+}
+
+.bento-accent-yellow .bento-stat--sm,
+.bento-accent-cream .bento-stat--sm {
+  font-size: clamp(34px, 3.6vw, 56px);
+  line-height: 0.95;
+  margin-bottom: 8px;
+}
+
+.bento-accent-yellow .bento-sub,
+.bento-accent-cream .bento-sub {
+  margin-top: 0;
+}
+
+.bento-accent-yellow .bento-label,
+.bento-accent-cream .bento-label {
+  position: absolute;
+  left: 32px;
+  top: 26px;
+}
+
 .bento-label {
   font-family: "SpaceGroteskMed", Arial, sans-serif;
   font-size: 10px;
@@ -1009,11 +1149,16 @@ body {
   font-family: "AwesomeSerifVAR", Georgia, serif;
   font-size: clamp(52px, 5.5vw, 88px);
   font-weight: 800;
-  line-height: 1;
-  margin: 0;
+  line-height: 1.1;
+  margin: 0 0 12px 0;
 }
 .bento-stat--sm {
   font-size: clamp(40px, 4vw, 68px);
+}
+
+.bento-stat--lower {
+  display: block;
+  transform: translateY(44px);
 }
 
 .bento-plus {
@@ -1026,8 +1171,8 @@ body {
 .bento-sub {
   font-family: "SpaceGroteskReg", Arial, sans-serif;
   font-size: clamp(12px, 1vw, 15px);
-  opacity: 0.55;
-  margin: 6px 0 0;
+  opacity: 0.72;
+  margin-top: 0;
 }
 
 .bento-tagline {
@@ -1339,7 +1484,21 @@ body {
   }
 
   .bento-slide {
-    padding: 4.5rem 1rem;
+    padding: 4rem 1rem 2rem;
+    align-items: stretch;
+  }
+
+  .bento-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    width: 100%;
+  }
+
+  .bento-header {
+    gap: 0.25rem;
+    width: 100%;
+    max-width: 100%;
+    position: static;
   }
 
   .bento-grid {
@@ -1357,7 +1516,15 @@ body {
   .bento-accent-cream {
     grid-column: auto;
     grid-row: auto;
-    min-height: 168px;
+    min-height: 150px;
+  }
+
+  .bento-heading {
+    font-size: clamp(28px, 10vw, 42px);
+  }
+
+  .bento-intro-copy {
+    max-width: 42ch;
   }
 
   .gallery-slide {

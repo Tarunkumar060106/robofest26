@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_CMS_CONTENT,
+  type BentoContent,
+  type BentoMetric,
   type CmsContent,
   type FaqItem,
   type RuleItem,
@@ -34,6 +36,19 @@ const FIELDS: Array<{ key: EventField; label: string }> = [
   { key: "team", label: "Team Size" },
   { key: "color", label: "Color" },
   { key: "backgroundImage", label: "Background Image" },
+];
+
+const BENTO_FIELDS: Array<{
+  key: Exclude<keyof BentoContent, "eyebrow" | "heading">;
+  label: string;
+}> = [
+  { key: "events", label: "Events" },
+  { key: "states", label: "States" },
+  { key: "footfall", label: "Footfall" },
+  { key: "teams", label: "Teams" },
+  { key: "prizePool", label: "Prize Pool" },
+  { key: "sponsors", label: "Sponsors" },
+  { key: "awards", label: "Awards" },
 ];
 
 const sectionClass =
@@ -152,6 +167,35 @@ export default function CmsPage() {
       siteSettings: {
         ...prev.siteSettings,
         [key]: value,
+      },
+    }));
+    setStatus("Unsaved changes. Click Save to publish to Supabase.");
+  };
+
+  const updateBentoField = (key: "eyebrow" | "heading", value: string) => {
+    setContent((prev) => ({
+      ...prev,
+      bento: {
+        ...prev.bento,
+        [key]: value,
+      },
+    }));
+    setStatus("Unsaved changes. Click Save to publish to Supabase.");
+  };
+
+  const updateBentoMetric = (
+    key: Exclude<keyof BentoContent, "eyebrow" | "heading">,
+    field: keyof BentoMetric,
+    value: string,
+  ) => {
+    setContent((prev) => ({
+      ...prev,
+      bento: {
+        ...prev.bento,
+        [key]: {
+          ...prev.bento[key],
+          [field]: value,
+        },
       },
     }));
     setStatus("Unsaved changes. Click Save to publish to Supabase.");
@@ -566,6 +610,52 @@ export default function CmsPage() {
                   <option value="live">live</option>
                 </select>
               </label>
+            </div>
+          </section>
+
+          <section className={sectionClass}>
+            <h2 className="mb-4 text-xl font-semibold text-zinc-900">Bento Grid Content</h2>
+            <div className="grid gap-3 md:grid-cols-2">
+              <input
+                value={content.bento.eyebrow}
+                onChange={(e) => updateBentoField("eyebrow", e.target.value)}
+                className={inputClass}
+                placeholder="Eyebrow"
+              />
+              <input
+                value={content.bento.heading}
+                onChange={(e) => updateBentoField("heading", e.target.value)}
+                className={inputClass}
+                placeholder="Heading"
+              />
+            </div>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              {BENTO_FIELDS.map((field) => (
+                <div key={field.key} className="rounded-xl border border-zinc-200 p-3">
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    {field.label}
+                  </h3>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <input
+                      value={content.bento[field.key].value}
+                      onChange={(e) =>
+                        updateBentoMetric(field.key, "value", e.target.value)
+                      }
+                      className={inputClass}
+                      placeholder="Value"
+                    />
+                    <input
+                      value={content.bento[field.key].subtext}
+                      onChange={(e) =>
+                        updateBentoMetric(field.key, "subtext", e.target.value)
+                      }
+                      className={inputClass}
+                      placeholder="Subtext"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
