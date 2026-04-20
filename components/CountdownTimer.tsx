@@ -12,6 +12,19 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  const eventTitle = "Robofest 2026";
+  const eventLocation = "SRM Institute of Science and Technology, Kattankulathur";
+  const eventDescription =
+    "Robofest 2026 at SRMIST. Visit the official website for event details and registration.";
+
+  const buildCalendarUrl = () => {
+    return "/api/calendar/google/start";
+  };
+
+  const handleAddToCalendar = () => {
+    window.open(buildCalendarUrl(), "_blank", "noopener,noreferrer");
+  };
+
   // ⏱ Smart timer (only updates when needed)
   useEffect(() => {
     const update = () => {
@@ -133,7 +146,29 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
         <span className="labelCell labelSeconds">Seconds</span>
       </div>
 
-      <button className="calendarCta">Add to Calendar →</button>
+      <button className="calendarCta" type="button" onClick={handleAddToCalendar}>
+        <span className="googleIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" focusable="false">
+            <path
+              fill="#4285F4"
+              d="M23.64 12.2045c0-.8182-.0736-1.6045-.2109-2.3591H12v4.4636h6.5455c-.2818 1.5227-1.1409 2.8136-2.4318 3.6772v3.0545h3.9409c2.3045-2.1227 3.5854-5.2454 3.5854-8.8362z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 24c3.24 0 5.9563-1.0727 7.9418-2.9091l-3.9409-3.0545c-1.0727.7181-2.4454 1.1454-4.0009 1.1454-3.0727 0-5.6772-2.0727-6.6045-4.8636H1.3272v3.15C3.3018 21.3954 7.3109 24 12 24z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.3954 14.3182C5.159 13.6 5.0227 12.8363 5.0227 12c0-.8363.1363-1.6.3727-2.3182V6.5318H1.3272C.4909 8.1909 0 10.0454 0 12s.4909 3.8091 1.3272 5.4682l4.0682-3.15z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 4.7727c1.7636 0 3.3409.6091 4.5863 1.8045l3.4363-3.4363C17.9509 1.1909 15.24 0 12 0 7.3109 0 3.3018 2.6045 1.3272 6.5318l4.0682 3.15c.9273-2.7909 3.5318-4.9091 6.6045-4.9091z"
+            />
+          </svg>
+        </span>
+        <span>Add to Calendar</span>
+      </button>
 
       <style jsx>{`
         .countdown {
@@ -274,6 +309,9 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
           position: absolute;
           bottom: 1.5rem;
           z-index: 1;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
           padding: 0.7rem 1.25rem;
           min-height: 44px;
           border-radius: 999px;
@@ -289,6 +327,15 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
             box-shadow 0.2s ease,
             background-color 0.2s ease,
             color 0.2s ease;
+        }
+
+        .googleIcon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.1rem;
+          height: 1.1rem;
+          flex: 0 0 auto;
         }
 
         .calendarCta:hover {

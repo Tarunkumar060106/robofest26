@@ -10,7 +10,7 @@ const WEB3FORMS_ACCESS_KEY = "73b92019-67ca-4d52-85a8-6d1d543997a5";
 
 const INFO = [
   { label: "Location", value: "SRMIST, Kattankulathur, Chennai" },
-  { label: "Event Date", value: "August 19, 2026" },
+  { label: "Event Date", value: "August 19-21, 2026" },
   { label: "Response Time", value: "Within 24 hours" },
 ];
 

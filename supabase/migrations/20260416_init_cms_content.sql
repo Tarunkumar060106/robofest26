@@ -27,6 +27,7 @@ end $$;
 insert into public.cms_content (key, value)
 values
   ('site_settings', '{}'::jsonb),
+  ('bento', '{}'::jsonb),
   ('events', '[]'::jsonb),
   ('faqs', '[]'::jsonb),
   ('sponsors', '{}'::jsonb),

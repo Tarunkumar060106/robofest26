@@ -14,7 +14,7 @@ import FAQSection from "@/components/FaqSection/FaqSection";
 import PatronsSection from "@/components/PatronsSection/PatronsSection";
 import ContactSection from "@/components/ContactSection/ContactSection";
 import Footer from "@/components/Footer/Footer";
-import { DEFAULT_CMS_CONTENT } from "@/lib/cmsContent";
+import { DEFAULT_CMS_CONTENT, type BentoContent } from "@/lib/cmsContent";
 
 const PRELOADER_FRAMES = [
   "camo.png",
@@ -53,6 +53,9 @@ function getLoadingText(progress: number) {
 export default function Home() {
   const [siteSettings, setSiteSettings] = useState(
     DEFAULT_CMS_CONTENT.siteSettings,
+  );
+  const [bentoContent, setBentoContent] = useState<BentoContent>(
+    DEFAULT_CMS_CONTENT.bento,
   );
   const eventDate = useMemo(
     () => new Date(siteSettings.eventDateIso),
@@ -228,6 +231,12 @@ export default function Home() {
           setSiteSettings((prev) => ({
             ...prev,
             ...payload.content.siteSettings,
+          }));
+        }
+        if (isMounted && payload?.content?.bento) {
+          setBentoContent((prev) => ({
+            ...prev,
+            ...payload.content.bento,
           }));
         }
       } catch {
@@ -1247,74 +1256,109 @@ export default function Home() {
 
               {/* ── SECTION 2 — Bento stats grid ── */}
               <div className="scroll-section bento-slide">
-                <div className="bento-grid">
-                  <div className="bento-card bento-accent-blue">
-                    <span className="bento-label">States</span>
-                    <p className="bento-stat">
-                      {"12"}
-                      <span className="bento-plus">+</span>
+                <div className="bento-layout">
+                  <div className="bento-header">
+                    <span className="lookback-eyebrow">{bentoContent.eyebrow}</span>
+                    <h2 className="bento-heading">{bentoContent.heading}</h2>
+                    <p className="bento-intro-copy">
+                      Last year set the pace for the festival with packed venues,
+                      stronger participation, and a bigger partner network.
                     </p>
-                    <p className="bento-sub">in India</p>
+                    <div className="bento-mini-stat">
+                      <span className="bento-mini-label">Events</span>
+                      <p className="bento-mini-value">
+                        {bentoContent.events.value}
+                        <span className="bento-plus">+</span>
+                      </p>
+                      <p className="bento-mini-sub">{bentoContent.events.subtext}</p>
+                    </div>
+                    
                   </div>
-                  <div className="bento-card bento-dark bento-tall">
-                    <span className="bento-label">Footfall</span>
-                    <p className="bento-stat">
-                      {"400"}
-                      <span className="bento-plus">+</span>
-                    </p>
-                    <p className="bento-sub">attendees in 2025</p>
-                    <div className="bento-orb bento-orb--red" />
-                  </div>
+                  <div className="bento-grid">
+                    <div className="bento-card bento-accent-blue" style={{ justifyContent: 'space-between', paddingTop: '3rem' }}>
+  <span className="bento-label" style={{ position: 'static', opacity: 0.7, fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'SpaceGroteskMed, Arial, sans-serif', color: '#fff' }}>States</span>
+  <div>
+    <p className="bento-stat">
+      {bentoContent.states.value}
+      <span className="bento-plus">+</span>
+    </p>
+    <p className="bento-sub">{bentoContent.states.subtext}</p>
+  </div>
+</div>
+                    <div className="bento-card bento-dark bento-tall" style={{ justifyContent: 'space-between', paddingTop: '3rem' }}>
+  <span className="bento-label" style={{ position: 'static', opacity: 0.5, fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'SpaceGroteskMed, Arial, sans-serif' }}>Footfall</span>
+  <div>
+    <p className="bento-stat">
+      {bentoContent.footfall.value}
+      <span className="bento-plus">+</span>
+    </p>
+    <p className="bento-sub">{bentoContent.footfall.subtext}</p>
+  </div>
+  <div className="bento-orb bento-orb--red" />
+</div>
 
-                  <div className="bento-card bento-accent-yellow">
-                    <span className="bento-label">Teams</span>
-                    <p className="bento-stat">
-                      {"170"}
-                      <span className="bento-plus">+</span>
-                    </p>
-                    <p className="bento-sub">from 40+ schools</p>
-                  </div>
+                    <div className="bento-card bento-accent-yellow" style={{ gridColumn: 2, gridRow: 1, justifyContent: 'space-between', paddingTop: '2.5rem' }}>
+  <span className="bento-label" style={{ position: 'static', opacity: 0.6, fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'SpaceGroteskMed, Arial, sans-serif' }}>Teams</span>
+  <div>
+    <p className="bento-stat bento-stat--sm" style={{ margin: '0 0 6px 0' }}>
+      {bentoContent.teams.value}
+      <span className="bento-plus">+</span>
+    </p>
+    <p className="bento-sub">{bentoContent.teams.subtext}</p>
+  </div>
+</div>
 
-                  <div className="bento-card bento-dark">
-                    <span className="bento-label">Prize Pool</span>
-                    <p className="bento-stat bento-stat--sm">
-                      {"₹3L"}
-                      <span className="bento-plus">+</span>
-                    </p>
-                    <p className="bento-sub">in cash & awards</p>
-                    <div className="bento-orb bento-orb--orange" />
-                  </div>
+                    <div className="bento-card bento-dark" style={{ justifyContent: 'space-between', paddingTop: '3rem' }}>
+  <span className="bento-label" style={{ position: 'static', opacity: 0.5, fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'SpaceGroteskMed, Arial, sans-serif' }}>Prize Pool</span>
+  <div>
+    <p className="bento-stat bento-stat--sm">
+      {bentoContent.prizePool.value}
+      <span className="bento-plus">+</span>
+    </p>
+    <p className="bento-sub">{bentoContent.prizePool.subtext}</p>
+  </div>
+  <div className="bento-orb bento-orb--orange" />
+</div>
 
-                  <div className="bento-card bento-accent-red bento-tall-right">
-                    <span className="bento-label bento-label--light">
-                      Vision
-                    </span>
-                    <p
-                      className="bento-stat bento-stat--sm"
-                      style={{ color: "#fff" }}
-                    >
-                      Future
-                    </p>
-                    <p
-                      className="bento-sub"
-                      style={{ color: "rgba(255,255,255,0.7)" }}
-                    >
-                      Inspiring the next generation of innovators and builders.
-                    </p>
-                    <p className="bento-tagline">
-                      Join us as we shape the future of robotics and technology
-                      together.
-                    </p>
-                    <div className="bento-tag">ROBOFEST</div>
-                  </div>
+                    <div className="bento-card bento-accent-red" style={{ gridColumn: 3, gridRow: 3, justifyContent: 'space-between', paddingTop: '3rem' }}>
+  <span className="bento-label bento-label--light" style={{ position: 'static', fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'SpaceGroteskMed, Arial, sans-serif' }}>Sponsors</span>
+  <div>
+    <p className="bento-stat bento-stat--sm" style={{ color: '#fff' }}>
+      {bentoContent.sponsors.value}
+      <span className="bento-plus">+</span>
+    </p>
+    <p className="bento-sub" style={{ color: 'rgba(255,255,255,0.7)' }}>
+      {bentoContent.sponsors.subtext}
+    </p>
+  </div>
+  <a href="/sponsors" className="bento-card-cta">View sponsors</a>
+</div>
 
-                  <div className="bento-card bento-accent-cream bento-wide">
-                    <span className="bento-label">Awards</span>
-                    <p className="bento-stat bento-stat--sm">
-                      {"15"}
-                      <span className="bento-plus">+</span>
-                    </p>
-                    <p className="bento-sub">categories recognised</p>
+
+                    <div className="bento-card bento-accent-cream" style={{ gridColumn: 2, gridRow: 2, justifyContent: 'space-between', paddingTop: '2.5rem' }}>
+  <span className="bento-label" style={{ position: 'static', opacity: 0.5, fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'SpaceGroteskMed, Arial, sans-serif' }}>Awards</span>
+  <div>
+    <p className="bento-stat bento-stat--sm" style={{ margin: '0 0 6px 0' }}>
+      {bentoContent.awards.value}
+      <span className="bento-plus">+</span>
+    </p>
+    <p className="bento-sub">{bentoContent.awards.subtext}</p>
+  </div>
+</div>
+
+                    <div className="bento-card bento-dark bento-tall-right" style={{ gridColumn: 3, gridRow: '1 / span 2', justifyContent: 'space-between', paddingTop: '3rem' }}>
+  <span className="bento-label bento-label--light" style={{ position: 'static', fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'SpaceGroteskMed, Arial, sans-serif' }}>Rules</span>
+  <div>
+    <p className="bento-tagline" style={{ margin: '0 0 10px', color: '#fff' }}>
+      Competition rules, formats, and participant notes.
+    </p>
+    <p className="bento-sub" style={{ color: 'rgba(255,255,255,0.72)' }}>
+      Open the full rulebook before registering.
+    </p>
+  </div>
+  <a href="/rules" className="bento-card-cta">Open rules</a>
+</div>
+
                   </div>
                 </div>
               </div>
