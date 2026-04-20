@@ -40,11 +40,17 @@ const Footer = forwardRef<HTMLElement>((props, ref) => {
                 className={styles.link}
                 data-footer-link
               >
-                isdlab@srmist.edu.in
+                robofest@srmist.edu.in
               </a>
-              {/* <a href="tel:+914427452270" className={styles.link} data-footer-link>
-                +91 44 2745 2270
-              </a> */}
+              <a
+                href="tel:+914427452270"
+                className={styles.link}
+                data-footer-link
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                +91 62309 31075
+              </a>
               <p className={styles.meta}>SRMIST, Kattankulathur, Chennai</p>
             </div>
 

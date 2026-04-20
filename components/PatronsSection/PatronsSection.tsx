@@ -117,6 +117,54 @@ const KEY_ORGANISERS = [
     position: "Assistant Professor, SRMIST",
     img: "/images/committee/vidhyalakshmi-mam.png",
   },
+  {
+    title: "Organizing Secretary",
+    name: "Dr.S.Jayasingh Albert Chandrasekar",
+    position: "Associate Professor & Head(PE & Sports Sciences), SRMIST",
+    img: "/images/committee/albert-sir.jpg",
+  },
+  {
+    title: "Organizing Secretary",
+    name: "Dr. Senthil Kumar M",
+    position: "Associate Professor & Head(Yoga), SRMIST",
+    img: "/images/committee/senthil-sir.jpg",
+  },
+  {
+    title: "Organizing Secretary",
+    name: "Dr.N.C.Jesus Rajkumar",
+    position: "Assistant Professor, SRMIST",
+    img: "/images/committee/jesus-sir.jpg",
+  },
+  {
+    title: "Organizing Secretary",
+    name: "Dr. Siva M",
+    position: "Assistant Professor, SRMIST",
+    img: "/images/committee/siva-sir.jpg",
+  },
+  {
+    title: "Organizing Secretary",
+    name: "Dr.Y.C Louis Raj",
+    position: "Assistant Professor, SRMIST",
+    img: "/images/committee/louis-sir.jpg",
+  },
+  {
+    title: "Organizing Secretary",
+    name: "Dr. Asath Alikhan D J",
+    position: "Assistant Professor, SRMIST",
+    img: "/images/committee/asath-sir.jpg",
+  },
+  {
+    title: "Organizing Secretary",
+    name: "Dr. Suresh C",
+    position: "Assistant Professor, SRMIST",
+    img: "/images/committee/suresh-sir.jpg",
+  },
+  {
+    title: "Organizing Secretary",
+    name: "Dr. Gokul Raj M",
+    position: "Assistant Professor, SRMIST",
+    img: "/images/committee/gokul-sir.jpg",
+  },
 ];
 
 const KEY_ORGANISERS_ALL = [...CONVENERS, ...KEY_ORGANISERS];
@@ -144,20 +192,22 @@ function PersonCard({
     <div
       className={`${styles.personCard} ${styles[`card--${size}`]} ${highlight ? styles.paarivendharGlow : ""}`}
     >
-      <div
-        className={`${styles.personImgWrap} ${highlight ? styles.paarivendharImgSpin : ""}`}
-      >
-        <Image
-          src={img}
-          alt={name}
-          width={imgSize}
-          height={imgSize}
-          className={styles.personImg}
-        />
-      </div>
+      {img ? (
+        <div
+          className={`${styles.personImgWrap} ${highlight ? styles.paarivendharImgSpin : ""}`}
+        >
+          <Image
+            src={img}
+            alt={name || "Committee member"}
+            width={imgSize}
+            height={imgSize}
+            className={styles.personImg}
+          />
+        </div>
+      ) : null}
       {title && <span className={styles.cardTitle}>{title}</span>}
-      <p className={styles.personName}>{name}</p>
-      <p className={styles.personPosition}>{position}</p>
+      {name ? <p className={styles.personName}>{name}</p> : null}
+      {position ? <p className={styles.personPosition}>{position}</p> : null}
     </div>
   );
 }
@@ -321,8 +371,8 @@ const PatronsSection = forwardRef<HTMLElement>((props, ref) => {
         {/* ── 03 Key Organisers ── */}
         <SectionBlock label="Key Organisers" index="03">
           <div className={`${styles.cardGrid} ${styles.grid2x3}`}>
-            {KEY_ORGANISERS_ALL.map((p) => (
-              <PersonCard key={p.name} {...p} size="md" />
+            {KEY_ORGANISERS_ALL.map((p, index) => (
+              <PersonCard key={`${p.title}-${p.name}-${index}`} {...p} size="md" />
             ))}
           </div>
         </SectionBlock>

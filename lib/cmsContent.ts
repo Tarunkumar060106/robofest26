@@ -26,8 +26,28 @@ export interface SponsorsContent {
   subtext: string;
   ctaText: string;
   ctaUrl: string;
+  brochureText: string;
+  brochureUrl: string;
+  contactEmail: string;
   row1: string[];
   row2: string[];
+}
+
+export interface BentoMetric {
+  value: string;
+  subtext: string;
+}
+
+export interface BentoContent {
+  eyebrow: string;
+  heading: string;
+  events: BentoMetric;
+  states: BentoMetric;
+  footfall: BentoMetric;
+  teams: BentoMetric;
+  prizePool: BentoMetric;
+  sponsors: BentoMetric;
+  awards: BentoMetric;
 }
 
 export interface RuleItem {
@@ -48,6 +68,7 @@ export interface RulesContent {
 
 export interface CmsContent {
   siteSettings: SiteSettings;
+  bento: BentoContent;
   events: EventItem[];
   faqs: FaqItem[];
   sponsors: SponsorsContent;
@@ -74,6 +95,38 @@ export const DEFAULT_CMS_CONTENT: CmsContent = {
       "at Robofest.",
     ],
     sponsorsState: "coming-soon",
+  },
+  bento: {
+    eyebrow: "Last year statistics",
+    heading: "Robofest 2025 by the numbers",
+    events: {
+      value: "9",
+      subtext: "event categories last year",
+    },
+    states: {
+      value: "12",
+      subtext: "states represented last year",
+    },
+    footfall: {
+      value: "400",
+      subtext: "attendees last year",
+    },
+    teams: {
+      value: "170",
+      subtext: "teams from 40+ schools",
+    },
+    prizePool: {
+      value: "₹3L",
+      subtext: "in cash & awards",
+    },
+    sponsors: {
+      value: "18",
+      subtext: "sponsors backing the event",
+    },
+    awards: {
+      value: "15",
+      subtext: "recognised categories last year",
+    },
   },
   events: DEFAULT_EVENTS,
   faqs: [
@@ -114,6 +167,9 @@ export const DEFAULT_CMS_CONTENT: CmsContent = {
       "Proudly backed by industry leaders who believe in the next generation of robotics innovators.",
     ctaText: "Become a Sponsor",
     ctaUrl: "#",
+    brochureText: "View Brochure",
+    brochureUrl: "#",
+    contactEmail: "robofest@srmist.edu.in",
     row1: [
       "TechCore",
       "NovaSys",

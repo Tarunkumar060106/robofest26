@@ -259,6 +259,20 @@ export default function SponsorsSection({
             <a href={content.ctaUrl} className="sponsors-cta-btn">
               {content.ctaText} <span className="sponsors-cta-arrow">→</span>
             </a>
+            <a
+              href={content.brochureUrl}
+              className="sponsors-cta-btn sponsors-cta-btn--secondary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {content.brochureText} <span className="sponsors-cta-arrow">↗</span>
+            </a>
+            <a
+              href={`mailto:${content.contactEmail}`}
+              className="sponsors-contact-link"
+            >
+              {content.contactEmail}
+            </a>
           </div>
         </>
       )}
