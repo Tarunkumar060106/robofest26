@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import "../coming-soon/ComingSoon.css";
 import Navbar from "@/components/Navbar/Navbar";
+import { DEFAULT_CMS_CONTENT, type SponsorsContent } from "@/lib/cmsContent";
 
 const SPONSOR_REVEAL_DATE = new Date("2026-08-19T00:00:00+05:30");
 const SOCIAL_LINKS = [
@@ -34,6 +35,9 @@ function pad(n: number) {
 }
 
 export default function SponsorsComingSoon() {
+  const [content, setContent] = useState<SponsorsContent>(
+    DEFAULT_CMS_CONTENT.sponsors,
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
@@ -46,6 +50,29 @@ export default function SponsorsComingSoon() {
   useEffect(() => {
     const id = setInterval(() => setTime(getTimeLeft()), 1000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSponsors = async () => {
+      try {
+        const response = await fetch("/api/cms", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = await response.json();
+
+        if (isMounted && payload?.content?.sponsors) {
+          setContent(payload.content.sponsors as SponsorsContent);
+        }
+      } catch {
+        // Keep defaults when API is unavailable.
+      }
+    };
+
+    void loadSponsors();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -294,6 +321,19 @@ export default function SponsorsComingSoon() {
             <p className="cs-form-note">
               Get the sponsorship deck and priority partner updates.
             </p>
+            <div className="cs-quick-actions">
+              <a
+                href={content.brochureUrl}
+                className="cs-submit cs-submit--ghost"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>{content.brochureText}</span>
+              </a>
+              <a href={`mailto:${content.contactEmail}`} className="cs-form-email">
+                {content.contactEmail}
+              </a>
+            </div>
           </div>
 
           <div className="cs-bottom">

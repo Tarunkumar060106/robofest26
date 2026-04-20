@@ -726,6 +726,24 @@ export default function CmsPage() {
                 className={`${inputClass} md:col-span-2`}
                 placeholder="CTA URL"
               />
+              <input
+                value={content.sponsors.brochureText}
+                onChange={(e) => updateSponsorField("brochureText", e.target.value)}
+                className={inputClass}
+                placeholder="Brochure Button Text"
+              />
+              <input
+                value={content.sponsors.brochureUrl}
+                onChange={(e) => updateSponsorField("brochureUrl", e.target.value)}
+                className={inputClass}
+                placeholder="Brochure URL"
+              />
+              <input
+                value={content.sponsors.contactEmail}
+                onChange={(e) => updateSponsorField("contactEmail", e.target.value)}
+                className={`${inputClass} md:col-span-2`}
+                placeholder="Contact Email"
+              />
               <textarea
                 value={content.sponsors.subtext}
                 onChange={(e) => updateSponsorField("subtext", e.target.value)}

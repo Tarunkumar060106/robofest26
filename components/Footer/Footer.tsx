@@ -49,7 +49,7 @@ const Footer = forwardRef<HTMLElement>((props, ref) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                +91 44 2745 2270
+                +91 62309 31075
               </a>
               <p className={styles.meta}>SRMIST, Kattankulathur, Chennai</p>
             </div>

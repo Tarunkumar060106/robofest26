@@ -26,6 +26,9 @@ export interface SponsorsContent {
   subtext: string;
   ctaText: string;
   ctaUrl: string;
+  brochureText: string;
+  brochureUrl: string;
+  contactEmail: string;
   row1: string[];
   row2: string[];
 }
@@ -164,6 +167,9 @@ export const DEFAULT_CMS_CONTENT: CmsContent = {
       "Proudly backed by industry leaders who believe in the next generation of robotics innovators.",
     ctaText: "Become a Sponsor",
     ctaUrl: "#",
+    brochureText: "View Brochure",
+    brochureUrl: "#",
+    contactEmail: "robofest@srmist.edu.in",
     row1: [
       "TechCore",
       "NovaSys",
