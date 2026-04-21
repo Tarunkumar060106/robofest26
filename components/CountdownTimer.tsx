@@ -18,7 +18,17 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
     "Robofest 2026 at SRMIST. Visit the official website for event details and registration.";
 
   const buildCalendarUrl = () => {
-    return "/api/calendar/google/start";
+    const base = "https://calendar.google.com/calendar/render";
+
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: "ROBOFEST 2.0",
+      dates: "20260819T090000Z/20260821T180000Z",
+      details: "Robofest 2.0 at SRMIST. Join us!",
+      location: "SRM Institute of Science and Technology",
+    });
+
+    return `${base}?${params.toString()}`;
   };
 
   const handleAddToCalendar = () => {

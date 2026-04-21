@@ -6,7 +6,7 @@ import "./globals.css";
 import { Analytics } from '@vercel/analytics/next';
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.in";
 const siteName = "ROBOFEST 2.0";
 const siteDescription =
   "ROBOFEST 2.0 – SRMIST's flagship robotics competition at SRM Kattankulathur. Robot battles, line followers, drone events & ₹3L+ prize pool. Register now.";
@@ -176,6 +176,24 @@ export default function RootLayout({
           src="https://salesiq.zohopublic.in/widget?wc=siqe5af35de3fbd3b4214d534a2712885e2f1bf2973da60c6ab85e6fe4f208cacf1"
           strategy="afterInteractive"
         />
+        <Script id="microsoft-clarity" strategy="afterInteractive">
+          {`(function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "wf90yce2wq");`}
+        </Script>
+        <Script
+          id="google-tag-manager"
+          src="https://www.googletagmanager.com/gtag/js?id=G-ZGWKER2L1C"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZGWKER2L1C');`}
+        </Script>
         <Analytics />
         {children}
       </body>
