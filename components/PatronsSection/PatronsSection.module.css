@@ -120,6 +120,63 @@
   background: rgba(26, 22, 18, 0.15);
 }
 
+.collapsible {
+  border: 0;
+  padding: 0;
+}
+
+.collapsibleSummary {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.collapsibleSummary::-webkit-details-marker {
+  display: none;
+}
+
+.expandSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  list-style: none;
+  width: fit-content;
+  padding: 0;
+  margin: 0 auto;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(175, 0, 0, 0.82);
+}
+
+.expandSummary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsibleChev {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  color: rgba(175, 0, 0, 0.72);
+  transition: transform 0.25s ease;
+}
+
+.collapsible[open] .collapsibleChev {
+  transform: rotate(180deg);
+}
+
+.collapsibleBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  padding-top: 2.5rem;
+}
+
 /* ── Card grids ── */
 .cardGrid {
   display: grid;
@@ -143,7 +200,8 @@
 .convenerRow {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
 /* ── Person card ── */
