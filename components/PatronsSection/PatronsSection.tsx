@@ -167,8 +167,6 @@ const KEY_ORGANISERS = [
   },
 ];
 
-const KEY_ORGANISERS_ALL = [...CONVENERS, ...KEY_ORGANISERS];
-
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function PersonCard({
@@ -369,13 +367,36 @@ const PatronsSection = forwardRef<HTMLElement>((props, ref) => {
         </SectionBlock>
 
         {/* ── 03 Key Organisers ── */}
-        <SectionBlock label="Key Organisers" index="03">
-          <div className={`${styles.cardGrid} ${styles.grid2x3}`}>
-            {KEY_ORGANISERS_ALL.map((p, index) => (
-              <PersonCard key={`${p.title}-${p.name}-${index}`} {...p} size="md" />
+        <div className={styles.block}>
+          <div className={styles.blockHeader}>
+            <span className={styles.blockIndex}>03</span>
+            <h3 className={styles.blockLabel}>Key Organisers</h3>
+            <div className={styles.blockRule} />
+          </div>
+
+          <div className={styles.convenerRow}>
+            {CONVENERS.map((p) => (
+              <PersonCard key={`${p.title}-${p.name}`} {...p} size="sm" />
             ))}
           </div>
-        </SectionBlock>
+
+          <details className={styles.collapsible}>
+            <summary className={styles.expandSummary}>
+              <span>Click to expand</span>
+              <span className={styles.collapsibleChev} aria-hidden>
+                ▾
+              </span>
+            </summary>
+
+            <div className={styles.collapsibleBody}>
+            <div className={`${styles.cardGrid} ${styles.grid2x3}`}>
+              {KEY_ORGANISERS.map((p) => (
+                <PersonCard key={`${p.title}-${p.name}`} {...p} size="md" />
+              ))}
+            </div>
+            </div>
+          </details>
+        </div>
       </div>
     </section>
   );
