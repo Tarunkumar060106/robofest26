@@ -210,36 +210,38 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
         .timerGrid {
           position: relative;
           z-index: 1;
-          display: grid;
-          grid-template-columns: max-content max-content max-content max-content max-content max-content max-content;
-          grid-template-rows: auto auto;
-          align-items: end;
-          justify-items: center;
+          display: flex;
+          align-items: center;
           justify-content: center;
-          column-gap: 0.06em;
-          row-gap: 0.9rem;
+          gap: 0.1rem;
         }
 
         .numberCell {
-          font-size: clamp(4rem, 16vw, 20rem);
+          font-size: clamp(2.5rem, 12vw, 8rem);
           line-height: 1;
           font-weight: 800;
           color: white;
-          letter-spacing: -0.05em;
+          letter-spacing: -0.03em;
           font-variant-numeric: tabular-nums;
           font-feature-settings: "tnum";
-          text-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+          text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+          background: rgba(0, 0, 0, 0.35);
+          border-radius: 16px;
+          padding: 0.15em 0.25em;
+          min-width: 1.8em;
+          text-align: center;
         }
 
         .colonCell {
-          font-size: clamp(4rem, 16vw, 20rem);
+          font-size: clamp(2rem, 10vw, 6rem);
           line-height: 1;
           font-weight: 800;
-          color: white;
-          letter-spacing: -0.05em;
+          color: rgba(255, 255, 255, 0.7);
+          letter-spacing: -0.03em;
           font-variant-numeric: tabular-nums;
           font-feature-settings: "tnum";
-          text-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+          text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+          padding: 0 0.05em;
         }
 
         .numbers {
@@ -288,11 +290,7 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
         }
 
         .labelCell {
-          font-size: clamp(0.72rem, 1.1vw, 1rem);
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          text-align: center;
-          color: white;
+          display: none;
         }
 
         .labelDays {
@@ -368,59 +366,79 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
         @media (max-width: 640px) {
           .countdown {
             height: auto;
-            min-height: 54vh;
-            padding: 4.5rem 0.9rem 5rem;
+            min-height: 50vh;
+            padding: 3rem 0.5rem 3.5rem;
           }
 
           .heading {
-            top: 1.25rem;
-            font-size: 0.68rem;
-            letter-spacing: 0.14em;
-          }
-
-          .timerGrid {
-            width: 100%;
-            grid-template-columns: max-content max-content max-content max-content max-content max-content max-content;
-            grid-template-rows: auto auto;
-            column-gap: 0.02em;
-            row-gap: 0.5rem;
-            align-items: center;
-            transform: scale(0.9);
-            transform-origin: center;
-          }
-
-          .numberCell,
-          .colonCell {
-            font-size: clamp(2.3rem, 11vw, 3.7rem);
-          }
-
-          .labelCell {
-            font-size: 0.58rem;
+            top: 1rem;
+            font-size: 0.6rem;
             letter-spacing: 0.12em;
           }
 
-          .labelDays {
-            grid-column: 1;
+          .timerGrid {
+            gap: 0.1rem;
           }
 
-          .labelHours {
-            grid-column: 3;
+          .numberCell {
+            font-size: clamp(2rem, 11vw, 3.5rem);
+            min-width: 1.6em;
+            padding: 0.12em 0.2em;
           }
 
-          .labelMinutes {
-            grid-column: 5;
-          }
-
-          .labelSeconds {
-            grid-column: 7;
+          .colonCell {
+            font-size: clamp(1.8rem, 9vw, 3rem);
           }
 
           .calendarCta {
             position: relative;
             bottom: auto;
             margin-top: 1.5rem;
-            padding: 0.62rem 1.05rem;
-            font-size: 0.86rem;
+            padding: 0.65rem 1.3rem;
+            font-size: 0.85rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .countdown {
+            height: auto;
+            min-height: 45vh;
+            padding: 2.5rem 0.5rem 3rem;
+          }
+
+          .heading {
+            top: 0.75rem;
+            font-size: 0.52rem;
+            letter-spacing: 0.14em;
+          }
+
+          .timerGrid {
+            gap: 0.05rem;
+          }
+
+          .numberCell {
+            font-size: clamp(1.4rem, 9vw, 2.2rem);
+            min-width: 1.4em;
+            border-radius: 10px;
+            padding: 0.1em 0.15em;
+          }
+
+          .colonCell {
+            font-size: clamp(1.2rem, 7vw, 1.8rem);
+          }
+
+          .colon {
+            opacity: 0.6;
+          }
+
+          .labelCell {
+            display: none;
+          }
+
+          .calendarCta {
+            margin-top: 1.2rem;
+            padding: 0.55rem 1.1rem;
+            font-size: 0.8rem;
           }
         }
       `}</style>
