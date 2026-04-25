@@ -595,19 +595,68 @@ body {
 }
 
 @media (max-width: 640px) {
-  #zsiqwidget,
-  #salesiqWidget,
-  .zsiq_widget,
-  .zsiq_float,
-  .zsiq_float_typing,
-  [id*="zoho"][id*="salesiq"],
-  [class*="zsq"],
-  [id*="zsq"],
-  [id*="SalesIQ"],
-  [class*="salesiq"] {
-    bottom: 90px !important;
+  div[id^="siq"] {
+    bottom: 120px !important;
     right: 16px !important;
-    z-index: 99 !important;
+    left: auto !important;
+    z-index: 9999 !important;
+  }
+  div[class*="siq"]:not(html):not(body),
+  div[class*="zsq"]:not(html):not(body),
+  div[id*="siq"]:not(html):not(body),
+  div[id*="zoho"]:not(html):not(body),
+  [id*="SalesIQ"]:not(html):not(body),
+  [class*="salesiq"]:not(html):not(body),
+  #siqstandalone,
+  .siq-tab,
+  .siq-floating,
+  .siq-launcher,
+  .zsiq_float_typing,
+  #zsiqwidget {
+    bottom: 100px !important;
+    right: 16px !important;
+    left: auto !important;
+    transform: none !important;
+    z-index: 9999 !important;
+    position: fixed !important;
+  }
+  /* Chat popup close button - make it visible */
+  .siq-close,
+  .siq-widget-close,
+  [class*="siq"][class*="close"],
+  [class*="zsq"][class*="close"],
+  div[class*="siq"] button[class*="close"],
+  #siq-close,
+  .siq-popup-close {
+    color: #fff !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    border-radius: 50% !important;
+    z-index: 10000 !important;
+    position: fixed !important;
+    top: 16px !important;
+    right: 16px !important;
+    left: auto !important;
+    bottom: auto !important;
+  }
+  /* Make chat popup properly sized on mobile */
+  div[class*="siq"]:not(html):not(body)[class*="popup"],
+  div[class*="siq"]:not(html):not(body)[class*="chat"],
+  div[class*="siq"]:not(html):not(body)[class*="widget"],
+  div[id*="siq"][class*="popup"],
+  div[id*="siq"][class*="chat"],
+  div[id*="zoho"][class*="popup"],
+  iframe[id*="siq"],
+  [class*="siq"]:not(html):not(body)[style*="width"] {
+    width: calc(100vw - 20px) !important;
+    max-width: 420px !important;
+    height: 80vh !important;
+    max-height: 80vh !important;
+    bottom: 120px !important;
+    top: 10px !important;
+    right: 10px !important;
+    left: 10px !important;
+    z-index: 9999 !important;
+    position: fixed !important;
   }
 }
 
