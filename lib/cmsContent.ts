@@ -14,6 +14,13 @@ export interface SiteSettings {
   sponsorsState: "live" | "coming-soon";
 }
 
+export interface TopNotification {
+  enabled: boolean;
+  message: string;
+  linkUrl: string;
+  linkLabel: string;
+}
+
 export interface FaqItem {
   q: string;
   a: string;
@@ -68,6 +75,7 @@ export interface RulesContent {
 
 export interface CmsContent {
   siteSettings: SiteSettings;
+  topNotification: TopNotification;
   bento: BentoContent;
   events: EventItem[];
   faqs: FaqItem[];
@@ -95,6 +103,12 @@ export const DEFAULT_CMS_CONTENT: CmsContent = {
       "at Robofest.",
     ],
     sponsorsState: "coming-soon",
+  },
+  topNotification: {
+    enabled: false,
+    message: "",
+    linkUrl: "",
+    linkLabel: "",
   },
   bento: {
     eyebrow: "Last year statistics",

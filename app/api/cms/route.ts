@@ -9,6 +9,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/server";
 
 type CmsContentPatch = {
   siteSettings?: Partial<CmsContent["siteSettings"]>;
+  topNotification?: Partial<CmsContent["topNotification"]>;
   bento?: Partial<CmsContent["bento"]>;
   events?: CmsContent["events"];
   faqs?: CmsContent["faqs"];
@@ -56,7 +57,10 @@ function ensureAuthorized(req: Request): NextResponse | null {
 
   const providedKey = req.headers.get("x-cms-key");
   if (!providedKey || providedKey !== configuredKey) {
-    return NextResponse.json({ error: "Unauthorized CMS request." }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized CMS request." },
+      { status: 401 },
+    );
   }
 
   return null;
@@ -67,6 +71,10 @@ function mergeCmsContent(partial: CmsContentPatch): CmsContent {
     siteSettings: {
       ...DEFAULT_CMS_CONTENT.siteSettings,
       ...(partial.siteSettings ?? {}),
+    },
+    topNotification: {
+      ...DEFAULT_CMS_CONTENT.topNotification,
+      ...(partial.topNotification ?? {}),
     },
     bento: mergeBentoContent(partial.bento),
     events:
@@ -81,11 +89,13 @@ function mergeCmsContent(partial: CmsContentPatch): CmsContent {
       ...DEFAULT_CMS_CONTENT.sponsors,
       ...(partial.sponsors ?? {}),
       row1:
-        Array.isArray(partial.sponsors?.row1) && partial.sponsors.row1.length > 0
+        Array.isArray(partial.sponsors?.row1) &&
+        partial.sponsors.row1.length > 0
           ? partial.sponsors.row1
           : DEFAULT_CMS_CONTENT.sponsors.row1,
       row2:
-        Array.isArray(partial.sponsors?.row2) && partial.sponsors.row2.length > 0
+        Array.isArray(partial.sponsors?.row2) &&
+        partial.sponsors.row2.length > 0
           ? partial.sponsors.row2
           : DEFAULT_CMS_CONTENT.sponsors.row2,
     },
@@ -117,15 +127,29 @@ export async function GET() {
     const { data, error } = await supabase
       .from("cms_content")
       .select("key, value")
-      .in("key", ["site_settings", "bento", "events", "faqs", "sponsors", "rules"]);
+      .in("key", [
+        "site_settings",
+        "top_notification",
+        "bento",
+        "events",
+        "faqs",
+        "sponsors",
+        "rules",
+      ]);
 
     if (error || !data) {
-      return NextResponse.json({ content: DEFAULT_CMS_CONTENT, source: "default" });
+      return NextResponse.json({
+        content: DEFAULT_CMS_CONTENT,
+        source: "default",
+      });
     }
 
     const partial: CmsContentPatch = {
-      siteSettings: data.find((row) => row.key === "site_settings")
-        ?.value as Partial<CmsContent["siteSettings"]> | undefined,
+      siteSettings: data.find((row) => row.key === "site_settings")?.value as
+        | Partial<CmsContent["siteSettings"]>
+        | undefined,
+      topNotification: data.find((row) => row.key === "top_notification")
+        ?.value as Partial<CmsContent["topNotification"]> | undefined,
       bento: data.find((row) => row.key === "bento")?.value as
         | Partial<CmsContent["bento"]>
         | undefined,
@@ -143,7 +167,10 @@ export async function GET() {
         | undefined,
     };
 
-    return NextResponse.json({ content: mergeCmsContent(partial), source: "supabase" });
+    return NextResponse.json({
+      content: mergeCmsContent(partial),
+      source: "supabase",
+    });
   } catch (error) {
     const message =
       error instanceof Error
@@ -175,7 +202,10 @@ export async function PUT(req: Request) {
 
   try {
     if (!body?.content) {
-      return NextResponse.json({ error: "Missing content payload." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing content payload." },
+        { status: 400 },
+      );
     }
 
     const merged = mergeCmsContent(body.content);
@@ -183,6 +213,7 @@ export async function PUT(req: Request) {
 
     const rows = [
       { key: "site_settings", value: merged.siteSettings },
+      { key: "top_notification", value: merged.topNotification },
       { key: "bento", value: merged.bento },
       { key: "events", value: merged.events },
       { key: "faqs", value: merged.faqs },
@@ -207,9 +238,6 @@ export async function PUT(req: Request) {
       error instanceof Error
         ? error.message
         : "Unknown error while saving CMS content.";
-    return NextResponse.json(
-      { error: message },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -172,6 +172,22 @@ export default function CmsPage() {
     setStatus("Unsaved changes. Click Save to publish to Supabase.");
   };
 
+  const updateTopNotificationField = <
+    K extends keyof CmsContent["topNotification"],
+  >(
+    key: K,
+    value: CmsContent["topNotification"][K],
+  ) => {
+    setContent((prev) => ({
+      ...prev,
+      topNotification: {
+        ...prev.topNotification,
+        [key]: value,
+      },
+    }));
+    setStatus("Unsaved changes. Click Save to publish to Supabase.");
+  };
+
   const updateBentoField = (key: "eyebrow" | "heading", value: string) => {
     setContent((prev) => ({
       ...prev,
@@ -214,7 +230,11 @@ export default function CmsPage() {
     setStatus("Unsaved changes. Click Save to publish to Supabase.");
   };
 
-  const handleFaqChange = (index: number, key: keyof FaqItem, value: string) => {
+  const handleFaqChange = (
+    index: number,
+    key: keyof FaqItem,
+    value: string,
+  ) => {
     setContent((prev) => {
       const nextFaqs = [...prev.faqs];
       nextFaqs[index] = { ...nextFaqs[index], [key]: value };
@@ -251,7 +271,10 @@ export default function CmsPage() {
     setStatus("Unsaved changes. Click Save to publish to Supabase.");
   };
 
-  const updateSponsorField = (key: keyof CmsContent["sponsors"], value: string) => {
+  const updateSponsorField = (
+    key: keyof CmsContent["sponsors"],
+    value: string,
+  ) => {
     setContent((prev) => ({
       ...prev,
       sponsors: {
@@ -357,7 +380,9 @@ export default function CmsPage() {
       });
 
       if (response.status === 401) {
-        setStatus("Session expired or key is invalid. Please authenticate again.");
+        setStatus(
+          "Session expired or key is invalid. Please authenticate again.",
+        );
         setIsAuthenticated(false);
         setCmsKey("");
         window.sessionStorage.removeItem(CMS_KEY_STORAGE);
@@ -366,7 +391,8 @@ export default function CmsPage() {
 
       if (!response.ok) {
         const payload = await response.json().catch(() => null);
-        const message = payload?.error || "Save failed. Check CMS and Supabase config.";
+        const message =
+          payload?.error || "Save failed. Check CMS and Supabase config.";
         setStatus(message);
         return;
       }
@@ -387,7 +413,9 @@ export default function CmsPage() {
       await navigator.clipboard.writeText(JSON.stringify(content, null, 2));
       setStatus("JSON copied to clipboard.");
     } catch {
-      setStatus("Could not access clipboard. Copy manually from the preview box.");
+      setStatus(
+        "Could not access clipboard. Copy manually from the preview box.",
+      );
     }
   };
 
@@ -456,7 +484,8 @@ export default function CmsPage() {
               Content Control Panel
             </h1>
             <p className="mt-2 text-sm text-zinc-600">
-              Edit content blocks, review data, and publish updates in one place.
+              Edit content blocks, review data, and publish updates in one
+              place.
             </p>
           </div>
           <button
@@ -497,21 +526,31 @@ export default function CmsPage() {
 
         <div className="mt-8 space-y-6">
           <section className={sectionClass}>
-            <h2 className="mb-4 text-xl font-semibold text-zinc-900">Site Settings</h2>
+            <h2 className="mb-4 text-xl font-semibold text-zinc-900">
+              Site Settings
+            </h2>
             <div className="grid gap-3 md:grid-cols-2">
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Event Date ISO</span>
+                <span className="font-medium text-zinc-700">
+                  Event Date ISO
+                </span>
                 <input
                   value={content.siteSettings.eventDateIso}
-                  onChange={(e) => updateSiteSetting("eventDateIso", e.target.value)}
+                  onChange={(e) =>
+                    updateSiteSetting("eventDateIso", e.target.value)
+                  }
                   className={inputClass}
                 />
               </label>
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Launch Ceremony</span>
+                <span className="font-medium text-zinc-700">
+                  Launch Ceremony
+                </span>
                 <select
                   value={content.siteSettings.launch ? "true" : "false"}
-                  onChange={(e) => updateSiteSetting("launch", e.target.value === "true")}
+                  onChange={(e) =>
+                    updateSiteSetting("launch", e.target.value === "true")
+                  }
                   className={inputClass}
                 >
                   <option value="false">false (homepage)</option>
@@ -519,10 +558,14 @@ export default function CmsPage() {
                 </select>
               </label>
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Registration URL</span>
+                <span className="font-medium text-zinc-700">
+                  Registration URL
+                </span>
                 <input
                   value={content.siteSettings.registrationUrl}
-                  onChange={(e) => updateSiteSetting("registrationUrl", e.target.value)}
+                  onChange={(e) =>
+                    updateSiteSetting("registrationUrl", e.target.value)
+                  }
                   className={inputClass}
                 />
               </label>
@@ -530,12 +573,16 @@ export default function CmsPage() {
                 <span className="font-medium text-zinc-700">CTA Label</span>
                 <input
                   value={content.siteSettings.ctaLabel}
-                  onChange={(e) => updateSiteSetting("ctaLabel", e.target.value)}
+                  onChange={(e) =>
+                    updateSiteSetting("ctaLabel", e.target.value)
+                  }
                   className={inputClass}
                 />
               </label>
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Menu CTA Subtext</span>
+                <span className="font-medium text-zinc-700">
+                  Menu CTA Subtext
+                </span>
                 <input
                   value={content.siteSettings.menuRegisterSubtext}
                   onChange={(e) =>
@@ -545,10 +592,14 @@ export default function CmsPage() {
                 />
               </label>
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Hero Department</span>
+                <span className="font-medium text-zinc-700">
+                  Hero Department
+                </span>
                 <input
                   value={content.siteSettings.heroDepartment}
-                  onChange={(e) => updateSiteSetting("heroDepartment", e.target.value)}
+                  onChange={(e) =>
+                    updateSiteSetting("heroDepartment", e.target.value)
+                  }
                   className={inputClass}
                 />
               </label>
@@ -556,12 +607,16 @@ export default function CmsPage() {
                 <span className="font-medium text-zinc-700">Hero Title</span>
                 <input
                   value={content.siteSettings.heroTitle}
-                  onChange={(e) => updateSiteSetting("heroTitle", e.target.value)}
+                  onChange={(e) =>
+                    updateSiteSetting("heroTitle", e.target.value)
+                  }
                   className={inputClass}
                 />
               </label>
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Hero Collab Prefix</span>
+                <span className="font-medium text-zinc-700">
+                  Hero Collab Prefix
+                </span>
                 <input
                   value={content.siteSettings.heroCollabPrefix}
                   onChange={(e) =>
@@ -571,15 +626,21 @@ export default function CmsPage() {
                 />
               </label>
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Hero Collab Org</span>
+                <span className="font-medium text-zinc-700">
+                  Hero Collab Org
+                </span>
                 <input
                   value={content.siteSettings.heroCollabOrg}
-                  onChange={(e) => updateSiteSetting("heroCollabOrg", e.target.value)}
+                  onChange={(e) =>
+                    updateSiteSetting("heroCollabOrg", e.target.value)
+                  }
                   className={inputClass}
                 />
               </label>
               <label className={`${labelClass} md:col-span-2`}>
-                <span className="font-medium text-zinc-700">Hero Animated Lines (1 per line)</span>
+                <span className="font-medium text-zinc-700">
+                  Hero Animated Lines (1 per line)
+                </span>
                 <textarea
                   value={content.siteSettings.heroAnimatedLines.join("\n")}
                   onChange={(e) =>
@@ -595,7 +656,9 @@ export default function CmsPage() {
                 />
               </label>
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Sponsors Section State</span>
+                <span className="font-medium text-zinc-700">
+                  Sponsors Section State
+                </span>
                 <select
                   value={content.siteSettings.sponsorsState}
                   onChange={(e) =>
@@ -610,11 +673,77 @@ export default function CmsPage() {
                   <option value="live">live</option>
                 </select>
               </label>
+
+              <div className="md:col-span-2 mt-2 border-t border-zinc-200/80 pt-4">
+                <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                  Top Notification Bar
+                </h3>
+                <p className="mt-1 text-sm text-zinc-600">
+                  Sticky banner at the top of every page.
+                </p>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  <label className={labelClass}>
+                    <span className="font-medium text-zinc-700">Enabled</span>
+                    <select
+                      value={content.topNotification.enabled ? "true" : "false"}
+                      onChange={(e) =>
+                        updateTopNotificationField(
+                          "enabled",
+                          e.target.value === "true",
+                        )
+                      }
+                      className={inputClass}
+                    >
+                      <option value="false">false (hidden)</option>
+                      <option value="true">true (visible)</option>
+                    </select>
+                  </label>
+                  <label className={labelClass}>
+                    <span className="font-medium text-zinc-700">
+                      Link Label (optional)
+                    </span>
+                    <input
+                      value={content.topNotification.linkLabel}
+                      onChange={(e) =>
+                        updateTopNotificationField("linkLabel", e.target.value)
+                      }
+                      className={inputClass}
+                      placeholder="e.g. Register"
+                    />
+                  </label>
+                  <label className={`${labelClass} md:col-span-2`}>
+                    <span className="font-medium text-zinc-700">Message</span>
+                    <input
+                      value={content.topNotification.message}
+                      onChange={(e) =>
+                        updateTopNotificationField("message", e.target.value)
+                      }
+                      className={inputClass}
+                      placeholder="Type the notification message"
+                    />
+                  </label>
+                  <label className={`${labelClass} md:col-span-2`}>
+                    <span className="font-medium text-zinc-700">
+                      Link URL (optional)
+                    </span>
+                    <input
+                      value={content.topNotification.linkUrl}
+                      onChange={(e) =>
+                        updateTopNotificationField("linkUrl", e.target.value)
+                      }
+                      className={inputClass}
+                      placeholder="https://... or /rules"
+                    />
+                  </label>
+                </div>
+              </div>
             </div>
           </section>
 
           <section className={sectionClass}>
-            <h2 className="mb-4 text-xl font-semibold text-zinc-900">Bento Grid Content</h2>
+            <h2 className="mb-4 text-xl font-semibold text-zinc-900">
+              Bento Grid Content
+            </h2>
             <div className="grid gap-3 md:grid-cols-2">
               <input
                 value={content.bento.eyebrow}
@@ -632,7 +761,10 @@ export default function CmsPage() {
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               {BENTO_FIELDS.map((field) => (
-                <div key={field.key} className="rounded-xl border border-zinc-200 p-3">
+                <div
+                  key={field.key}
+                  className="rounded-xl border border-zinc-200 p-3"
+                >
                   <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
                     {field.label}
                   </h3>
@@ -660,19 +792,28 @@ export default function CmsPage() {
           </section>
 
           <section className={sectionClass}>
-            <h2 className="mb-4 text-xl font-semibold text-zinc-900">FAQ Content</h2>
+            <h2 className="mb-4 text-xl font-semibold text-zinc-900">
+              FAQ Content
+            </h2>
             <div className="space-y-3">
               {content.faqs.map((faq, index) => (
-                <div key={index} className="rounded-xl border border-zinc-200 p-3">
+                <div
+                  key={index}
+                  className="rounded-xl border border-zinc-200 p-3"
+                >
                   <input
                     value={faq.q}
-                    onChange={(e) => handleFaqChange(index, "q", e.target.value)}
+                    onChange={(e) =>
+                      handleFaqChange(index, "q", e.target.value)
+                    }
                     className={`${inputClass} mb-2 w-full`}
                     placeholder="Question"
                   />
                   <textarea
                     value={faq.a}
-                    onChange={(e) => handleFaqChange(index, "a", e.target.value)}
+                    onChange={(e) =>
+                      handleFaqChange(index, "a", e.target.value)
+                    }
                     className={`${textareaClass} min-h-20 w-full`}
                     placeholder="Answer"
                   />
@@ -694,7 +835,9 @@ export default function CmsPage() {
           </section>
 
           <section className={sectionClass}>
-            <h2 className="mb-4 text-xl font-semibold text-zinc-900">Sponsors Content</h2>
+            <h2 className="mb-4 text-xl font-semibold text-zinc-900">
+              Sponsors Content
+            </h2>
             <div className="grid gap-3 md:grid-cols-2">
               <input
                 value={content.sponsors.eyebrow}
@@ -704,13 +847,17 @@ export default function CmsPage() {
               />
               <input
                 value={content.sponsors.headingPrefix}
-                onChange={(e) => updateSponsorField("headingPrefix", e.target.value)}
+                onChange={(e) =>
+                  updateSponsorField("headingPrefix", e.target.value)
+                }
                 className={inputClass}
                 placeholder="Heading Prefix"
               />
               <input
                 value={content.sponsors.headingEmphasis}
-                onChange={(e) => updateSponsorField("headingEmphasis", e.target.value)}
+                onChange={(e) =>
+                  updateSponsorField("headingEmphasis", e.target.value)
+                }
                 className={inputClass}
                 placeholder="Heading Emphasis"
               />
@@ -728,19 +875,25 @@ export default function CmsPage() {
               />
               <input
                 value={content.sponsors.brochureText}
-                onChange={(e) => updateSponsorField("brochureText", e.target.value)}
+                onChange={(e) =>
+                  updateSponsorField("brochureText", e.target.value)
+                }
                 className={inputClass}
                 placeholder="Brochure Button Text"
               />
               <input
                 value={content.sponsors.brochureUrl}
-                onChange={(e) => updateSponsorField("brochureUrl", e.target.value)}
+                onChange={(e) =>
+                  updateSponsorField("brochureUrl", e.target.value)
+                }
                 className={inputClass}
                 placeholder="Brochure URL"
               />
               <input
                 value={content.sponsors.contactEmail}
-                onChange={(e) => updateSponsorField("contactEmail", e.target.value)}
+                onChange={(e) =>
+                  updateSponsorField("contactEmail", e.target.value)
+                }
                 className={`${inputClass} md:col-span-2`}
                 placeholder="Contact Email"
               />
@@ -766,7 +919,9 @@ export default function CmsPage() {
           </section>
 
           <section className={sectionClass}>
-            <h2 className="mb-4 text-xl font-semibold text-zinc-900">Rules Page Content</h2>
+            <h2 className="mb-4 text-xl font-semibold text-zinc-900">
+              Rules Page Content
+            </h2>
             <div className="grid gap-3 md:grid-cols-2">
               <input
                 value={content.rules.pageTitle}
@@ -776,18 +931,23 @@ export default function CmsPage() {
               />
               <input
                 value={content.rules.sectionTitle}
-                onChange={(e) => updateRulesField("sectionTitle", e.target.value)}
+                onChange={(e) =>
+                  updateRulesField("sectionTitle", e.target.value)
+                }
                 className={inputClass}
                 placeholder="Section Title"
               />
               <label className={labelClass}>
-                <span className="font-medium text-zinc-700">Event Rulebooks State</span>
+                <span className="font-medium text-zinc-700">
+                  Event Rulebooks State
+                </span>
                 <select
                   value={content.rules.eventRulebooksState}
                   onChange={(e) =>
                     updateRulesField(
                       "eventRulebooksState",
-                      e.target.value as CmsContent["rules"]["eventRulebooksState"],
+                      e.target
+                        .value as CmsContent["rules"]["eventRulebooksState"],
                     )
                   }
                   className={inputClass}
@@ -806,7 +966,9 @@ export default function CmsPage() {
               />
               <input
                 value={content.rules.registerUrl}
-                onChange={(e) => updateRulesField("registerUrl", e.target.value)}
+                onChange={(e) =>
+                  updateRulesField("registerUrl", e.target.value)
+                }
                 className={inputClass}
                 placeholder="Rules Register URL"
               />
@@ -829,9 +991,14 @@ export default function CmsPage() {
             </div>
 
             <div className="mt-4 space-y-3">
-              <h3 className="text-lg font-semibold text-zinc-900">General Rule Cards</h3>
+              <h3 className="text-lg font-semibold text-zinc-900">
+                General Rule Cards
+              </h3>
               {content.rules.generalRules.map((rule, index) => (
-                <div key={index} className="rounded-xl border border-zinc-200 p-3">
+                <div
+                  key={index}
+                  className="rounded-xl border border-zinc-200 p-3"
+                >
                   <input
                     value={rule.title}
                     onChange={(e) =>
@@ -877,7 +1044,9 @@ export default function CmsPage() {
               <div className="grid gap-3 md:grid-cols-2">
                 {FIELDS.map((field) => (
                   <label key={field.key} className={labelClass}>
-                    <span className="font-medium text-zinc-700">{field.label}</span>
+                    <span className="font-medium text-zinc-700">
+                      {field.label}
+                    </span>
                     {field.key === "description" ? (
                       <textarea
                         value={eventItem[field.key] ?? ""}
@@ -903,7 +1072,9 @@ export default function CmsPage() {
         </div>
 
         <section className={`mt-8 ${sectionClass}`}>
-          <h2 className="text-lg font-semibold text-zinc-900">Current JSON Preview</h2>
+          <h2 className="text-lg font-semibold text-zinc-900">
+            Current JSON Preview
+          </h2>
           <textarea
             readOnly
             value={JSON.stringify(content, null, 2)}

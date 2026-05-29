@@ -1,0 +1,488 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  background: #f5f0e8;
+  overflow: hidden;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(26, 22, 18, 0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 22, 18, 0.6) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.hero {
+  position: relative;
+  z-index: 2;
+  padding: 6rem 6vw 2.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.heroPanel {
+  position: relative;
+  border-radius: 22px;
+  border: 1px solid rgba(26, 22, 18, 0.12);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.1);
+  padding: 22px 22px;
+  overflow: hidden;
+}
+
+.heroPanel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    radial-gradient(rgba(184, 50, 36, 0.28) 1px, transparent 1px),
+    radial-gradient(rgba(26, 22, 18, 0.12) 1px, transparent 1px);
+  background-size:
+    34px 34px,
+    46px 46px;
+  background-position:
+    0 0,
+    10px 16px;
+  mask-image: radial-gradient(
+    ellipse 90% 80% at 40% 25%,
+    black 10%,
+    transparent 68%
+  );
+}
+
+.heroPanel::before {
+  content: "";
+  position: absolute;
+  inset: -120px -180px auto auto;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(184, 50, 36, 0.14) 0%,
+    rgba(184, 50, 36, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #b83224;
+}
+
+.title {
+  margin: 0;
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(44px, 5.6vw, 84px);
+  font-weight: 800;
+  line-height: 0.95;
+  color: #1a1612;
+}
+
+.lede {
+  margin: 0;
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(14px, 1.2vw, 17px);
+  line-height: 1.8;
+  color: rgba(26, 22, 18, 0.7);
+}
+
+.highlight {
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  color: #b83224;
+}
+
+.heroCtas {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.factsRow {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.factChip {
+  border-radius: 16px;
+  border: 1px solid rgba(26, 22, 18, 0.12);
+  background: rgba(245, 240, 232, 0.9);
+  padding: 10px 12px;
+}
+
+.factKey {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(26, 22, 18, 0.6);
+  margin-bottom: 6px;
+}
+
+.factVal {
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 15px;
+  color: rgba(26, 22, 18, 0.92);
+  line-height: 1.2;
+}
+
+.funTiles {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.funTile {
+  border-radius: 16px;
+  border: 1px solid rgba(26, 22, 18, 0.12);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  padding: 12px 12px;
+}
+
+.funTileTitle {
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b83224;
+  margin-bottom: 6px;
+}
+
+.funTileText {
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(26, 22, 18, 0.78);
+}
+
+.primaryCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: #b83224;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(184, 50, 36, 0.55);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.primaryCta:hover {
+  transform: translateY(-1px);
+}
+
+.secondaryCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: transparent;
+  color: #1a1612;
+  text-decoration: none;
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(26, 22, 18, 0.2);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.secondaryCta:hover {
+  background: rgba(26, 22, 18, 0.03);
+  border-color: rgba(26, 22, 18, 0.28);
+  transform: translateY(-1px);
+}
+
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 1.25rem 6vw;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  margin: 0 0 12px;
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: clamp(22px, 2.2vw, 34px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #1a1612;
+}
+
+.card {
+  border-radius: 18px;
+  border: 1px solid rgba(26, 22, 18, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+  padding: 18px 18px;
+}
+
+.paragraph {
+  margin: 0 0 12px;
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.8;
+  color: rgba(26, 22, 18, 0.75);
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.7;
+  color: rgba(26, 22, 18, 0.78);
+}
+
+.list li {
+  position: relative;
+  padding-left: 18px;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+}
+
+.list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #b83224;
+}
+
+.detailsTable {
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.detailsRow {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.9fr) minmax(0, 1.1fr);
+  gap: 14px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-top: 1px solid rgba(26, 22, 18, 0.1);
+}
+
+.detailsRow:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.detailsKey {
+  margin: 0;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(26, 22, 18, 0.55);
+}
+
+.detailsVal {
+  margin: 0;
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 15px;
+  color: rgba(26, 22, 18, 0.9);
+  justify-self: end;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .detailsRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .detailsVal {
+    justify-self: start;
+    text-align: left;
+  }
+}
+
+.evalBlock {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(26, 22, 18, 0.1);
+}
+
+.evalTitle {
+  margin: 0 0 10px;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(26, 22, 18, 0.75);
+}
+
+.evalList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  font-family: "SpaceGroteskReg", Arial, sans-serif;
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.7;
+  color: rgba(26, 22, 18, 0.78);
+}
+
+.evalList li {
+  position: relative;
+  padding-left: 18px;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+}
+
+.evalList li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #b83224;
+}
+
+.pillList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill {
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(26, 22, 18, 0.04);
+  border: 1px solid rgba(26, 22, 18, 0.1);
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 12px;
+  color: rgba(26, 22, 18, 0.85);
+}
+
+.contactRows {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.contactRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  border-top: 1px solid rgba(26, 22, 18, 0.1);
+  padding-top: 10px;
+}
+
+.contactRow:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.contactKey {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(26, 22, 18, 0.55);
+  flex-shrink: 0;
+}
+
+.contactVal {
+  font-family: "SpaceGroteskBold", Arial, sans-serif;
+  font-size: 14px;
+  color: rgba(26, 22, 18, 0.9);
+  text-align: right;
+}
+
+.link {
+  color: #b83224;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.bottomCta {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 4.75rem 1rem 2rem;
+  }
+
+  .heroPanel {
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+
+  .factsRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .funTiles {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 1.25rem 1rem;
+  }
+
+  .contactRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .contactVal {
+    text-align: left;
+  }
+}
