@@ -331,6 +331,9 @@ export default function Navbar() {
               </Link>
             </div>
             <div className="link">
+              <a href="/expo">Expo</a>
+            </div>
+            <div className="link">
               <a href="/rules">Rules</a>
             </div>
             <div className="link">
@@ -357,7 +360,9 @@ export default function Navbar() {
             >
               <span className="menu-register-cta-copy">
                 <span className="menu-register-cta-title">Register Now</span>
-                <span className="menu-register-cta-sub">{menuRegisterSubtext}</span>
+                <span className="menu-register-cta-sub">
+                  {menuRegisterSubtext}
+                </span>
               </span>
               <span className="menu-register-cta-arrow" aria-hidden>
                 {"→"}
