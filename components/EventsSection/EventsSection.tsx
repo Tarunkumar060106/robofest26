@@ -3,10 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  DEFAULT_EVENTS,
-  type EventItem,
-} from "@/lib/eventsData";
+import { DEFAULT_EVENTS, type EventItem } from "@/lib/eventsData";
 
 import "./EventsSection.css";
 
@@ -207,7 +204,8 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
         numEl.textContent = String(value).padStart(2, "0");
 
         if (progress < 1) {
-          countAnimationFrameRef.current = window.requestAnimationFrame(animate);
+          countAnimationFrameRef.current =
+            window.requestAnimationFrame(animate);
         } else {
           countAnimationFrameRef.current = null;
         }
@@ -227,15 +225,39 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
           <span ref={eyebrowRef} className="events-eyebrow">
             Robofest 2.0 — Events
           </span>
-          <h2 ref={headingRef} className="events-heading">
-            Choose your
-            <br />
-            <em>challenge.</em>
-          </h2>
+          <div className="events-heading-row">
+            <h2 ref={headingRef} className="events-heading">
+              Choose your
+              <br />
+              <em>challenge.</em>
+            </h2>
+            <aside
+              className="events-intl-notice"
+              aria-label="International participants"
+            >
+              <span className="events-intl-title">
+                INTERNATIONAL PARTICIPANTS SUPPORT
+              </span>
+              <span className="events-intl-body">
+                Free Accommodation {"\u2022"} No Entry Fee
+              </span>
+              <ul className="events-intl-list">
+                <li>Invitation Letter Assistance</li>
+                <li>Visa &amp; Travel Guidance</li>
+                <li>Airport / Local Travel Support</li>
+                <li>Dedicated International Help Desk</li>
+                <li>On-Ground Volunteer Assistance</li>
+                <li>Networking with Global Teams</li>
+              </ul>
+              <p className="events-intl-footnote">
+                These benefits are exclusively available for participants traveling
+                from outside India.
+              </p>
+            </aside>
+          </div>
         </div>
         <div className="events-header-right">
           <p className="events-sub">
-            {/* Nine arenas. One campus. */}
             <br />
             {isLive ? "Click any panel to explore." : "Lineup dropping soon."}
           </p>
@@ -243,9 +265,7 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
             <span className="events-prize-label">Total Prize Pool</span>
             <span className="events-prize-amount">
               {isLive ? (
-                <>
-                  ₹{totalPrize.toLocaleString("en-IN")}
-                </>
+                <>₹{totalPrize.toLocaleString("en-IN")}</>
               ) : (
                 <span>Coming Soon</span>
               )}
@@ -317,7 +337,7 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                       {[
                         ["Prize Pool", ev.prize],
                         ["Entry Fee", ev.fee],
-                        ["Venue", "Coming Soon!"],
+                        ["Venue", ev.venue],
                         ["Team Size", ev.team],
                       ].map(([k, v]) => (
                         <div key={k} className="acc-detail-row">

@@ -364,6 +364,16 @@ body {
   font-size: 1.05rem;
   font-weight: 500;
 }
+.hero-clg {
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.88);
+  margin: -30px;
+  margin-bottom: 0.5rem;
+  font-style: normal;
+}
 
 .hero-department {
   font-size: 4vw;
@@ -1172,7 +1182,9 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: transform 0.25s ease, background 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
 }
 
 .bento-cta:hover {
@@ -1300,7 +1312,7 @@ body {
   font-size: clamp(52px, 5.5vw, 88px);
   font-weight: 800;
   line-height: 1.1;
-  margin: 0 0 12px 0;
+  margin: -16px 0 12px 0;
 }
 .bento-stat--sm {
   font-size: clamp(40px, 4vw, 68px);
@@ -2401,22 +2413,29 @@ html {
   }
 }
 @media (max-width: 1024px) {
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
   }
 
-  html, body,
-  a, button, [role="button"],
-  input[type="button"], input[type="submit"],
-  select, summary {
+  html,
+  body,
+  a,
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  select,
+  summary {
     cursor: auto !important;
   }
 
   .custom-scrollbar-track {
     display: none !important;
   }
-}@media (max-width: 640px) {
+}
+@media (max-width: 640px) {
   .site-preloader-image {
     width: min(78vw, 320px);
     max-height: 50vh;
@@ -2434,7 +2453,8 @@ html {
   .site-preloader-counter {
     font-size: clamp(20px, 7vw, 28px);
   }
-}@media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
   .hero-section {
     padding-top: 5.5rem;
     align-items: center;
@@ -2454,7 +2474,8 @@ html {
   .hero-header h1 {
     font-size: clamp(2rem, 12vw, 3rem);
   }
-}@media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
   .cta-bar {
     left: 10px;
     right: 10px;
@@ -2468,7 +2489,8 @@ html {
   .n_button::before {
     content: "Register →";
   }
-}@media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
   .scroll-section-inner {
     flex-direction: column !important;
     transform: none !important;
@@ -2478,23 +2500,28 @@ html {
     width: 100% !important;
     min-height: 92svh;
   }
-}@media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
   .countdown-number {
     font-size: clamp(52px, 13vw, 96px);
   }
-}@media (hover: none) {
+}
+@media (hover: none) {
   .lookback-card-inner {
     transform: none !important;
   }
-}@media (hover: none) {
+}
+@media (hover: none) {
   .showreel-controls {
     opacity: 1 !important;
   }
-}@supports (padding-bottom: env(safe-area-inset-bottom)) {
+}
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
   .cta-bar {
     bottom: calc(12px + env(safe-area-inset-bottom));
   }
-}@media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
   .n_button,
   .menu-register-cta {
     min-height: 44px;

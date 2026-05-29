@@ -3,10 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from "@vercel/analytics/next";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.in";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://robofest26.in";
 const siteName = "ROBOFEST 2.0";
 const siteDescription =
   "ROBOFEST 2.0 – SRMIST's flagship robotics competition at SRM Kattankulathur. Robot battles, line followers, drone events & ₹3L+ prize pool. Register now.";
