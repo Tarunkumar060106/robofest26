@@ -89,7 +89,7 @@ export default function ExpoPage() {
               ["Entry Fee", "₹200 per team"],
               ["Prize Pool", "₹25,000"],
               ["Maximum Team Size", "3 Members"],
-              ["Faculty Coordinator", "Lavanya"],
+              ["Faculty Coordinator", "Dr. R Lavanya"],
               ["Student SPOC", "Harshil Malhotra"],
             ].map(([label, value]) => (
               <div key={label} className={styles.detailsRow}>
@@ -226,7 +226,7 @@ export default function ExpoPage() {
             </div>
             <div className={styles.contactRow}>
               <span className={styles.contactKey}>Faculty Coordinator</span>
-              <span className={styles.contactVal}>Lavanya</span>
+              <span className={styles.contactVal}>Dr. R. Lavanya</span>
             </div>
             <div className={styles.contactRow}>
               <span className={styles.contactKey}>Participant Support</span>
