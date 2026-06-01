@@ -364,6 +364,11 @@ body {
   font-size: 1.05rem;
   font-weight: 500;
 }
+
+.hero-header p.hero-event-dates {
+  font-size: clamp(1.15rem, 1.6vw, 1.7rem);
+  font-weight: 700;
+}
 .hero-clg {
   font-size: 35px;
   font-weight: 600;
@@ -438,15 +443,15 @@ body {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  width: min(90vw, 400px);
+  width: min(90vw, 720px);
   will-change: transform;
   z-index: 2;
 }
 
 .animated-icon {
   flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
+  width: clamp(96px, 7vw, 128px);
+  height: clamp(96px, 7vw, 128px);
   will-change: transform;
 }
 
@@ -493,8 +498,8 @@ body {
 
 .placeholder-icon {
   margin-top: -10px;
-  width: 60px;
-  height: 60px;
+  width: 88px;
+  height: 88px;
   display: inline-block;
   vertical-align: middle;
   will-change: transform;
@@ -510,11 +515,13 @@ body {
   border-radius: 200px;
   bottom: 24px;
   left: 12px;
-  right: 12px;
+  right: auto;
+  width: fit-content;
+  max-width: calc(100vw - 24px);
   clip-path: none;
   overflow: visible;
   color: #0a0a0a;
-  display: flex;
+  display: inline-flex;
   gap: 0;
   opacity: 1;
   position: fixed;
@@ -532,7 +539,8 @@ body {
   .cta-bar {
     bottom: 16px;
     left: 6px;
-    right: 6px;
+    right: auto;
+    max-width: calc(100vw - 12px);
     border-radius: 100px;
     z-index: 100;
   }
@@ -1570,6 +1578,10 @@ body {
     line-height: 1.2;
   }
 
+  .hero-header p.hero-event-dates {
+    font-size: clamp(0.95rem, 3.8vw, 1.2rem);
+  }
+
   .animated-icons {
     left: 50%;
     right: auto;
@@ -1898,7 +1910,8 @@ body {
     .showreel-scrubber {
       margin-left: 0.3rem;
     }
-  }}
+  }
+}
 
 @media (max-width: 640px) {
   .hero-section {
@@ -2086,7 +2099,8 @@ body {
 @media (max-width: 900px) {
   .cta-bar {
     left: 10px;
-    right: 10px;
+    right: auto;
+    max-width: calc(100vw - 20px);
     bottom: 14px;
     border-radius: 120px;
   }
@@ -2478,7 +2492,8 @@ html {
 @media (max-width: 1024px) {
   .cta-bar {
     left: 10px;
-    right: 10px;
+    right: auto;
+    max-width: calc(100vw - 20px);
     bottom: 12px;
   }
 

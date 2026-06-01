@@ -40,7 +40,8 @@ for (let i = textAnimationOrder.length - 1; i > 0; i--) {
 }
 
 const isMobile = window.innerWidth <= 1000;
-const headerIconSize = isMobile ? 30 : 60;
+const isSmallMobile = window.innerWidth <= 640;
+const headerIconSize = isSmallMobile ? 32 : isMobile ? 36 : 88;
 const currentIconSize = iconElements[0].getBoundingClientRect().width;
 const exactScale = headerIconSize / currentIconSize;
 let centerStopY = 0;
