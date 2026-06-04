@@ -19,6 +19,7 @@ type EventField =
   | "prize"
   | "fee"
   | "venue"
+  | "date"
   | "team"
   | "color"
   | "backgroundImage";
@@ -33,6 +34,7 @@ const FIELDS: Array<{ key: EventField; label: string }> = [
   { key: "prize", label: "Prize" },
   { key: "fee", label: "Entry Fee" },
   { key: "venue", label: "Venue" },
+  { key: "date", label: "Date" },
   { key: "team", label: "Team Size" },
   { key: "color", label: "Color" },
   { key: "backgroundImage", label: "Background Image" },

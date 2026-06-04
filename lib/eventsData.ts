@@ -7,6 +7,7 @@ export interface EventItem {
   fee: string;
   venue: string;
   team: string;
+  date?: string;
   color: string;
   backgroundImage?: string;
 }

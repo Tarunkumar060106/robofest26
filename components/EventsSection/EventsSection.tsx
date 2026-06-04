@@ -250,8 +250,8 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                 <li>Networking with Global Teams</li>
               </ul>
               <p className="events-intl-footnote">
-                These benefits are exclusively available for participants traveling
-                from outside India.
+                These benefits are exclusively available for participants
+                traveling from outside India.
               </p>
             </aside>
           </div>
@@ -338,6 +338,7 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                         ["Prize Pool", ev.prize],
                         ["Entry Fee", ev.fee],
                         ["Venue", ev.venue],
+                        ["Date", ev.date?.trim() ? ev.date : "TBA"],
                         ["Team Size", ev.team],
                       ].map(([k, v]) => (
                         <div key={k} className="acc-detail-row">

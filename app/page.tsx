@@ -1181,6 +1181,7 @@ export default function Home() {
                 {siteSettings.heroTitle ??
                   "ROBOFEST 2026 — SRM's Robotics Festival"}
               </h1>
+              <p className="hero-event-dates">19-21 Aug,2026</p>
             </div>
 
             <div className="animated-icons">
