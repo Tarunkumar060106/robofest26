@@ -235,6 +235,14 @@ export default function ExpoPage() {
                 <span className={styles.contactKey}>Faculty Coordinator</span>
                 <span className={styles.contactVal}>Dr. Lavanya R</span>
               </div>
+               <div className={styles.contactRow}>
+                <span className={styles.contactKey}>Contact Number</span>
+                <span className={styles.contactVal}>
+                  <a className={styles.link} href="tel:+919003322060">
+                    +91 90033 22060
+                  </a>
+                </span>
+              </div>
               <div className={styles.contactRow}>
                 <span className={styles.contactKey}>Participant Support</span>
                 <span className={styles.contactVal}>
