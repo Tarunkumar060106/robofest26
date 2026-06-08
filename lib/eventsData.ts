@@ -10,6 +10,10 @@ export interface EventItem {
   date?: string;
   color: string;
   backgroundImage?: string;
+  rulebookUrl?: string;
+  rulebookLabel?: string;
+  rulebookUrl2?: string;
+  rulebookLabel2?: string;
 }
 
 export const DEFAULT_EVENTS: EventItem[] = [
@@ -25,6 +29,10 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "4 members",
     color: "#b83224",
     backgroundImage: "/images/events/war.jpg",
+    rulebookUrl: "",
+    rulebookLabel: "15kg Rulebook",
+    rulebookUrl2: "",
+    rulebookLabel2: "60kg Rulebook",
   },
   {
     number: "02",
@@ -38,6 +46,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "2 members",
     color: "#1a1612",
     backgroundImage: "/images/events/soccer.jpg",
+    rulebookUrl: "",
   },
   {
     number: "03",
@@ -51,6 +60,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "4 members",
     color: "#c4410c",
     backgroundImage: "/images/events/soccer2.jpg",
+    rulebookUrl: "",
   },
   {
     number: "04",
@@ -64,6 +74,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "2 members",
     color: "#2a2018",
     backgroundImage: "/images/events/sumo.png",
+    rulebookUrl: "",
   },
   {
     number: "05",
@@ -77,6 +88,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "2 members",
     color: "#b83224",
     backgroundImage: "/images/events/obs.png",
+    rulebookUrl: "",
   },
   {
     number: "06",
@@ -90,6 +102,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "2 members",
     color: "#1a1612",
     backgroundImage: "/images/events/drone.jpg",
+    rulebookUrl: "",
   },
   {
     number: "07",
@@ -103,6 +116,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "2 members",
     color: "#c4410c",
     backgroundImage: "/images/events/lfr.jpg",
+    rulebookUrl: "",
   },
   {
     number: "08",
@@ -116,6 +130,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "5 members",
     color: "#2a2018",
     backgroundImage: "/images/events/expo.jpg",
+    rulebookUrl: "",
   },
   {
     number: "09",
@@ -129,5 +144,6 @@ export const DEFAULT_EVENTS: EventItem[] = [
     team: "3 members",
     color: "#b83224",
     backgroundImage: "/images/events/obs.png",
+    rulebookUrl: "",
   },
 ];

@@ -7,6 +7,8 @@ import {
 } from "@/lib/cmsContent";
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 type CmsContentPatch = {
   siteSettings?: Partial<CmsContent["siteSettings"]>;
   topNotification?: Partial<CmsContent["topNotification"]>;
@@ -167,10 +169,17 @@ export async function GET() {
         | undefined,
     };
 
-    return NextResponse.json({
-      content: mergeCmsContent(partial),
-      source: "supabase",
-    });
+    return NextResponse.json(
+      {
+        content: mergeCmsContent(partial),
+        source: "supabase",
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0, must-revalidate",
+        },
+      }
+    );
   } catch (error) {
     const message =
       error instanceof Error
@@ -178,7 +187,12 @@ export async function GET() {
         : "Unknown error while reading CMS content.";
     return NextResponse.json(
       { content: DEFAULT_CMS_CONTENT, source: "default", error: message },
-      { status: 500 },
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store, max-age=0, must-revalidate",
+        },
+      }
     );
   }
 }

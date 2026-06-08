@@ -6,22 +6,44 @@ import { FileText, Download } from "lucide-react";
 import { DEFAULT_CMS_CONTENT, type RulesContent } from "@/lib/cmsContent";
 import type { EventItem } from "@/lib/eventsData";
 
+type RulebookLink = {
+  label: string;
+  url: string;
+};
+
 type EventRulebook = {
   id: string;
   event: string;
   category: string;
-  pdfUrl: string;
+  links: RulebookLink[];
 };
 
 const mapEventsToRulebooks = (events: EventItem[]): EventRulebook[] =>
-  events.map((event) => ({
-    id: event.number,
-    event: event.title,
-    category: event.tag,
-    pdfUrl: "#",
-  }));
+  events.map((event) => {
+    const links: RulebookLink[] = [];
+    if (event.rulebookUrl && event.rulebookUrl !== "#" && event.rulebookUrl.trim() !== "") {
+      links.push({
+        label: event.rulebookLabel?.trim() || "Download PDF",
+        url: event.rulebookUrl.trim(),
+      });
+    }
+    if (event.rulebookUrl2 && event.rulebookUrl2 !== "#" && event.rulebookUrl2.trim() !== "") {
+      links.push({
+        label: event.rulebookLabel2?.trim() || "Download PDF 2",
+        url: event.rulebookUrl2.trim(),
+      });
+    }
+    return {
+      id: event.number,
+      event: event.title,
+      category: event.tag,
+      links,
+    };
+  });
 
-const DEFAULT_EVENT_RULEBOOKS = mapEventsToRulebooks(DEFAULT_CMS_CONTENT.events);
+const DEFAULT_EVENT_RULEBOOKS = mapEventsToRulebooks(
+  DEFAULT_CMS_CONTENT.events,
+);
 
 const CATEGORY_COLORS: Record<string, { pill: string; dot: string }> = {
   Combat: { pill: "rgba(175,0,0,0.08)", dot: "#b83224" },
@@ -241,7 +263,8 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column" as const,
     gap: "0.9rem",
     boxSizing: "border-box" as const,
-    transition: "border-color 0.25s ease, background 0.25s ease, transform 0.2s ease",
+    transition:
+      "border-color 0.25s ease, background 0.25s ease, transform 0.2s ease",
     cursor: "default",
   },
 
@@ -305,7 +328,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   ebComingSoon: {
-    background: "linear-gradient(135deg, rgba(255,255,255,0.56), rgba(255,255,255,0.38))",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.56), rgba(255,255,255,0.38))",
     border: "1px solid rgba(26,22,18,0.14)",
     backdropFilter: "blur(10px) saturate(120%)",
     WebkitBackdropFilter: "blur(10px) saturate(120%)",
@@ -351,7 +375,9 @@ const styles: Record<string, React.CSSProperties> = {
 
 export default function RulesPage() {
   const [rules, setRules] = useState<RulesContent>(DEFAULT_CMS_CONTENT.rules);
-  const [eventRulebooks, setEventRulebooks] = useState<EventRulebook[]>(DEFAULT_EVENT_RULEBOOKS);
+  const [eventRulebooks, setEventRulebooks] = useState<EventRulebook[]>(
+    DEFAULT_EVENT_RULEBOOKS,
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -364,7 +390,9 @@ export default function RulesPage() {
           setRules(payload.content.rules as RulesContent);
         }
         if (isMounted && Array.isArray(payload?.content?.events)) {
-          setEventRulebooks(mapEventsToRulebooks(payload.content.events as EventItem[]));
+          setEventRulebooks(
+            mapEventsToRulebooks(payload.content.events as EventItem[]),
+          );
         }
       } catch {
         // Keep defaults when API is unavailable.
@@ -428,7 +456,9 @@ export default function RulesPage() {
                       "rgba(255,255,255,0.46)";
                   }}
                 >
-                  <span style={styles.ruleCardBadge}>Rule {String(i + 1).padStart(2, "0")}</span>
+                  <span style={styles.ruleCardBadge}>
+                    Rule {String(i + 1).padStart(2, "0")}
+                  </span>
                   <h3 style={styles.ruleCardTitle}>{rule.title}</h3>
                   <p style={styles.ruleCardBody}>{rule.content}</p>
                 </article>
@@ -447,29 +477,40 @@ export default function RulesPage() {
             {rules.eventRulebooksState === "coming-soon" ? (
               <div style={styles.ebComingSoon}>
                 <span style={styles.ebComingSoonBadge}>Coming Soon</span>
-                <h3 style={styles.ebComingSoonTitle}>Rulebooks are being prepared.</h3>
+                <h3 style={styles.ebComingSoonTitle}>
+                  Rulebooks are being prepared.
+                </h3>
                 <p style={styles.ebComingSoonText}>
-                  Event details are already available, but the downloadable rulebooks are still
-                  being finalized. Check back soon for the full set of manuals and PDF links.
+                  Event details are already available, but the downloadable
+                  rulebooks are still being finalized. Check back soon for the
+                  full set of manuals and PDF links.
                 </p>
               </div>
             ) : (
               <div style={styles.ebGrid}>
                 {eventRulebooks.map((eb) => {
-                  const colors = CATEGORY_COLORS[eb.category] ?? CATEGORY_COLORS.Combat;
+                  const colors =
+                    CATEGORY_COLORS[eb.category] ?? CATEGORY_COLORS.Combat;
+                  const hasRulebooks = eb.links && eb.links.length > 0;
                   return (
                     <div
                       key={eb.id}
                       style={styles.ebCard}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.borderColor = "rgba(175,0,0,0.4)";
-                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.64)";
-                        (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                        (e.currentTarget as HTMLElement).style.borderColor =
+                          "rgba(175,0,0,0.4)";
+                        (e.currentTarget as HTMLElement).style.background =
+                          "rgba(255,255,255,0.64)";
+                        (e.currentTarget as HTMLElement).style.transform =
+                          "translateY(-2px)";
                       }}
                       onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLElement).style.borderColor = "rgba(26,22,18,0.14)";
-                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.46)";
-                        (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                        (e.currentTarget as HTMLElement).style.borderColor =
+                          "rgba(26,22,18,0.14)";
+                        (e.currentTarget as HTMLElement).style.background =
+                          "rgba(255,255,255,0.46)";
+                        (e.currentTarget as HTMLElement).style.transform =
+                          "translateY(0)";
                       }}
                     >
                       <div style={styles.ebIconWrap}>
@@ -485,21 +526,49 @@ export default function RulesPage() {
                           color: colors.dot,
                         }}
                       >
-                        <span style={{ ...styles.ebCategoryDot, background: colors.dot }} />
+                        <span
+                          style={{
+                            ...styles.ebCategoryDot,
+                            background: colors.dot,
+                          }}
+                        />
                         {eb.category}
                       </span>
 
-                      <a
-                        href={eb.pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={styles.ebDownloadBtn}
-                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.65")}
-                        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-                      >
-                        <Download size={12} strokeWidth={2} />
-                        Download PDF
-                      </a>
+                      {hasRulebooks ? (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "auto", borderTop: "1px solid rgba(26,22,18,0.1)", paddingTop: "0.6rem" }}>
+                          {eb.links.map((link, idx) => (
+                            <a
+                              key={idx}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ ...styles.ebDownloadBtn, borderTop: "none", paddingTop: 0, marginTop: 0 }}
+                              onMouseEnter={(e) =>
+                                ((e.currentTarget as HTMLElement).style.opacity =
+                                  "0.65")
+                              }
+                              onMouseLeave={(e) =>
+                                ((e.currentTarget as HTMLElement).style.opacity = "1")
+                              }
+                            >
+                              <Download size={12} strokeWidth={2} />
+                              {link.label}
+                            </a>
+                          ))}
+                        </div>
+                      ) : (
+                        <span
+                          style={{
+                            ...styles.ebDownloadBtn,
+                            color: "rgba(26,22,18,0.4)",
+                            cursor: "not-allowed",
+                            borderTop: "1px solid rgba(26,22,18,0.1)",
+                          }}
+                        >
+                          Coming Soon
+                        </span>
+                      )}
                     </div>
                   );
                 })}

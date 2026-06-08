@@ -22,7 +22,11 @@ type EventField =
   | "date"
   | "team"
   | "color"
-  | "backgroundImage";
+  | "backgroundImage"
+  | "rulebookUrl"
+  | "rulebookLabel"
+  | "rulebookUrl2"
+  | "rulebookLabel2";
 
 const CMS_KEY_STORAGE = "robofest.cms.key";
 
@@ -38,6 +42,10 @@ const FIELDS: Array<{ key: EventField; label: string }> = [
   { key: "team", label: "Team Size" },
   { key: "color", label: "Color" },
   { key: "backgroundImage", label: "Background Image" },
+  { key: "rulebookUrl", label: "Rulebook PDF Link 1" },
+  { key: "rulebookLabel", label: "Rulebook Label 1 (optional)" },
+  { key: "rulebookUrl2", label: "Rulebook PDF Link 2 (optional)" },
+  { key: "rulebookLabel2", label: "Rulebook Label 2 (optional)" },
 ];
 
 const BENTO_FIELDS: Array<{
