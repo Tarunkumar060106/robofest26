@@ -365,6 +365,15 @@ body {
   font-weight: 500;
 }
 
+.hero-header p.hero-international {
+  font-size: clamp(0.85rem, 1.1vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0.35rem 0 0.6rem;
+}
+
 .hero-header p.hero-event-dates {
   font-size: clamp(1.15rem, 1.6vw, 1.7rem);
   font-weight: 700;
@@ -1551,7 +1560,7 @@ body {
   }
 
   .hero-header {
-    top: 32%;
+    top: 44%;
     left: 50%;
     width: min(88vw, 640px);
     transform: translate(-50%, -50%);
@@ -1586,7 +1595,7 @@ body {
     left: 50%;
     right: auto;
     transform: translateX(-50%);
-    bottom: 24vh;
+    bottom: 10vh;
     width: min(80vw, 320px);
     max-width: none;
     padding-inline: 0.25rem;
@@ -1919,7 +1928,7 @@ body {
   }
 
   .hero-header {
-    top: 30%;
+    top: 43%;
     width: min(92vw, 420px);
     gap: 0.35rem;
   }
@@ -1941,7 +1950,7 @@ body {
   }
 
   .animated-icons {
-    bottom: 26vh;
+    bottom: 8vh;
     width: min(80vw, 280px);
     gap: 0.4rem;
   }
@@ -2552,3 +2561,139 @@ img {
 .full-screen-section {
   min-height: 100svh;
 }
+
+/* ── Discount Modal ── */
+.discount-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+}
+
+.discount-modal {
+  position: relative;
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 2.5rem 2rem 2rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  animation: discount-modal-in 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes discount-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.discount-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s;
+}
+.discount-modal-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.discount-modal-emoji {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.discount-modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.discount-modal-subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f59e0b;
+  margin: 0 0 1rem;
+}
+
+.discount-modal-body {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 1.5rem;
+}
+
+.discount-modal-pricing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.discount-modal-original {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: line-through;
+}
+
+.discount-modal-arrow {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.discount-modal-discounted {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+.discount-modal-note {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 0 1.75rem;
+}
+
+.discount-modal-cta {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: #fff;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background 0.18s, transform 0.18s;
+}
+.discount-modal-cta:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+

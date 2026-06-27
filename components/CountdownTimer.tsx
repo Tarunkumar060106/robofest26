@@ -183,6 +183,8 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
       <style jsx>{`
         .countdown {
           position: relative;
+          width: 100vw;
+          margin-left: calc(50% - 50vw);
           height: 60vh;
           display: flex;
           flex-direction: column;
@@ -217,30 +219,26 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
         }
 
         .numberCell {
-          font-size: clamp(2.5rem, 12vw, 8rem);
+          font-size: clamp(2.5rem, 15vw, 12rem);
           line-height: 1;
           font-weight: 800;
+          font-family: "AwesomeSerifVAR", Georgia, serif;
           color: white;
           letter-spacing: -0.03em;
           font-variant-numeric: tabular-nums;
           font-feature-settings: "tnum";
-          text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-          background: rgba(0, 0, 0, 0.35);
-          border-radius: 16px;
-          padding: 0.15em 0.25em;
+          text-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
           min-width: 1.8em;
           text-align: center;
         }
 
         .colonCell {
-          font-size: clamp(2rem, 10vw, 6rem);
+          font-size: clamp(2rem, 10vw, 8rem);
           line-height: 1;
           font-weight: 800;
-          color: rgba(255, 255, 255, 0.7);
+          font-family: "AwesomeSerifVAR", Georgia, serif;
+          color: rgba(255, 255, 255, 0.6);
           letter-spacing: -0.03em;
-          font-variant-numeric: tabular-nums;
-          font-feature-settings: "tnum";
-          text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
           padding: 0 0.05em;
         }
 
@@ -383,7 +381,6 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
           .numberCell {
             font-size: clamp(2rem, 11vw, 3.5rem);
             min-width: 1.6em;
-            padding: 0.12em 0.2em;
           }
 
           .colonCell {
@@ -419,8 +416,6 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
           .numberCell {
             font-size: clamp(1.4rem, 9vw, 2.2rem);
             min-width: 1.4em;
-            border-radius: 10px;
-            padding: 0.1em 0.15em;
           }
 
           .colonCell {

@@ -276,6 +276,9 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
 
       {/* Live accordion */}
       {isLive && (
+        <p className="ev-swipe-hint" aria-hidden>Swipe to explore →</p>
+      )}
+      {isLive && (
         <div className="acc-track">
           {events.map((ev, i) => {
             const isActive = activeIndex === i;

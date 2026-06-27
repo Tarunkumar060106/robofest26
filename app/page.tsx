@@ -14,6 +14,7 @@ import FAQSection from "@/components/FaqSection/FaqSection";
 import PatronsSection from "@/components/PatronsSection/PatronsSection";
 import ContactSection from "@/components/ContactSection/ContactSection";
 import Footer from "@/components/Footer/Footer";
+import DiscountModal from "@/components/DiscountModal/DiscountModal";
 import { DEFAULT_CMS_CONTENT, type BentoContent } from "@/lib/cmsContent";
 
 const PRELOADER_FRAMES = [
@@ -1113,6 +1114,10 @@ export default function Home() {
         </div>
       </div>
 
+      {isPreloaderDone && (
+        <DiscountModal registrationUrl={siteSettings.registrationUrl} />
+      )}
+
       <Navbar />
 
       <div className={`site-shell ${isPreloaderDone ? "is-ready" : ""}`}>
@@ -1179,8 +1184,9 @@ export default function Home() {
               <p>{siteSettings.heroCollabPrefix}</p>
               <h1>
                 {siteSettings.heroTitle ??
-                  "ROBOFEST 2026 — SRM's Robotics Festival"}
+                  "ROBOFEST 2026 — International Robotics Festival"}
               </h1>
+              <p className="hero-international">International Robotics Competition</p>
               <p className="hero-event-dates">19-21 Aug,2026</p>
             </div>
 

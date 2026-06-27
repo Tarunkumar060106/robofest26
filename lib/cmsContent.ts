@@ -91,7 +91,7 @@ export const DEFAULT_CMS_CONTENT: CmsContent = {
     ctaLabel: "Register Now",
     menuRegisterSubtext: "Limited slots",
     heroDepartment: "Department of Computing Technologies",
-    heroTitle: "Robofest 2.0",
+    heroTitle: "International Robofest 2.0",
     heroCollabPrefix: "conducts",
     heroCollabOrg: "Directorate of Sports",
     heroAnimatedLines: [

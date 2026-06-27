@@ -210,6 +210,11 @@
   color: #b83224;
 }
 
+/* Desktop: hide swipe hint */
+.ev-swipe-hint {
+  display: none;
+}
+
 /* ── Accordion track ── */
 .acc-track {
   position: relative;
@@ -734,7 +739,7 @@
     flex-direction: column;
     align-items: center;
     gap: 1.6rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     padding: 0 1rem;
     text-align: center;
   }
@@ -755,57 +760,108 @@
     align-items: center;
   }
 
-  .acc-track {
-    height: auto;
-    flex-direction: column;
-    padding: 0 1rem;
-    gap: 0.85rem;
+  /* ── Swipe hint ── */
+  .ev-swipe-hint {
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0 0 0.75rem;
   }
 
-  .acc-panel {
+  /* ── Carousel track ── */
+  .acc-track {
     height: auto;
-    min-height: 88px;
-    flex: none;
-    border-radius: 0;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 1rem 1.5rem;
+    gap: 0.75rem;
+    /* peek of next card on the right */
+    padding-right: calc(1rem + 52px);
+  }
+
+  .acc-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Carousel card ── */
+  .acc-panel {
+    flex: 0 0 72vw;
+    max-width: 300px;
+    height: auto;
+    min-height: 260px;
+    border-radius: 18px;
+    scroll-snap-align: start;
     will-change: auto;
     background-image: none;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.25s ease;
   }
 
   .acc-panel.is-active {
-    flex: none;
+    flex: 0 0 72vw;
+    max-width: 300px;
   }
 
+  /* ── Card label — always visible, column layout ── */
   .acc-label {
     position: relative;
     inset: auto;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 1rem 0.9rem;
-    text-align: center;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0;
+    padding: 1.25rem 1.1rem 1.1rem;
+    text-align: left;
+    min-height: 220px;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .acc-panel.is-active .acc-label {
     opacity: 1;
+    min-height: auto;
+    padding-bottom: 0.75rem;
+  }
+
+  .acc-num {
+    font-size: 13px;
+    opacity: 0.45;
+    display: block;
+    margin-bottom: auto;
   }
 
   .acc-title-vert {
     writing-mode: horizontal-tb;
     transform: none;
-    font-size: 23px;
-    line-height: 1;
-    letter-spacing: 0;
-    flex: 1;
+    font-size: clamp(22px, 6vw, 28px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    flex: unset;
+    margin-top: auto;
+    padding-top: 0.75rem;
   }
 
   .acc-tag-vert {
     writing-mode: horizontal-tb;
     transform: none;
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
+    margin-top: 0.55rem;
+    background: rgba(0, 0, 0, 0.22);
+    padding: 3px 8px;
+    border-radius: 20px;
+    display: inline-block;
   }
 
+  /* ── Expanded content (shown on tap) ── */
   .acc-content {
     position: relative;
     inset: auto;
@@ -813,30 +869,35 @@
     pointer-events: auto;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.24s ease;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .acc-panel.is-active .acc-content {
-    max-height: 520px;
+    max-height: 560px;
   }
 
   .acc-content-inner {
     position: relative;
     inset: auto;
     width: 100%;
-    padding: 0 0.95rem 1rem;
-    align-items: center;
+    padding: 0 1.1rem 1.25rem;
+    align-items: flex-start;
     content-visibility: auto;
     contain-intrinsic-size: 460px;
   }
 
   .acc-top {
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .acc-title-big {
-    font-size: clamp(28px, 9.5vw, 40px);
+    font-size: clamp(24px, 7.5vw, 34px);
     margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .acc-desc {
+    text-align: left;
   }
 
   .ev-cs-wrap {
@@ -858,7 +919,7 @@
   }
 
   .events-header-row {
-    margin-bottom: 1.15rem;
+    margin-bottom: 1rem;
   }
 
   .events-heading {
@@ -896,25 +957,30 @@
     border-radius: 12px;
   }
 
-  .acc-panel {
-    min-height: 78px;
+  /* Carousel — slightly narrower cards on small phones */
+  .acc-panel,
+  .acc-panel.is-active {
+    flex: 0 0 80vw;
+    max-width: 280px;
+    min-height: 240px;
+    border-radius: 16px;
   }
 
   .acc-label {
-    padding: 0.85rem 0.85rem 0.8rem;
-  }
-
-  .acc-title-vert,
-  .acc-tag-vert {
-    text-align: center;
+    padding: 1.1rem 1rem 1rem;
+    min-height: 200px;
   }
 
   .acc-title-vert {
-    font-size: 20px;
+    font-size: clamp(20px, 5.5vw, 24px);
+  }
+
+  .acc-title-big {
+    font-size: clamp(22px, 7vw, 30px);
   }
 
   .acc-detail-val {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   .ev-cs-heading {
