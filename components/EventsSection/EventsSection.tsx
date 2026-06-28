@@ -339,7 +339,6 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                     <div className="acc-details">
                       {[
                         ["Prize Pool", ev.prize],
-                        ["Entry Fee", ev.fee],
                         ["Venue", ev.venue],
                         ["Date", ev.date?.trim() ? ev.date : "TBA"],
                         ["Team Size", ev.team],
@@ -349,6 +348,20 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                           <span className="acc-detail-val">{v}</span>
                         </div>
                       ))}
+                      <div className="acc-detail-row">
+                        <span className="acc-detail-key">Entry Fee</span>
+                        <span className="acc-detail-val acc-fee-val">
+                          {ev.earlyBirdFee && ev.earlyBirdFee !== ev.fee ? (
+                            <>
+                              <span className="acc-fee-original">{ev.fee}</span>
+                              <span className="acc-fee-early">{ev.earlyBirdFee}</span>
+                              <span className="acc-fee-badge">Early Bird</span>
+                            </>
+                          ) : (
+                            ev.fee
+                          )}
+                        </span>
+                      </div>
                     </div>
 
                     <a

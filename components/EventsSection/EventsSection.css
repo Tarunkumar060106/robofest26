@@ -511,6 +511,41 @@
   color: #f5f0e8;
 }
 
+.acc-fee-val {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.acc-fee-original {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(245, 240, 232, 0.4);
+  text-decoration: line-through;
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+}
+
+.acc-fee-early {
+  font-family: "AwesomeSerifVAR", Georgia, serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+.acc-fee-badge {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 20px;
+  padding: 2px 7px;
+}
+
 /* Register button — pulse ring on hover */
 .acc-register-btn {
   display: flex;

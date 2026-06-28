@@ -5,6 +5,7 @@ export interface EventItem {
   description: string;
   prize: string;
   fee: string;
+  earlyBirdFee?: string;
   venue: string;
   team: string;
   date?: string;
@@ -24,8 +25,9 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description:
       "Arena combat robotics. Build your bot, outmaneuver opponents, and survive the final clash.",
     prize: "₹3,50,000",
-    fee: "₹2,000",
-    venue: "Vendhir Square",
+    fee: "₹4,800",
+    earlyBirdFee: "₹4,320",
+    venue: "Vendhir Square / BB Court",
     team: "4 members",
     color: "#b83224",
     backgroundImage: "/images/events/war.jpg",
@@ -40,9 +42,10 @@ export const DEFAULT_EVENTS: EventItem[] = [
     tag: "Battle",
     description:
       "One robot, one opponent, one goal. Head-to-head robotic football with pure control and aggression.",
-    prize: "₹50,000",
-    fee: "₹500",
-    venue: "Vendhir Square, TP2, Hangar",
+    prize: "₹30,000",
+    fee: "₹720",
+    earlyBirdFee: "₹648",
+    venue: "702 TP2",
     team: "2 members",
     color: "#1a1612",
     backgroundImage: "/images/events/soccer.jpg",
@@ -54,9 +57,10 @@ export const DEFAULT_EVENTS: EventItem[] = [
     tag: "Battle",
     description:
       "Team strategy meets machine control. Coordinate two bots and dominate the robotic pitch.",
-    prize: "₹30,000",
-    fee: "₹800",
-    venue: "Vendhir Square, TP2, Hangar",
+    prize: "₹50,000",
+    fee: "₹720",
+    earlyBirdFee: "₹648",
+    venue: "702 TP2",
     team: "4 members",
     color: "#c4410c",
     backgroundImage: "/images/events/soccer2.jpg",
@@ -69,8 +73,9 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description:
       "Push or be pushed. Enter the ring and force your rival out to claim victory.",
     prize: "₹50,000",
-    fee: "₹600",
-    venue: "TP2",
+    fee: "₹720",
+    earlyBirdFee: "₹648",
+    venue: "702 TP2",
     team: "2 members",
     color: "#2a2018",
     backgroundImage: "/images/events/sumo.png",
@@ -83,7 +88,8 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description:
       "Race through obstacles at full throttle. Precision handling and speed decide the winner.",
     prize: "₹40,000",
-    fee: "₹1,000",
+    fee: "₹480",
+    earlyBirdFee: "₹432",
     venue: "Milkha Singh Ground",
     team: "2 members",
     color: "#b83224",
@@ -97,7 +103,8 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description:
       "High-speed aerial racing through technical gates. Reflexes, stability, and control are everything.",
     prize: "₹1,00,000",
-    fee: "₹400",
+    fee: "₹1,200",
+    earlyBirdFee: "₹1,080",
     venue: "Milkha Singh Ground",
     team: "2 members",
     color: "#1a1612",
@@ -111,8 +118,9 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description:
       "Line Follower Robot challenge. Build the fastest bot that can track the path without error.",
     prize: "₹30,000",
-    fee: "₹300",
-    venue: "TP2",
+    fee: "₹360",
+    earlyBirdFee: "₹324",
+    venue: "712 TP2",
     team: "2 members",
     color: "#c4410c",
     backgroundImage: "/images/events/lfr.jpg",
@@ -125,8 +133,9 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description:
       "Showcase your engineering ideas and prototypes to judges, peers, and industry visitors.",
     prize: "₹25,000",
-    fee: "₹1,000",
-    venue: "Mini Hall",
+    fee: "₹200",
+    earlyBirdFee: "₹200",
+    venue: "702 TP2",
     team: "5 members",
     color: "#2a2018",
     backgroundImage: "/images/events/expo.jpg",
@@ -139,8 +148,9 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description:
       "Design and build a high-performance water bot that can race through the course with speed and stability.",
     prize: "₹25,000",
-    fee: "₹500",
-    venue: "Fountain opposite of TP Gate",
+    fee: "₹240",
+    earlyBirdFee: "₹216",
+    venue: "Fountain opposite of TP Ganeshan",
     team: "3 members",
     color: "#b83224",
     backgroundImage: "/images/events/obs.png",

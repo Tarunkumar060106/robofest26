@@ -18,6 +18,7 @@ type EventField =
   | "description"
   | "prize"
   | "fee"
+  | "earlyBirdFee"
   | "venue"
   | "date"
   | "team"
@@ -30,22 +31,32 @@ type EventField =
 
 const CMS_KEY_STORAGE = "robofest.cms.key";
 
-const FIELDS: Array<{ key: EventField; label: string }> = [
-  { key: "number", label: "No." },
+const BASIC_FIELDS: Array<{ key: EventField; label: string; hint?: string }> = [
+  { key: "number", label: "Event No.", hint: "e.g. 01" },
   { key: "title", label: "Title" },
-  { key: "tag", label: "Tag" },
+  { key: "tag", label: "Tag", hint: "e.g. Combat, Speed, Precision" },
   { key: "description", label: "Description" },
-  { key: "prize", label: "Prize" },
-  { key: "fee", label: "Entry Fee" },
+];
+
+const PRICING_FIELDS: Array<{ key: EventField; label: string; hint?: string }> = [
+  { key: "prize", label: "Prize Pool", hint: "e.g. ₹50,000" },
+  { key: "fee", label: "Actual Price", hint: "Shown with strikethrough" },
+  { key: "earlyBirdFee", label: "Early Bird Price", hint: "Shown in green — leave blank or same as Actual to hide discount" },
+];
+
+const DETAIL_FIELDS: Array<{ key: EventField; label: string; hint?: string }> = [
   { key: "venue", label: "Venue" },
-  { key: "date", label: "Date" },
-  { key: "team", label: "Team Size" },
-  { key: "color", label: "Color" },
-  { key: "backgroundImage", label: "Background Image" },
+  { key: "date", label: "Date", hint: "Leave blank for TBA" },
+  { key: "team", label: "Team Size", hint: "e.g. 2 members" },
+  { key: "color", label: "Accent Color", hint: "Hex color e.g. #b83224" },
+  { key: "backgroundImage", label: "Background Image", hint: "/images/events/..." },
+];
+
+const RULEBOOK_FIELDS: Array<{ key: EventField; label: string }> = [
   { key: "rulebookUrl", label: "Rulebook PDF Link 1" },
-  { key: "rulebookLabel", label: "Rulebook Label 1 (optional)" },
-  { key: "rulebookUrl2", label: "Rulebook PDF Link 2 (optional)" },
-  { key: "rulebookLabel2", label: "Rulebook Label 2 (optional)" },
+  { key: "rulebookLabel", label: "Rulebook Label 1" },
+  { key: "rulebookUrl2", label: "Rulebook PDF Link 2" },
+  { key: "rulebookLabel2", label: "Rulebook Label 2" },
 ];
 
 const BENTO_FIELDS: Array<{
@@ -755,18 +766,24 @@ export default function CmsPage() {
               Bento Grid Content
             </h2>
             <div className="grid gap-3 md:grid-cols-2">
-              <input
-                value={content.bento.eyebrow}
-                onChange={(e) => updateBentoField("eyebrow", e.target.value)}
-                className={inputClass}
-                placeholder="Eyebrow"
-              />
-              <input
-                value={content.bento.heading}
-                onChange={(e) => updateBentoField("heading", e.target.value)}
-                className={inputClass}
-                placeholder="Heading"
-              />
+              <label className={labelClass}>
+                <span className="font-medium text-zinc-700">Eyebrow</span>
+                <input
+                  value={content.bento.eyebrow}
+                  onChange={(e) => updateBentoField("eyebrow", e.target.value)}
+                  className={inputClass}
+                  placeholder="Eyebrow"
+                />
+              </label>
+              <label className={labelClass}>
+                <span className="font-medium text-zinc-700">Heading</span>
+                <input
+                  value={content.bento.heading}
+                  onChange={(e) => updateBentoField("heading", e.target.value)}
+                  className={inputClass}
+                  placeholder="Heading"
+                />
+              </label>
             </div>
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -779,22 +796,28 @@ export default function CmsPage() {
                     {field.label}
                   </h3>
                   <div className="grid gap-3 md:grid-cols-2">
-                    <input
-                      value={content.bento[field.key].value}
-                      onChange={(e) =>
-                        updateBentoMetric(field.key, "value", e.target.value)
-                      }
-                      className={inputClass}
-                      placeholder="Value"
-                    />
-                    <input
-                      value={content.bento[field.key].subtext}
-                      onChange={(e) =>
-                        updateBentoMetric(field.key, "subtext", e.target.value)
-                      }
-                      className={inputClass}
-                      placeholder="Subtext"
-                    />
+                    <label className={labelClass}>
+                      <span className="font-medium text-zinc-700">Value</span>
+                      <input
+                        value={content.bento[field.key].value}
+                        onChange={(e) =>
+                          updateBentoMetric(field.key, "value", e.target.value)
+                        }
+                        className={inputClass}
+                        placeholder="e.g. 500"
+                      />
+                    </label>
+                    <label className={labelClass}>
+                      <span className="font-medium text-zinc-700">Subtext</span>
+                      <input
+                        value={content.bento[field.key].subtext}
+                        onChange={(e) =>
+                          updateBentoMetric(field.key, "subtext", e.target.value)
+                        }
+                        className={inputClass}
+                        placeholder="e.g. from across India"
+                      />
+                    </label>
                   </div>
                 </div>
               ))}
@@ -1047,36 +1070,118 @@ export default function CmsPage() {
               key={`${eventItem.number}-${index}`}
               className={sectionClass}
             >
-              <h2 className="mb-4 text-xl font-semibold text-zinc-900">
-                Event {eventItem.number}: {eventItem.title}
-              </h2>
+              {/* Event header with color swatch */}
+              <div className="mb-4 flex items-center gap-3">
+                <span
+                  className="h-8 w-8 shrink-0 rounded-lg border border-zinc-200"
+                  style={{ background: eventItem.color || "#ccc" }}
+                  aria-hidden
+                />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">
+                    Event {eventItem.number}
+                  </p>
+                  <h2 className="text-xl font-semibold text-zinc-900 leading-tight">
+                    {eventItem.title || "Untitled Event"}
+                  </h2>
+                </div>
+              </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
-                {FIELDS.map((field) => (
-                  <label key={field.key} className={labelClass}>
-                    <span className="font-medium text-zinc-700">
-                      {field.label}
-                    </span>
-                    {field.key === "description" ? (
-                      <textarea
-                        value={eventItem[field.key] ?? ""}
-                        onChange={(e) =>
-                          handleFieldChange(index, field.key, e.target.value)
-                        }
-                        className={textareaClass}
-                      />
-                    ) : (
+              {/* Basic Info */}
+              <fieldset className="mb-4 rounded-xl border border-zinc-100 p-4">
+                <legend className="px-1 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">
+                  Basic Info
+                </legend>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {BASIC_FIELDS.map((field) => (
+                    <label
+                      key={field.key}
+                      className={`${labelClass} ${field.key === "description" ? "md:col-span-2" : ""}`}
+                    >
+                      <span className="font-medium text-zinc-700">{field.label}</span>
+                      {field.hint && <span className="text-xs text-zinc-400">{field.hint}</span>}
+                      {field.key === "description" ? (
+                        <textarea
+                          value={eventItem[field.key] ?? ""}
+                          onChange={(e) => handleFieldChange(index, field.key, e.target.value)}
+                          className={textareaClass}
+                        />
+                      ) : (
+                        <input
+                          value={eventItem[field.key] ?? ""}
+                          onChange={(e) => handleFieldChange(index, field.key, e.target.value)}
+                          className={inputClass}
+                        />
+                      )}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              {/* Pricing */}
+              <fieldset className="mb-4 rounded-xl border border-green-100 bg-green-50/40 p-4">
+                <legend className="px-1 text-xs font-semibold uppercase tracking-[0.14em] text-green-700">
+                  Pricing
+                </legend>
+                <div className="grid gap-3 md:grid-cols-3">
+                  {PRICING_FIELDS.map((field) => (
+                    <label key={field.key} className={labelClass}>
+                      <span className="font-medium text-zinc-700">{field.label}</span>
+                      {field.hint && <span className="text-xs text-zinc-400">{field.hint}</span>}
                       <input
                         value={eventItem[field.key] ?? ""}
-                        onChange={(e) =>
-                          handleFieldChange(index, field.key, e.target.value)
-                        }
+                        onChange={(e) => handleFieldChange(index, field.key, e.target.value)}
                         className={inputClass}
                       />
-                    )}
-                  </label>
-                ))}
-              </div>
+                    </label>
+                  ))}
+                </div>
+                {eventItem.earlyBirdFee && eventItem.earlyBirdFee !== eventItem.fee && (
+                  <p className="mt-2 text-xs text-green-700">
+                    ✓ Discount active — showing <s>{eventItem.fee}</s> → <strong>{eventItem.earlyBirdFee}</strong> on site
+                  </p>
+                )}
+              </fieldset>
+
+              {/* Venue & Details */}
+              <fieldset className="mb-4 rounded-xl border border-zinc-100 p-4">
+                <legend className="px-1 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">
+                  Venue &amp; Details
+                </legend>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {DETAIL_FIELDS.map((field) => (
+                    <label key={field.key} className={labelClass}>
+                      <span className="font-medium text-zinc-700">{field.label}</span>
+                      {field.hint && <span className="text-xs text-zinc-400">{field.hint}</span>}
+                      <input
+                        value={eventItem[field.key] ?? ""}
+                        onChange={(e) => handleFieldChange(index, field.key, e.target.value)}
+                        className={inputClass}
+                      />
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              {/* Rulebooks */}
+              <fieldset className="rounded-xl border border-zinc-100 p-4">
+                <legend className="px-1 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">
+                  Rulebooks
+                </legend>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {RULEBOOK_FIELDS.map((field) => (
+                    <label key={field.key} className={labelClass}>
+                      <span className="font-medium text-zinc-700">{field.label}</span>
+                      <input
+                        value={eventItem[field.key] ?? ""}
+                        onChange={(e) => handleFieldChange(index, field.key, e.target.value)}
+                        className={inputClass}
+                        placeholder={field.key.includes("Url") ? "https://..." : "Label text"}
+                      />
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
             </section>
           ))}
         </div>
