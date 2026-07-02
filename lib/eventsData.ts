@@ -15,6 +15,7 @@ export interface EventItem {
   rulebookLabel?: string;
   rulebookUrl2?: string;
   rulebookLabel2?: string;
+  registerUrl?: string;
 }
 
 export const DEFAULT_EVENTS: EventItem[] = [
@@ -140,6 +141,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     color: "#2a2018",
     backgroundImage: "/images/events/expo.jpg",
     rulebookUrl: "",
+    registerUrl: "https://forms.gle/j7rTpoYgBip3Zc3s6",
   },
   {
     number: "09",

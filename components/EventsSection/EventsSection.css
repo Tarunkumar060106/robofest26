@@ -187,18 +187,26 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
 }
 
-.events-rules-link {
+.events-rules-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-end;
   font-family: "SpaceGroteskMed", Arial, sans-serif;
-  font-size: clamp(12px, 0.9vw, 14px);
-  color: #b83224;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-align: right;
-  transition: opacity 0.2s ease;
+  font-size: clamp(14px, 1.1vw, 17px);
+  color: #fff;
+  background: #b83224;
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(184, 50, 36, 0.6);
+  box-shadow: 0 12px 30px rgba(184, 50, 36, 0.28);
+  text-align: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.events-rules-link:hover {
-  opacity: 0.75;
+.events-rules-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .events-prize-label {

@@ -261,7 +261,7 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
             <br />
             {isLive ? "Click any panel to explore." : "Lineup dropping soon."}
           </p>
-          <a href="/rules" className="events-rules-link">
+          <a href="/rules" className="events-rules-btn">
             View Rulebook →
           </a>
           <div className="events-total-prize">
@@ -368,7 +368,7 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
                     </div>
 
                     <a
-                      href="https://register.robofest.in/"
+                      href={ev.registerUrl || "https://register.robofest.in/"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="acc-register-btn"
