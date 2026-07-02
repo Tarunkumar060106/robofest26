@@ -261,6 +261,9 @@ export default function EventsSection({ state = "live" }: EventsSectionProps) {
             <br />
             {isLive ? "Click any panel to explore." : "Lineup dropping soon."}
           </p>
+          <a href="/rules" className="events-rules-link">
+            View Rulebook →
+          </a>
           <div className="events-total-prize">
             <span className="events-prize-label">Total Prize Pool</span>
             <span className="events-prize-amount">

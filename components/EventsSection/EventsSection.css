@@ -187,6 +187,20 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
 }
 
+.events-rules-link {
+  font-family: "SpaceGroteskMed", Arial, sans-serif;
+  font-size: clamp(12px, 0.9vw, 14px);
+  color: #b83224;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-align: right;
+  transition: opacity 0.2s ease;
+}
+
+.events-rules-link:hover {
+  opacity: 0.75;
+}
+
 .events-prize-label {
   font-family: "SpaceGroteskMed", Arial, sans-serif;
   font-size: 10px;
